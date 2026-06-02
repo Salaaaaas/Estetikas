@@ -27,16 +27,17 @@ export async function createCalendarEvent(cita) {
     cita.notas ? `Notas: ${cita.notas}` : null,
   ].filter(Boolean).join('\n');
 
-  const startStr = `${cita.fecha}T${cita.hora}:00`;
-  const startDt  = new Date(startStr);
-  const endDt    = new Date(startDt.getTime() + 60 * 60 * 1000);
-  const endStr   = endDt.toISOString().slice(0, 19);
+  const [h, m] = cita.hora.split(':').map(Number);
+  const endHour = String(h + 1).padStart(2, '0');
+  const endMin  = String(m).padStart(2, '0');
+  const startDT = `${cita.fecha}T${cita.hora}:00-05:00`;
+  const endDT   = `${cita.fecha}T${endHour}:${endMin}:00-05:00`;
 
   const event = {
     summary:     `Cita — ${cita.nombre}`,
     description,
-    start: { dateTime: `${startStr}-05:00`, timeZone: 'America/Bogota' },
-    end:   { dateTime: `${endStr}-05:00`,   timeZone: 'America/Bogota' },
+    start: { dateTime: startDT, timeZone: 'America/Bogota' },
+    end:   { dateTime: endDT,   timeZone: 'America/Bogota' },
   };
 
   const calendarId = encodeURIComponent(process.env.GOOGLE_CALENDAR_ID);

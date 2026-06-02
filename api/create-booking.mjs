@@ -134,7 +134,7 @@ export default async function handler(req, res) {
       sede:      v.data.sede,
     });
   } catch (err) {
-    console.error('calendar_error', err?.message ?? err);
+    console.error('calendar_error', JSON.stringify({ message: err?.message, stack: err?.stack }));
   }
 
   return send(res, 201, {
