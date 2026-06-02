@@ -542,7 +542,7 @@ function openBookingModal() {
     const modal = document.getElementById('booking-modal');
     if (!modal) return;
     renderModalItems();
-    _calState = { year: null, month: null, selected: null };
+    _calState = { year: null, month: null, selected: null, fullDays: new Set() };
     renderCalendar();
     modal.classList.add('open');
     lockScroll();
