@@ -164,9 +164,6 @@ function injectCartUI() {
     modal.addEventListener('click', e => { if (e.target === modal) closeBookingModal(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) closeBookingModal(); });
     document.getElementById('booking-form').addEventListener('submit', submitBooking);
-    document.getElementById('modal-submit-btn').addEventListener('click', (e) => {
-        console.log('button clicked directly');
-    });
 
     renderTurnstile();
     updateCartBadges();
@@ -455,7 +452,7 @@ function closeBookingModal() {
 
 async function submitBooking(e) {
     e.preventDefault();
-    console.log('submitBooking triggered');
+
     const cart = getCart();
     const name  = document.getElementById('b-name').value.trim();
     const phone = document.getElementById('b-phone').value.trim();
@@ -465,7 +462,7 @@ async function submitBooking(e) {
     const notes = document.getElementById('b-notes').value.trim();
     const consent = document.getElementById('b-consent').checked;
 
-    console.log('fields:', { name, phone, sede, date, time, consent, cartLen: cart.length });
+
 
     if (!name || !phone || !sede || !date || !time) {
         showToast('Por favor completa los campos requeridos (*)'); return;
@@ -476,7 +473,6 @@ async function submitBooking(e) {
     const turnstileToken = (window.turnstile && turnstileWidgetId !== null)
         ? window.turnstile.getResponse(turnstileWidgetId)
         : 'BYPASS_DEV';
-    console.log('turnstileToken:', turnstileToken);
 
     const btn = document.getElementById('modal-submit-btn');
     const originalHTML = btn.innerHTML;
@@ -503,7 +499,7 @@ async function submitBooking(e) {
         const data = await res.json().catch(() => ({}));
 
         if (!res.ok) {
-            console.error('server error:', res.status, JSON.stringify(data));
+
             if (res.status === 429) {
                 showToast('Demasiados intentos. Por favor espera unos minutos.');
             } else if (res.status === 400 && data.detalles) {
