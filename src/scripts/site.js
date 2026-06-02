@@ -503,6 +503,7 @@ async function submitBooking(e) {
         const data = await res.json().catch(() => ({}));
 
         if (!res.ok) {
+            console.error('server error:', res.status, JSON.stringify(data));
             if (res.status === 429) {
                 showToast('Demasiados intentos. Por favor espera unos minutos.');
             } else if (res.status === 400 && data.detalles) {
