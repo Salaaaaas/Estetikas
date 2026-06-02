@@ -55,7 +55,7 @@ export default async function handler(req, res) {
   const ip = getClientIp(req);
   const ua = safeUserAgent(getHeader(req, 'user-agent'));
 
-  const rl = await checkRateLimit(ip, 'create-booking', { maxPerWindow: 20, windowMinutes: 10 });
+  const rl = await checkRateLimit(ip, 'create-booking', { maxPerWindow: 5, windowMinutes: 10 });
   if (!rl.ok) {
     await audit({ actor: 'public', action: 'rate_limited', metadata: { reason: rl.reason }, ip });
     return send(res, 429, { error: 'demasiados_intentos', mensaje: 'Por favor espera unos minutos.' });
