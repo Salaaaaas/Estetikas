@@ -2,6 +2,7 @@ import { supabase } from './_lib/supabase.mjs';
 import { encryptPII } from './_lib/crypto.mjs';
 import { validateBookingInput, safeUserAgent } from './_lib/validate.mjs';
 import { checkRateLimit, verifyTurnstile, audit } from './_lib/security.mjs';
+import { createCalendarEvent } from './_lib/calendar.mjs';
 
 function getHeader(req, name) {
   return req.headers[name.toLowerCase()] ?? null;
@@ -122,6 +123,19 @@ export default async function handler(req, res) {
     metadata:   { sede: v.data.sede, fecha: v.data.fecha, servicios: v.data.servicios.map(s => s.slug) },
     ip
   });
+
+  try {
+    await createCalendarEvent({
+      nombre:    v.data.nombre,
+      servicios: v.data.servicios,
+      fecha:     v.data.fecha,
+      hora:      v.data.hora,
+      notas:     v.data.notas,
+      sede:      v.data.sede,
+    });
+  } catch (err) {
+    console.error('calendar_error', err?.message ?? err);
+  }
 
   return send(res, 201, {
     ok: true,
