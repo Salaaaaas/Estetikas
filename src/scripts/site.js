@@ -465,6 +465,8 @@ async function submitBooking(e) {
     const notes = document.getElementById('b-notes').value.trim();
     const consent = document.getElementById('b-consent').checked;
 
+    console.log('fields:', { name, phone, sede, date, time, consent, cartLen: cart.length });
+
     if (!name || !phone || !sede || !date || !time) {
         showToast('Por favor completa los campos requeridos (*)'); return;
     }
@@ -474,6 +476,7 @@ async function submitBooking(e) {
     const turnstileToken = (window.turnstile && turnstileWidgetId !== null)
         ? window.turnstile.getResponse(turnstileWidgetId)
         : 'BYPASS_DEV';
+    console.log('turnstileToken:', turnstileToken);
 
     const btn = document.getElementById('modal-submit-btn');
     const originalHTML = btn.innerHTML;
