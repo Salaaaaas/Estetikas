@@ -281,6 +281,45 @@ const SCHEDULE = [
     },
 ];
 
+const SLOT_DURATION_MIN = 60;
+
+function parseTime12ToMin(str) {
+    const m = str.trim().match(/^(\d+):(\d+)\s*(AM|PM)$/i);
+    if (!m) return null;
+    let h = parseInt(m[1]);
+    const min = parseInt(m[2]);
+    const period = m[3].toUpperCase();
+    if (period === 'PM' && h !== 12) h += 12;
+    if (period === 'AM' && h === 12) h = 0;
+    return h * 60 + min;
+}
+
+function minToTime24(totalMin) {
+    return `${String(Math.floor(totalMin / 60)).padStart(2, '0')}:${String(totalMin % 60).padStart(2, '0')}`;
+}
+
+function minToTime12(totalMin) {
+    const h24 = Math.floor(totalMin / 60);
+    const m   = totalMin % 60;
+    const period = h24 >= 12 ? 'PM' : 'AM';
+    const h12    = h24 > 12 ? h24 - 12 : (h24 === 0 ? 12 : h24);
+    return `${h12}:${String(m).padStart(2, '0')} ${period}`;
+}
+
+// "5:30 PM – 7:30 PM" → [{label: "5:30 PM", time24: "17:30"}, {label: "6:30 PM", time24: "18:30"}]
+function generateSlots(hoursStr) {
+    const parts = hoursStr.split(' – ');
+    if (parts.length !== 2) return [];
+    const startMin = parseTime12ToMin(parts[0]);
+    const endMin   = parseTime12ToMin(parts[1]);
+    if (startMin === null || endMin === null) return [];
+    const slots = [];
+    for (let t = startMin; t + SLOT_DURATION_MIN <= endMin; t += SLOT_DURATION_MIN) {
+        slots.push({ label: minToTime12(t), time24: minToTime24(t) });
+    }
+    return slots;
+}
+
 function getApplicableSchedules(cartIds) {
     if (cartIds.length === 0) return SCHEDULE;
     const hasLimpieza     = cartIds.includes('limpieza-facial');
@@ -317,7 +356,7 @@ function getSessionsForDate(dateStr, schedules) {
     );
 }
 
-let _calState = { year: null, month: null, selected: null };
+let _calState = { year: null, month: null, selected: null, fullDays: new Set() };
 
 function renderCalendar() {
     const wrapper = document.getElementById('b-cal-wrapper');
@@ -351,7 +390,8 @@ function renderCalendar() {
     for (let d = 1; d <= daysInMonth; d++) {
         const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
         const dt = new Date(ds + 'T00:00:00');
-        cells.push({ day: d, dateStr: ds, past: dt < today, avail: availableSet.has(ds), sel: ds === selected, today: ds === todayStr });
+        const avail = availableSet.has(ds) && !_calState.fullDays.has(ds);
+        cells.push({ day: d, dateStr: ds, past: dt < today, avail, full: _calState.fullDays.has(ds), sel: ds === selected, today: ds === todayStr });
     }
     while (cells.length < 42) cells.push({ day: cells.length - firstDow - daysInMonth + 1, other: true });
 
@@ -359,6 +399,7 @@ function renderCalendar() {
         if (c.other) return `<span class="cal-day cal-day--ghost">${c.day}</span>`;
         const cls = ['cal-day',
             c.avail && !c.past ? 'cal-day--avail' : '',
+            c.full             ? 'cal-day--full'  : '',
             c.sel              ? 'cal-day--sel'   : '',
             c.today            ? 'cal-day--today'  : '',
         ].filter(Boolean).join(' ');
@@ -387,11 +428,13 @@ function renderCalendar() {
     document.getElementById('cal-prev')?.addEventListener('click', () => {
         _calState.month--;
         if (_calState.month < 0) { _calState.month = 11; _calState.year--; }
+        _calState.fullDays = new Set();
         renderCalendar();
     });
     document.getElementById('cal-next')?.addEventListener('click', () => {
         _calState.month++;
         if (_calState.month > 11) { _calState.month = 0; _calState.year++; }
+        _calState.fullDays = new Set();
         renderCalendar();
     });
 
@@ -400,34 +443,99 @@ function renderCalendar() {
             _calState.selected = btn.dataset.date;
             document.getElementById('b-date').value = btn.dataset.date;
             renderCalendar();
-            updateSessionSelect(getSessionsForDate(btn.dataset.date, schedules));
+            updateSessionSelect(getSessionsForDate(btn.dataset.date, schedules), btn.dataset.date);
         });
     });
 
-    // If no date selected yet, populate select with all applicable sessions
-    if (!selected) updateSessionSelectAll(schedules);
+    if (!selected) {
+        const el = document.getElementById('b-time');
+        if (el) el.innerHTML = '<option value="">Selecciona una fecha primero</option>';
+    }
+
+    refreshFullDays(year, month + 1, schedules, availableSet);
 }
 
-function updateSessionSelect(sessions) {
+async function updateSessionSelect(sessions, dateStr) {
     const el = document.getElementById('b-time');
     if (!el) return;
     if (!sessions.length) { el.innerHTML = '<option value="">Sin horario para esta fecha</option>'; return; }
-    el.innerHTML = sessions.length > 1
-        ? '<option value="">Selecciona un horario...</option>'
-        : '';
+
+    el.innerHTML = '<option value="">Cargando horarios...</option>';
+    el.disabled = true;
+
+    let bookedSet = new Set();
+    try {
+        const res  = await fetch(`/api/get-availability?date=${dateStr}`);
+        const data = await res.json();
+        bookedSet  = new Set(data.booked ?? []);
+    } catch {}
+
+    el.innerHTML = '';
+    el.disabled = false;
+
+    let totalSlots = 0;
+    let availableSlots = 0;
+
     sessions.forEach(s => {
-        const o = document.createElement('option');
-        o.value = `${s.label} · ${s.hours}`;
-        o.textContent = `${s.hours} — ${s.label}`;
-        el.appendChild(o);
+        const slots = generateSlots(s.hours);
+        if (!slots.length) return;
+        const group = document.createElement('optgroup');
+        group.label = s.label;
+        slots.forEach(slot => {
+            totalSlots++;
+            const o = document.createElement('option');
+            o.value = slot.time24;
+            if (bookedSet.has(slot.time24)) {
+                o.textContent = `${slot.label} — Ocupado`;
+                o.disabled = true;
+            } else {
+                o.textContent = slot.label;
+                availableSlots++;
+            }
+            group.appendChild(o);
+        });
+        el.appendChild(group);
     });
-    if (sessions.length === 1) el.selectedIndex = 0;
+
+    if (totalSlots === 0) {
+        el.innerHTML = '<option value="">Sin horarios configurados</option>';
+    } else if (availableSlots === 0) {
+        el.innerHTML = '<option value="">Todos los horarios están ocupados</option>';
+    } else {
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = `Selecciona un horario (${availableSlots} disponible${availableSlots !== 1 ? 's' : ''})`;
+        el.insertBefore(placeholder, el.firstChild);
+    }
 }
 
-function updateSessionSelectAll(schedules) {
-    const el = document.getElementById('b-time');
-    if (!el) return;
-    el.innerHTML = '<option value="">Selecciona una fecha primero</option>';
+async function refreshFullDays(year, month, schedules, availableSet) {
+    try {
+        const res     = await fetch(`/api/get-availability?year=${year}&month=${month}`);
+        const grouped = await res.json(); // { "2026-06-10": ["17:30", ...], ... }
+
+        const fullDays = new Set();
+        availableSet.forEach(dateStr => {
+            const dow        = new Date(dateStr + 'T00:00:00').getDay();
+            const daySessions = schedules.filter(s =>
+                s.type === 'date' ? s.date === dateStr : s.weekdays.includes(dow)
+            );
+            const totalSlots  = daySessions.reduce((sum, s) => sum + generateSlots(s.hours).length, 0);
+            const bookedCount = (grouped[dateStr] ?? []).length;
+            if (totalSlots > 0 && bookedCount >= totalSlots) fullDays.add(dateStr);
+        });
+
+        _calState.fullDays = fullDays;
+
+        document.querySelectorAll('.cal-day[data-date]').forEach(btn => {
+            const d = btn.dataset.date;
+            if (fullDays.has(d)) {
+                btn.disabled = true;
+                btn.classList.add('cal-day--full');
+                btn.classList.remove('cal-day--avail');
+            }
+        });
+    } catch {}
 }
 
 function openBookingModal() {
