@@ -4,25 +4,34 @@ import { supabase } from './supabase.mjs';
 // Rate limit por IP+endpoint usando la función SQL bump_rate_limit
 // ---------------------------------------------------------------------
 export async function checkRateLimit(ip, endpoint, { maxPerWindow = 5, windowMinutes = 10 } = {}) {
-  if (!ip) return { ok: false, reason: 'no_ip' };
-
-  const { data, error } = await supabase.rpc('bump_rate_limit', {
-    p_ip: ip,
-    p_endpoint: endpoint,
-    p_window_minutes: windowMinutes
-  });
-
-  if (error) {
-    // Fail-closed: si la BD falla, no permitir
-    console.error('rate_limit_error', error);
-    return { ok: false, reason: 'rate_limit_db_error' };
+  // Sin IP: permitir pero loguear (no bloquear al usuario)
+  if (!ip) {
+    console.warn('rate_limit: no IP detected, skipping');
+    return { ok: true, reason: 'no_ip' };
   }
 
-  if (data > maxPerWindow) {
-    return { ok: false, reason: 'rate_limit_exceeded', count: data };
-  }
+  try {
+    const { data, error } = await supabase.rpc('bump_rate_limit', {
+      p_ip: ip,
+      p_endpoint: endpoint,
+      p_window_minutes: windowMinutes
+    });
 
-  return { ok: true, count: data };
+    if (error) {
+      // Fail-open: si la BD falla, loguear pero no bloquear
+      console.error('rate_limit_error', JSON.stringify(error));
+      return { ok: true, reason: 'rate_limit_db_error' };
+    }
+
+    if (data > maxPerWindow) {
+      return { ok: false, reason: 'rate_limit_exceeded', count: data };
+    }
+
+    return { ok: true, count: data };
+  } catch (err) {
+    console.error('rate_limit_exception', err.message);
+    return { ok: true, reason: 'rate_limit_exception' };
+  }
 }
 
 // ---------------------------------------------------------------------
