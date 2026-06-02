@@ -203,7 +203,7 @@ function renderModalItems() {
                     <path d="M16 10a4 4 0 01-8 0"/>
                 </svg>
                 <p>Tu lista de citas está vacía.</p>
-                <a href="tratamientos.html" class="btn" style="font-size:0.82rem; padding:0.65rem 1.4rem; margin-top:0.5rem" onclick="closeBookingModal()">Explorar Tratamientos</a>
+                <a href="/tratamientos" class="btn" style="font-size:0.82rem; padding:0.65rem 1.4rem; margin-top:0.5rem" onclick="closeBookingModal()">Explorar Tratamientos</a>
             </div>
         `;
         return;
