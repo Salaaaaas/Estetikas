@@ -481,7 +481,7 @@ async function submitBooking(e) {
     btn.disabled = true;
 
     try {
-        const res = await fetch('/.netlify/functions/create-booking', {
+        const res = await fetch('/api/create-booking', {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify({
