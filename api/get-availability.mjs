@@ -1,22 +1,5 @@
 import { supabase } from './_lib/supabase.mjs';
 
-function getHeader(req, name) {
-  return req.headers[name.toLowerCase()] ?? null;
-}
-
-function isOriginAllowed(origin) {
-  if (!origin) return false;
-  if (String(origin).endsWith('.vercel.app')) return true;
-  const allowed = new Set([
-    'https://estetikas.netlify.app',
-    'https://estetikas.vercel.app',
-    'http://localhost:4321',
-    'http://localhost:3000',
-    'http://localhost:8888'
-  ]);
-  return allowed.has(origin);
-}
-
 function send(res, status, body) {
   res.setHeader('content-type', 'application/json; charset=utf-8');
   res.setHeader('cache-control', 'no-store');
@@ -25,9 +8,6 @@ function send(res, status, body) {
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') return send(res, 405, { error: 'method_not_allowed' });
-
-  const origin = getHeader(req, 'origin');
-  if (!isOriginAllowed(origin)) return send(res, 403, { error: 'origin_not_allowed' });
 
   const { date, year, month } = req.query;
 
