@@ -46,6 +46,8 @@ function readBody(req) {
 }
 
 export default async function handler(req, res) {
+  console.log('SUPABASE_URL:', process.env.SUPABASE_URL?.slice(0, 40));
+  console.log('KEY_SET:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
   if (req.method !== 'POST') return send(res, 405, { error: 'method_not_allowed' });
 
   const origin = getHeader(req, 'origin');
