@@ -15,7 +15,7 @@ async function getAccessToken() {
 }
 
 /**
- * @param {{ nombre: string, servicios: {name:string}[], fecha: string, hora: string, notas?: string, sede: string }} cita
+ * @param {{ nombre: string, telefono: string, servicios: {name:string}[], fecha: string, hora: string, notas?: string, sede: string }} cita
  * hora is "HH:MM" in 24h format, e.g. "17:30"
  */
 export async function createCalendarEvent(cita) {
@@ -23,9 +23,10 @@ export async function createCalendarEvent(cita) {
 
   const serviciosStr = cita.servicios.map(s => s.name).join(', ');
   const description  = [
-    `Sede: ${cita.sede}`,
-    `Servicios: ${serviciosStr}`,
-    cita.notas ? `Notas: ${cita.notas}` : null,
+    `📞 ${cita.telefono}`,
+    `📍 Sede: ${cita.sede}`,
+    `💆 Servicios: ${serviciosStr}`,
+    cita.notas ? `📝 Notas: ${cita.notas}` : null,
   ].filter(Boolean).join('\n');
 
   if (!/^\d{2}:\d{2}$/.test(cita.hora)) throw new Error('hora_invalida: ' + cita.hora);

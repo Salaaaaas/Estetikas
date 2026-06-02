@@ -127,6 +127,7 @@ export default async function handler(req, res) {
   try {
     await createCalendarEvent({
       nombre:    v.data.nombre,
+      telefono:  v.data.telefono,
       servicios: v.data.servicios,
       fecha:     v.data.fecha,
       hora:      v.data.hora,
