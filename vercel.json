@@ -3,5 +3,11 @@
     { "source": "/api/:path*", "destination": "/api/:path*" }
   ],
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "crons": [
+    {
+      "path": "/api/send-reminders",
+      "schedule": "0 13 * * *"
+    }
+  ]
 }
