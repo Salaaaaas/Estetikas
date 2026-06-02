@@ -2160,7 +2160,7 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     letter-spacing: 0.8px;
 }
 
-.form-group-modal input,
+.form-group-modal input:not([type="checkbox"]),
 .form-group-modal select,
 .form-group-modal textarea {
     width: 100%;
