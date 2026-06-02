@@ -1,0 +1,87 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const all = await getCollection('tratamientos');
+
+const CATEGORY_ORDER = [
+  'Facial & Regeneración',
+  'Bioestimulación & Contorno',
+  'Cuidado Corporal',
+];
+
+const byCategory = CATEGORY_ORDER.map(cat => ({
+  cat,
+  items: all.filter(t => t.data.category === cat),
+}));
+
+const RESERVE_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+---
+
+<BaseLayout
+  title="Tratamientos | Esteti'Kas"
+  description="Descubre todos los tratamientos de belleza y cuidado personal que Esteti'Kas tiene para ti en Bataan y Guápiles."
+>
+  <section class="page-hero" style="background-image: url('/img/fondo_tratamientos.webp');">
+    <div class="hero-text-wrapper">
+      <h1>Nuestros Tratamientos</h1>
+      <p>Excelencia en medicina estética y cuidado integral</p>
+    </div>
+  </section>
+
+  {byCategory.map(({ cat, items }, i) => (
+    <section
+      class="treatment-category-section"
+      style={i % 2 === 1 ? 'background-color: var(--bg-light);' : ''}
+    >
+      <h2 class="category-title">{cat}</h2>
+      <div class="treatment-cards-grid">
+        {items.map(t => (
+          <a href={`/tratamientos/${t.id}`} class="t-card trigger-reveal">
+            <img
+              src={`/img/${t.data.cardImage}`}
+              alt={t.data.cardImageAlt}
+              class="t-card-image"
+              width="400"
+              height="250"
+              loading={t.data.cardLoading}
+            />
+            <div class="t-card-info">
+              <div>
+                <h3>{t.data.cardTitle}</h3>
+                <p>{t.data.cardDescription}</p>
+              </div>
+              <div class="t-card-actions">
+                <span class="t-card-link">
+                  Leer Más
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+                <button
+                  class="reserve-btn"
+                  data-id={t.id}
+                  data-name={t.data.cartName}
+                >
+                  <Fragment set:html={RESERVE_ICON} />
+                  Reservar
+                </button>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  ))}
+
+  <!-- CTA Booking -->
+  <section style="background: var(--secondary-color); padding: 5rem 5%; text-align: center;">
+    <h2 style="font-family: var(--font-heading); font-size: 2.4rem; font-weight: 400; color: white; margin-bottom: 1rem;">
+      ¿Lista para tu transformación?
+    </h2>
+    <p style="color: rgba(255,255,255,0.65); font-size: 1.05rem; font-weight: 300; margin-bottom: 2.5rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+      Selecciona los tratamientos de interés y envíanos tu solicitud en segundos.
+    </p>
+    <button class="btn" onclick="openBookingModal()" style="font-size: 1rem; padding: 1rem 3rem;">
+      Ver Mi Lista de Citas
+    </button>
+  </section>
+</BaseLayout>

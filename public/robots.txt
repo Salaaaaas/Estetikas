@@ -1,0 +1,14 @@
+# ==============================================
+# robots.txt — Esteti'Kas (estetikas.netlify.app)
+# ==============================================
+
+# Permitir a todos los robots rastrear el sitio
+User-agent: *
+Allow: /
+
+# Bloquear carpetas de recursos que no aportan valor SEO
+Disallow: /js/
+Disallow: /css/
+
+# Sitemap — Mapa del sitio para Google y otros buscadores
+Sitemap: https://estetikas.netlify.app/sitemap.xml

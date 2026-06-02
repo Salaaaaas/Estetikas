@@ -1,0 +1,20 @@
+---
+title: "Sueroterapia"
+description: "Nutrición celular intensiva e hidratación intravenosa"
+heroImage: "sueroterapia.webp"
+heroAlt: "Sueroterapia"
+subtitle: "Nutrición celular intensiva e hidratación intravenosa"
+about: "Administración intravenosa de sueros personalizados (vitaminas, minerales, antioxidantes) para mejorar la salud general y retrasar el envejecimiento celular."
+benefits:
+  - "NeuroB12: Estimula la función cognitiva y el sistema nervioso"
+  - "Glutation: Detoxifica el hígado y aclara la piel"
+  - "Megadosis de Vitamina C: Potencia el sistema inmune"
+  - "Anti-Age: Combate la oxidación celular"
+category: "Cuidado Corporal"
+cardTitle: "Sueroterapia"
+cardDescription: "Hidratación profunda y regeneración intravenosa."
+cardImage: "sueroterapia.webp"
+cardImageAlt: "Sueroterapia"
+cartName: "Sueroterapia Vitamínica"
+cardLoading: "lazy"
+---

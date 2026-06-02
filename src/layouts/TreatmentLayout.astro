@@ -1,0 +1,94 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/style.css';
+
+interface Props {
+  title: string;
+  description: string;
+  heroImage: string;
+  heroAlt: string;
+  heroTitle: string;
+  heroSubtitle: string;
+}
+
+const { title, description, heroImage, heroAlt, heroTitle, heroSubtitle } = Astro.props;
+const turnstileSitekey = import.meta.env.PUBLIC_TURNSTILE_SITEKEY ?? '';
+---
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="/img/logo_turquesa.png" />
+  <title>{title} | Esteti'Kas</title>
+  <meta name="description" content={description} />
+  <meta name="turnstile-sitekey" content={turnstileSitekey} />
+
+  <!-- Cloudflare Turnstile (CAPTCHA invisible) -->
+  <script
+    src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad"
+    async
+    defer
+    is:inline
+  ></script>
+  <script is:inline>
+    window.onTurnstileLoad = function () {
+      window.dispatchEvent(new Event('turnstile-loaded'));
+    };
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="preload"
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&family=Playfair+Display:wght@400;700&display=swap"
+    as="style"
+    onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
+  </noscript>
+
+</head>
+<body>
+  <Header isHome={false} />
+
+  <main>
+    <section class="treatment-detail-hero">
+      <img class="hero-bg-image" src={`/img/${heroImage}`} alt={heroAlt} loading="eager" />
+      <div class="wrapper">
+        <h1>{heroTitle}</h1>
+        <p>{heroSubtitle}</p>
+      </div>
+    </section>
+
+    <section class="treatment-detail-content">
+      <div class="content-wrapper">
+        <slot />
+
+        <div class="whatsapp-cta-container trigger-reveal">
+          <h3>¿Te interesa este tratamiento?</h3>
+          <p>Haz clic en el botón debajo para consultarnos directamente por WhatsApp sobre disponibilidad, precios, o cualquier duda que tengas.</p>
+          <a
+            href={`https://wa.me/50684320647?text=${encodeURIComponent(`Hola, me gustaría solicitar información sobre el tratamiento de ${heroTitle}.`)}`}
+            class="btn"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Preguntar por WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer variant="simple" />
+
+  <script>
+    import '../scripts/site.js';
+  </script>
+</body>
+</html>

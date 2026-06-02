@@ -1,0 +1,58 @@
+---
+import { getCollection } from 'astro:content';
+import TreatmentLayout from '../../layouts/TreatmentLayout.astro';
+
+export async function getStaticPaths() {
+  const treatments = await getCollection('tratamientos');
+  return treatments.map(t => ({
+    params: { slug: t.id },
+    props: { treatment: t },
+  }));
+}
+
+const { treatment } = Astro.props;
+const { title, description, heroImage, heroAlt, subtitle, about, benefits, prices } = treatment.data;
+
+const CHECK_ICON = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+---
+
+<TreatmentLayout
+  title={title}
+  description={description}
+  heroImage={heroImage}
+  heroAlt={heroAlt}
+  heroTitle={title}
+  heroSubtitle={subtitle}
+>
+  <div class="text-block trigger-reveal">
+    <h2>Acerca de este tratamiento</h2>
+    <p>{about}</p>
+  </div>
+
+  <div class="benefits-block trigger-reveal">
+    <h2>Beneficios y Resultados</h2>
+    <ul class="included-list">
+      {benefits.map(b => (
+        <li>
+          <Fragment set:html={CHECK_ICON} />
+          <span>{b}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  {prices && prices.length > 0 && (
+    <div class="prices-block trigger-reveal">
+      <h2>Precios</h2>
+      <ul class="prices-list">
+        {prices.map(p => (
+          <li class="price-item">
+            <span class="price-label">{p.label}</span>
+            <span class="price-value">{p.price}</span>
+            {p.note && <span class="price-note">{p.note}</span>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+</TreatmentLayout>

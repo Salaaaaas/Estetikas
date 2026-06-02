@@ -1,0 +1,124 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Política de Privacidad | Esteti'Kas"
+  description="Política de tratamiento de datos personales de Esteti'Kas conforme a la Ley 1581 de 2012."
+>
+  <section class="legal-section">
+    <div class="container legal-container">
+      <h1>Política de Tratamiento de Datos Personales</h1>
+      <p class="legal-meta">Última actualización: junio de 2026 — Ley 1581 de 2012 (Habeas Data)</p>
+
+      <h2>1. Responsable del tratamiento</h2>
+      <p>
+        <strong>Esteti'Kas</strong> es la responsable del tratamiento de los datos personales
+        recolectados a través de este sitio web y sus canales digitales (incluido WhatsApp).
+      </p>
+
+      <h2>2. Datos que recolectamos</h2>
+      <ul>
+        <li>Nombre completo</li>
+        <li>Número de teléfono / WhatsApp</li>
+        <li>Correo electrónico (opcional)</li>
+        <li>Servicios de interés, sede, fecha y hora preferida de cita</li>
+        <li>Notas médicas que voluntariamente nos compartas</li>
+        <li>Dirección IP y agente de navegador (con fines de seguridad y auditoría)</li>
+      </ul>
+
+      <h2>3. Finalidad</h2>
+      <p>Los datos se utilizan exclusivamente para:</p>
+      <ul>
+        <li>Gestionar y confirmar tu cita estética.</li>
+        <li>Contactarte por teléfono o WhatsApp para coordinar el servicio.</li>
+        <li>Enviarte recordatorios de tu cita.</li>
+        <li>Cumplir con obligaciones legales y de salud.</li>
+      </ul>
+      <p>
+        <strong>No vendemos, alquilamos ni compartimos tus datos con terceros</strong> para fines
+        comerciales. Solo los procesadores estrictamente necesarios (proveedor de base de datos,
+        Google Calendar, plataforma de WhatsApp) acceden bajo acuerdos de confidencialidad.
+      </p>
+
+      <h2>4. Seguridad</h2>
+      <p>Implementamos medidas técnicas y organizativas para proteger tu información:</p>
+      <ul>
+        <li><strong>Cifrado en reposo</strong> de teléfono y email con AES-256-GCM.</li>
+        <li><strong>HTTPS/TLS</strong> obligatorio en todas las comunicaciones.</li>
+        <li><strong>Control de acceso</strong> estricto: solo personal autorizado puede ver tu cita.</li>
+        <li><strong>Auditoría</strong> de cada acceso a datos personales.</li>
+        <li><strong>Protección anti-bot</strong> con verificación CAPTCHA.</li>
+        <li><strong>Limitación de intentos</strong> para prevenir ataques de fuerza bruta.</li>
+      </ul>
+
+      <h2>5. Retención</h2>
+      <p>
+        Conservamos tus datos por un máximo de <strong>2 años</strong> desde tu última cita, salvo
+        que la ley exija un periodo distinto. Después, son eliminados de forma irreversible.
+      </p>
+
+      <h2>6. Tus derechos</h2>
+      <p>Como titular de los datos puedes en cualquier momento:</p>
+      <ul>
+        <li>Conocer qué datos tenemos sobre ti.</li>
+        <li>Solicitar la corrección de datos inexactos.</li>
+        <li>Solicitar la eliminación de tus datos (derecho al olvido).</li>
+        <li>Revocar el consentimiento otorgado.</li>
+        <li>Presentar una queja ante la Superintendencia de Industria y Comercio.</li>
+      </ul>
+
+      <h2>7. Contacto</h2>
+      <p>
+        Para ejercer cualquiera de estos derechos, escríbenos a través de nuestro WhatsApp oficial
+        o el formulario de contacto del sitio, indicando la solicitud específica.
+      </p>
+
+      <h2>8. Cambios a esta política</h2>
+      <p>
+        Podemos actualizar esta política para reflejar cambios legales o de nuestros servicios.
+        La fecha de última actualización siempre estará visible al inicio de este documento.
+      </p>
+    </div>
+  </section>
+
+  <style>
+    .legal-section {
+      padding: 120px 0 80px;
+      background: linear-gradient(180deg, #fafafa 0%, #fff 100%);
+    }
+    .legal-container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 24px;
+      color: #2a2a2a;
+      line-height: 1.7;
+    }
+    .legal-container h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      margin-bottom: 8px;
+      color: #16a3a3;
+    }
+    .legal-meta {
+      color: #888;
+      font-size: 0.85rem;
+      margin-bottom: 40px;
+    }
+    .legal-container h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      margin-top: 36px;
+      margin-bottom: 12px;
+      color: #1a1a1a;
+    }
+    .legal-container p, .legal-container li {
+      font-size: 0.97rem;
+    }
+    .legal-container ul {
+      padding-left: 22px;
+      margin-bottom: 14px;
+    }
+    .legal-container li { margin-bottom: 6px; }
+  </style>
+</BaseLayout>

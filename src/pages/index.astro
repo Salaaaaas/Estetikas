@@ -1,0 +1,352 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Esteti'Kas | Medicina, Salud & Belleza"
+  description="Esteti'Kas: Clínica de medicina estética avanzada en Bataan y Guápiles, Costa Rica. Tu aliado en el cuidado integral."
+  bodyClass="home-page"
+  isHome={true}
+>
+  <section id="inicio" class="hero">
+    <div class="hero-content">
+      <div class="hero-eyemark" aria-hidden="true"></div>
+      <h1 class="hero-display">
+        <em>Medicina</em>
+        <span>Estética</span>
+        <span>Avanzada</span>
+      </h1>
+      <div class="hero-bottom">
+        <p>Procedimientos con respaldo médico especializado.<br>Resultados armónicos — Bataan y Guápiles, CR.</p>
+        <div class="hero-cta-group">
+          <a href="#contacto" class="btn">Agendar Valoración</a>
+          <a href="/tratamientos" class="btn btn-outline-dark">Ver Tratamientos</a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-image-wrap">
+      <img class="hero-image" src="/img/facial.webp" alt="Tratamiento facial en Esteti'Kas" loading="eager" width="600" height="750" />
+    </div>
+  </section>
+
+  <section class="trust-bar" aria-label="Por qué Esteti'Kas">
+    <div class="trust-bar-grid">
+      <div class="trust-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>2 sedes en Costa Rica</span>
+      </div>
+      <div class="trust-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Médicos especialistas certificados</span>
+      </div>
+      <div class="trust-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        <span>Resultados armónicos y naturales</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="treatments-marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <div class="marquee-inner">
+        <span>Limpieza Facial</span><span class="mq-sep">·</span>
+        <span>Botox &amp; Rellenos</span><span class="mq-sep">·</span>
+        <span>Exosomas</span><span class="mq-sep">·</span>
+        <span>Peelings Químicos</span><span class="mq-sep">·</span>
+        <span>Bioestimuladores</span><span class="mq-sep">·</span>
+        <span>Sueroterapia IV</span><span class="mq-sep">·</span>
+        <span>Masajes Avanzados</span><span class="mq-sep">·</span>
+        <span>Mesoterapia</span><span class="mq-sep">·</span>
+        <span>Dermaplaning</span><span class="mq-sep">·</span>
+        <span>Depilación LDI</span><span class="mq-sep">·</span>
+      </div>
+      <div class="marquee-inner" aria-hidden="true">
+        <span>Limpieza Facial</span><span class="mq-sep">·</span>
+        <span>Botox &amp; Rellenos</span><span class="mq-sep">·</span>
+        <span>Exosomas</span><span class="mq-sep">·</span>
+        <span>Peelings Químicos</span><span class="mq-sep">·</span>
+        <span>Bioestimuladores</span><span class="mq-sep">·</span>
+        <span>Sueroterapia IV</span><span class="mq-sep">·</span>
+        <span>Masajes Avanzados</span><span class="mq-sep">·</span>
+        <span>Mesoterapia</span><span class="mq-sep">·</span>
+        <span>Dermaplaning</span><span class="mq-sep">·</span>
+        <span>Depilación LDI</span><span class="mq-sep">·</span>
+      </div>
+    </div>
+  </div>
+
+  <section id="nosotras" class="staff-profiles">
+    <div class="staff-intro">
+      <h2 class="staff-intro-heading">El equipo detrás<br>de tus resultados</h2>
+      <div class="staff-intro-copy">
+        <p>Médicos y especialistas certificados en estética avanzada, con formación continua y un enfoque centrado en tu bienestar.</p>
+      </div>
+    </div>
+
+    <div class="profile-block">
+      <div class="profile-image-side">
+        <img src="/img/dr_karen.webp" alt="Dra. Karen Mayorga Quirós" width="400" height="500" loading="lazy" />
+      </div>
+      <div class="profile-content-side">
+        <span class="profile-role">Medicina Estética</span>
+        <h2 class="profile-name">Dra. Karen<br>Mayorga Quirós</h2>
+        <div class="profile-bio">
+          <p>Médico especializada en estética regenerativa y armonización facial. Su enfoque, respaldado por actualización constante en tendencias globales, se basa en realzar la belleza natural de cada paciente.</p>
+          <p>Garantiza tratamientos seguros y personalizados mediante tecnología de vanguardia y productos de la más alta calidad.</p>
+        </div>
+        <a href="#contacto" class="profile-cta">Agendar con la Dra. Karen <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+
+    <div class="profile-block reverse">
+      <div class="profile-image-side">
+        <img src="/img/mami.webp" alt="Especialista Katherine Leitón Castillo" width="400" height="500" loading="lazy" />
+      </div>
+      <div class="profile-content-side">
+        <span class="profile-role">Especialista en Estética</span>
+        <h2 class="profile-name">Katherine<br>Leitón Castillo</h2>
+        <div class="profile-bio">
+          <p>Especialista certificada en tratamientos faciales avanzados. Su pasión por el cuidado de la piel la ha llevado a dominar técnicas exclusivas que combinan bienestar con resultados visibles desde la primera sesión.</p>
+          <p>Su calidez y enfoque detallista aseguran que cada visita sea una experiencia de transformación y relajación total.</p>
+        </div>
+        <a href="#contacto" class="profile-cta">Agendar con Katherine <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+
+    <div class="profile-block">
+      <div class="profile-image-side">
+        <div class="profile-image-placeholder">
+          <span aria-hidden="true">MG</span>
+          <p class="profile-placeholder-note">Foto próximamente</p>
+        </div>
+      </div>
+      <div class="profile-content-side">
+        <span class="profile-role">Especialista Corporal</span>
+        <h2 class="profile-name">Dra. Mónica<br>Gamboa Calderón</h2>
+        <div class="profile-bio">
+          <p>Especialista encargada de llevar el cuidado corporal a otro nivel. Meticulosa y conocedora del bienestar físico, domina un amplio espectro de técnicas manuales y terapias sistémicas.</p>
+          <p>Experta residente en <strong>Sueroterapia</strong> intravenosa y en <strong>Masajes</strong> avanzados: drenajes linfáticos, técnicas descontracturantes y reductivas, diseñando terapias únicas para la recuperación total del cuerpo.</p>
+        </div>
+        <a href="#contacto" class="profile-cta">Agendar con la Dra. Mónica <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="philosophy-section">
+    <div class="philosophy-inner">
+      <h2 class="philosophy-heading">
+        Cada paciente<br>es <em>única</em>
+      </h2>
+      <div class="philosophy-body">
+        <p class="philosophy-scrubbable" id="philosophy-text">En Esteti'Kas comprendemos que cada paciente es única. Ofrecemos un portafolio completo de procedimientos faciales, corporales y de regeneración celular, utilizando tecnología médica de vanguardia y productos premium para brindarte resultados excepcionales, seguros y naturales.</p>
+        <div class="philosophy-tags">
+          <span class="ptag">Abordaje Médico Integral</span>
+          <span class="ptag">Resultados Naturales</span>
+          <span class="ptag">Máxima Calidad</span>
+        </div>
+        <a href="/tratamientos" class="btn">Ver Catálogo de Tratamientos</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="specialties-pinned" id="especialidades">
+    <div class="specialties-left">
+      <div class="specialties-sticky">
+        <div class="specialties-count" aria-hidden="true">3</div>
+        <h2 class="specialties-heading">Nuestras<br>Especialidades</h2>
+        <p class="specialties-sub">Procedimientos médicamente respaldados para cara, cuerpo y bienestar celular.</p>
+        <a href="/tratamientos" class="btn specialties-cta">Ver todos los tratamientos</a>
+      </div>
+    </div>
+    <div class="specialties-right">
+      <div class="specialty-card">
+        <span class="specialty-num">01</span>
+        <h3>Facial &amp; Regeneración</h3>
+        <p>Revitaliza la textura y luminosidad de tu piel con protocolos clínicamente respaldados.</p>
+        <ul>
+          <li>Limpiezas Profundas y Dermaplaning</li>
+          <li>Peelings Químicos</li>
+          <li>Botox y Ácido Hialurónico</li>
+          <li>Exosomas y ADN de Salmón</li>
+        </ul>
+        <a href="/tratamientos" class="specialty-link">Explorar tratamientos <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="specialty-card">
+        <span class="specialty-num">02</span>
+        <h3>Bioestimulación</h3>
+        <p>Activa tu producción interna de colágeno y recupera la estructura natural del rostro.</p>
+        <ul>
+          <li>Bioestimuladores de Colágeno</li>
+          <li>Perfilado Facial y Doble Mentón</li>
+          <li>Redensificación de Cuello y Escote</li>
+          <li>Reestructuración de Manos</li>
+        </ul>
+        <a href="/tratamientos" class="specialty-link">Explorar tratamientos <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="specialty-card">
+        <span class="specialty-num">03</span>
+        <h3>Cuidado Corporal</h3>
+        <p>Soluciones integrales para esculpir tu silueta, recuperar el bienestar y regenerar desde adentro.</p>
+        <ul>
+          <li>Sueroterapia Vitamínica Intravenosa</li>
+          <li>Masajes Relajantes, Reductivos y más</li>
+          <li>Mesoterapia Reductiva y Estrías</li>
+          <li>Lunares y Depilación LDI</li>
+        </ul>
+        <a href="/tratamientos" class="specialty-link">Explorar tratamientos <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="cuidados" class="care-section section-reveal">
+    <div class="care-section-header">
+      <h2>Cuidados Post-Tratamiento</h2>
+      <p>Tu compromiso en casa es el 50% de tus resultados finales</p>
+    </div>
+    <div class="care-slider-container">
+      <div class="care-slide active">
+        <div class="care-card">
+          <div class="care-visual"><svg width="140" height="140" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"></path><path d="M12 7v5l3 3"></path></svg></div>
+          <div class="care-info">
+            <span class="care-category">Protocolo Esencial</span><h3>Faciales & Limpiezas</h3>
+            <ul class="care-list">
+              <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> No tocar ni lavar el rostro durante las primeras 8-12 horas.</li>
+              <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Uso estricto de bloqueador solar cada 4 horas.</li>
+              <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Evitar vapor y maquillaje pesado por 24 horas.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="care-slide">
+        <div class="care-card">
+          <div class="care-visual"><svg width="140" height="140" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></div>
+          <div class="care-info">
+            <span class="care-category">Post-Procedimiento</span><h3>Inyectables (Botox & Rellenos)</h3>
+            <ul class="care-list">
+              <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> No tocar ni masajear la zona tratada por 4 horas.</li>
+              <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Evitar ejercicio intenso y calor (sauna, sol) por 24 horas.</li>
+              <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Mantener la cabeza erguida las primeras 4 horas.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="care-slide">
+        <div class="care-card">
+          <div class="care-visual"><svg width="140" height="140" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg></div>
+          <div class="care-info">
+            <span class="care-category">Recuperación Corporal</span><h3>Tratamientos Corporales</h3>
+            <ul class="care-list">
+              <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Hidratación abundante: mínimo 2 litros de agua al día.</li>
+              <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Evitar piscinas, mar o tina por las primeras 24 horas.</li>
+              <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Usar ropa holgada sobre las zonas tratadas.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="care-dots">
+      <button class="care-dot active" data-index="0" aria-label="Slide 1" aria-selected="true"></button>
+      <button class="care-dot" data-index="1" aria-label="Slide 2" aria-selected="false"></button>
+      <button class="care-dot" data-index="2" aria-label="Slide 3" aria-selected="false"></button>
+    </div>
+  </section>
+
+  <section id="testimonios" class="testimonials-section">
+    <div class="section-header">
+      <span class="section-tag">Experiencias Reales</span>
+      <h2>Lo Que Dicen Nuestras Pacientes</h2>
+    </div>
+    <div class="testimonials-layout">
+      <div class="testimonial-featured">
+        <blockquote>Llevaba años frustrada con mis estrías y en Esteti'Kas encontré la solución. Katherine es una experta total, muy detallista y con mucha paciencia.</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">S</div>
+          <div class="testimonial-author-info">
+            <strong>Sofía V.</strong>
+            <span>Tratamiento de Estrías · Bataan</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonials-compact">
+        <div class="testimonial-card-compact">
+          <blockquote>Desde la primera sesión noté la diferencia. La Dra. Karen es increíblemente profesional y su trato es muy cálido. Mi piel luce como nunca.</blockquote>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">K</div>
+            <div class="testimonial-author-info"><strong>Karol B.</strong><span>Limpieza Facial & Peelings · Limón</span></div>
+          </div>
+        </div>
+        <div class="testimonial-card-compact">
+          <blockquote>El ambiente es muy profesional y la atención personalizada hace toda la diferencia. Volvería mil veces.</blockquote>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">A</div>
+            <div class="testimonial-author-info"><strong>Adriana M.</strong><span>Mesoterapia Corporal · Guápiles</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="faq-homepage">
+    <div class="section-header">
+      <h2>Preguntas Frecuentes</h2>
+    </div>
+    <div class="faq-grid">
+      {[
+        { q: '¿Necesito hacer una consulta antes de mi primer tratamiento?', a: 'Sí, siempre realizamos una valoración inicial gratuita para analizar tu tipo de piel, condición y objetivos. Esto nos permite diseñar un plan de tratamiento 100% personalizado y seguro para ti.' },
+        { q: '¿Los tratamientos son dolorosos?', a: 'La mayoría de nuestros procedimientos son indoloros o generan una leve sensación de calor o presión. Para tratamientos que requieran mayor precisión aplicamos cremas anestésicas tópicas. Tu comodidad es siempre nuestra prioridad.' },
+        { q: '¿Con cuánta anticipación debo agendar mi cita?', a: 'Recomendamos agendar con al menos 2 a 3 días de anticipación para garantizar disponibilidad en tu horario preferido. Puedes hacerlo directamente desde este sitio web o por WhatsApp, ¡en segundos!' },
+        { q: '¿Tienen disponibilidad en las dos sedes?', a: 'Sí, contamos con dos clínicas: una en <strong>Bataan</strong> (Clínica ODONTOBATAAN) y otra en <strong>Guápiles</strong> (Clínica Medical Numancia). Al momento de agendar puedes indicar tu sede de preferencia y te confirmamos disponibilidad.' },
+      ].map(item => (
+        <div class="faq-item">
+          <button class="faq-question">{item.q}<span class="faq-icon" aria-hidden="true"></span></button>
+          <div class="faq-answer" style="padding:0 0.5rem"><p set:html={item.a} /></div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section id="contacto" class="contact">
+    <div class="contact-container">
+      <div class="contact-info">
+        <h2>Agenda tu cita hoy</h2>
+        <p>Inicia tu camino hacia una piel radiante. Nuestro equipo te espera.</p>
+        <div class="contact-methods">
+          <div class="method-item"><h4>WhatsApp</h4><a href="https://wa.me/50684320647" class="phone-link">+506 8432 0647</a></div>
+          <div class="method-item"><h4>Ubicaciones</h4><p><strong>Bataan:</strong> Clínica ODONTOBATAAN</p><p><strong>Guápiles:</strong> Clínica Medical Numancia</p></div>
+        </div>
+        <div class="social-links">
+          <a href="https://wa.me/50684320647" class="social-icon-btn" aria-label="WhatsApp"><img src="/img/logo_whatsapp.webp" alt="WhatsApp" width="40" height="40" /></a>
+          <a href="https://www.instagram.com/esteti_kas/" class="social-icon-btn" aria-label="Instagram"><img src="/img/logo_instagram.webp" alt="Instagram" width="40" height="40" /></a>
+        </div>
+      </div>
+      <div class="contact-form-wrapper">
+        <form id="premium-contact-form">
+          <div class="form-group"><label>Nombre Completo</label><input type="text" id="contact-name" placeholder="Tu nombre" required /></div>
+          <div class="form-group">
+            <label>Tratamiento de Interés</label>
+            <div class="custom-select-wrapper">
+              <div class="custom-select-trigger"><span>Selecciona un tratamiento</span></div>
+              <div class="custom-options">
+                <div class="custom-option" data-value="limpieza">Limpieza Facial Profunda</div>
+                <div class="custom-option" data-value="botox">Botox / Rellenos</div>
+                <div class="custom-option" data-value="regeneracion">Regeneración Facial</div>
+                <div class="custom-option" data-value="corporal">Tratamiento Corporal</div>
+                <div class="custom-option" data-value="otro">Otro</div>
+              </div>
+              <select id="contact-treatment" required>
+                <option value="" disabled selected>Selecciona un tratamiento</option>
+                <option value="limpieza">Limpieza Facial Profunda</option>
+                <option value="botox">Botox / Rellenos</option>
+                <option value="regeneracion">Regeneración Facial</option>
+                <option value="corporal">Tratamiento Corporal</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label>Mensaje</label><textarea id="contact-message" placeholder="¿Cómo podemos ayudarte?" rows="4"></textarea></div>
+          <button type="submit" class="btn">Enviar Solicitud</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
