@@ -9,7 +9,10 @@ function send(res, status, body) {
 export default async function handler(req, res) {
   if (req.method !== 'GET') return send(res, 405, { error: 'method_not_allowed' });
 
-  const { date, year, month } = req.query;
+  const url   = new URL(req.url, 'https://placeholder.local');
+  const date  = url.searchParams.get('date');
+  const year  = url.searchParams.get('year');
+  const month = url.searchParams.get('month');
 
   if (date) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return send(res, 400, { error: 'fecha_invalida' });
