@@ -10,8 +10,8 @@
     --bg-color: #FFFFFF;
     --bg-light: #F7F9FA;
     --white: #ffffff;
-    --font-heading: 'Playfair Display', serif;
-    --font-body: 'Outfit', sans-serif;
+    --font-heading: 'Bodoni Moda', serif;
+    --font-body: 'Jost', sans-serif;
 
     /* Easing curves */
     --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -1300,12 +1300,10 @@ body:not(.home-page) header.scrolled nav a {
 
 .care-category {
     font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 3px;
     color: var(--text-light);
     margin-bottom: 0.5rem;
     display: block;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .care-list {
@@ -2559,11 +2557,10 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
 
 .specialty-num {
     font-size: 0.72rem;
-    letter-spacing: 3px;
     color: var(--accent-gold);
-    font-weight: 500;
+    font-weight: 600;
     display: block;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .specialty-card h3 {
@@ -2821,11 +2818,10 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
 .section-tag {
     display: inline-block;
     color: var(--primary-color);
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    margin-bottom: 1rem;
+    letter-spacing: 0;
+    margin-bottom: 0.75rem;
 }
 
 .section-header h2 {
