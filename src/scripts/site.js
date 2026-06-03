@@ -240,12 +240,16 @@ let _lenis = null;
 function lockScroll() {
     if (document.body.dataset.scrollLocked) return;
     _savedScrollY = window.scrollY;
-    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${_savedScrollY}px`;
+    document.body.style.width = '100%';
     document.body.dataset.scrollLocked = '1';
 }
 function unlockScroll() {
     if (!document.body.dataset.scrollLocked) return;
-    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
     delete document.body.dataset.scrollLocked;
     window.scrollTo(0, _savedScrollY);
 }
