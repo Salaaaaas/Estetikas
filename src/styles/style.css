@@ -582,53 +582,6 @@ footer .footer-logo img:hover {
 }
 
 
-/* Custom Cursor Follower styles */
-.custom-cursor {
-    width: 8px;
-    height: 8px;
-    background-color: var(--primary-color);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
-    transition: background-color 180ms var(--ease-out), opacity 180ms var(--ease-out);
-    will-change: transform;
-    transform: translate(-50%, -50%);
-    opacity: 0.6;
-}
-
-.custom-cursor.hover {
-    transform: translate(-50%, -50%) scale(4);
-    background-color: var(--accent-gold);
-    opacity: 0.3;
-}
-
-.custom-cursor-outline {
-    width: 40px;
-    height: 40px;
-    border: 1px solid var(--primary-color);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9998;
-    will-change: transform;
-    transform: translate(-50%, -50%);
-}
-
-.custom-cursor-outline.hover {
-    transform: translate(-50%, -50%) scale(1.2);
-    border-color: var(--accent-gold);
-    opacity: 0; /* Hide outline on hover for a cleaner look when the circle expands */
-}
-
-@media (max-width: 1024px) {
-    html, a, button, .btn, .faq-question {
-        cursor: auto;
-    }
-    .custom-cursor, .custom-cursor-outline {
-        display: none;
-    }
-}
 
 /* Contact & Social */
 .social-icon-btn {
@@ -820,7 +773,7 @@ footer .footer-logo img:hover {
 }
 
 .service-card {
-    cursor: auto; /* Reverting card cursor since follower is used */
+    cursor: pointer;
 }
 
 /* Before & After Slider */

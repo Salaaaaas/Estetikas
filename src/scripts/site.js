@@ -711,30 +711,7 @@ const initSite = () => {
         });
     }
 
-    // Custom Cursor
-    if (!isTouch) {
-        const cursor = document.createElement('div');
-        const cursorOutline = document.createElement('div');
-        cursor.className = 'custom-cursor';
-        cursorOutline.className = 'custom-cursor-outline';
-        document.body.appendChild(cursor);
-        document.body.appendChild(cursorOutline);
-
-        const xCursor = gsap.quickTo(cursor, 'x', { duration: 0.15, ease: 'power2.out' });
-        const yCursor = gsap.quickTo(cursor, 'y', { duration: 0.15, ease: 'power2.out' });
-        const xOutline = gsap.quickTo(cursorOutline, 'x', { duration: 0.4, ease: 'power2.out' });
-        const yOutline = gsap.quickTo(cursorOutline, 'y', { duration: 0.4, ease: 'power2.out' });
-
-        document.addEventListener('mousemove', (e) => {
-            xCursor(e.clientX); yCursor(e.clientY);
-            xOutline(e.clientX); yOutline(e.clientY);
-        });
-
-        document.querySelectorAll('a, button, .btn, .faq-question, .t-card, .reserve-btn').forEach(el => {
-            el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); cursorOutline.classList.add('hover'); });
-            el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); cursorOutline.classList.remove('hover'); });
-        });
-    } else {
+    if (isTouch) {
         document.body.classList.add('is-touch');
     }
 
