@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Reservar Cita | Esteti'Kas"
+  description="Reserva tu cita de medicina estética en Esteti'Kas. Completa tus datos y confirmamos por WhatsApp."
+  bodyClass="reservar-body"
+>
+  <section class="reservar-page">
+    <div class="reservar-container">
+      <a href="javascript:history.length > 1 ? history.back() : window.location.assign('/')" class="reservar-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Volver
+      </a>
+
+      <header class="reservar-header">
+        <span class="reservar-eyebrow">Esteti'Kas</span>
+        <h1>Reservar Cita</h1>
+        <p>Completa el formulario y te contactamos por WhatsApp para confirmar tu cita.</p>
+      </header>
+
+      <div id="reservar-items-section"></div>
+
+      <form id="booking-form" class="reservar-form" novalidate>
+        <section class="reservar-section">
+          <h2 class="reservar-section-title">Datos de contacto</h2>
+          <div class="reservar-grid">
+            <div class="reservar-field">
+              <label for="b-name">Nombre completo *</label>
+              <input type="text" id="b-name" placeholder="Tu nombre completo" required autocomplete="name">
+            </div>
+            <div class="reservar-field">
+              <label for="b-phone">Teléfono / WhatsApp *</label>
+              <input type="tel" id="b-phone" placeholder="+506 XXXX XXXX" required autocomplete="tel">
+            </div>
+            <div class="reservar-field reservar-span-full">
+              <label for="b-sede">Sede de preferencia *</label>
+              <div class="select-wrapper">
+                <select id="b-sede" required>
+                  <option value="" disabled selected>Selecciona una sede...</option>
+                  <option value="Bataan (Clínica ODONTOBATAAN)">Bataan — Clínica ODONTOBATAAN</option>
+                  <option value="Guápiles (Clínica Medical Numancia)">Guápiles — Clínica Medical Numancia</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="reservar-section">
+          <h2 class="reservar-section-title">Fecha y horario</h2>
+          <div class="reservar-grid">
+            <div class="reservar-field reservar-span-full">
+              <label>Fecha preferida</label>
+              <div class="cal-wrapper" id="b-cal-wrapper" role="group" aria-label="Seleccionar fecha de cita"></div>
+              <input type="hidden" id="b-date">
+            </div>
+            <div class="reservar-field reservar-span-full">
+              <label for="b-time">Horario disponible</label>
+              <div class="select-wrapper">
+                <select id="b-time">
+                  <option value="">Selecciona una fecha primero</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="reservar-section">
+          <h2 class="reservar-section-title">Información adicional</h2>
+          <div class="reservar-grid">
+            <div class="reservar-field reservar-span-full">
+              <label for="b-notes">Notas (opcional)</label>
+              <textarea id="b-notes" rows="3" maxlength="500" placeholder="Condición médica relevante, alergias, preguntas..."></textarea>
+            </div>
+            <div class="reservar-field reservar-span-full habeas-data">
+              <label class="habeas-label">
+                <input type="checkbox" id="b-consent" required>
+                <span>Acepto el <a href="/privacidad" target="_blank" rel="noopener">tratamiento de mis datos personales</a> conforme a la Ley 8968 para gestionar mi cita.</span>
+              </label>
+            </div>
+            <div class="reservar-field reservar-span-full">
+              <div id="b-turnstile" class="cf-turnstile"></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="reservar-submit-zone">
+          <button type="submit" class="btn reservar-submit-btn" id="reservar-submit-btn">
+            Confirmar reserva
+            <span class="reservar-submit-icon" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+          </button>
+          <p class="reservar-submit-note">Te contactaremos por WhatsApp en menos de 24 horas para confirmar.</p>
+        </div>
+      </form>
+
+      <div id="reservar-success" class="reservar-success" hidden>
+        <div class="reservar-success-icon" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h2>¡Solicitud recibida!</h2>
+        <p>Te contactaremos por WhatsApp en menos de 24 horas para confirmar tu cita.</p>
+        <a href="/" class="btn reservar-success-cta">Volver al inicio</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

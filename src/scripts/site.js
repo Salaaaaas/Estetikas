@@ -24,7 +24,7 @@ function addToCart(id, name) {
 function removeFromCart(id) {
     saveCart(getCart().filter(i => i.id !== id));
     updateCartBadges();
-    renderModalItems();
+    renderReservarItems();
 }
 
 function clearCart() { saveCart([]); updateCartBadges(); }
@@ -65,7 +65,7 @@ function injectCartUI() {
         <span class="cart-badge" style="display:none">0</span>
     `;
     document.body.appendChild(cartBtn);
-    cartBtn.addEventListener('click', openBookingModal);
+    cartBtn.addEventListener('click', () => { window.location.href = '/reservar'; });
 
     // WA float button
     const waBtn = document.createElement('a');
@@ -81,104 +81,6 @@ function injectCartUI() {
     `;
     document.body.appendChild(waBtn);
 
-    // Booking modal
-    const modal = document.createElement('div');
-    modal.id = 'booking-modal';
-    modal.className = 'booking-modal-overlay';
-    modal.setAttribute('role', 'dialog');
-    modal.setAttribute('aria-modal', 'true');
-    modal.setAttribute('aria-labelledby', 'modal-heading');
-    modal.innerHTML = `
-        <div class="booking-modal-panel">
-            <div class="modal-header">
-                <div class="modal-header-text">
-                    <span class="modal-header-eyebrow">Esteti'Kas</span>
-                    <h2 id="modal-heading">Reservar Cita</h2>
-                </div>
-                <button class="modal-close-btn" id="modal-close-btn" aria-label="Cerrar modal">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id="modal-items-section"></div>
-                <form id="booking-form" novalidate>
-                    <div class="modal-section">
-                        <p class="modal-section-label">Datos de contacto</p>
-                        <div class="booking-form-grid">
-                            <div class="form-group-modal">
-                                <label for="b-name">Nombre completo *</label>
-                                <input type="text" id="b-name" placeholder="Tu nombre completo" required autocomplete="name">
-                            </div>
-                            <div class="form-group-modal">
-                                <label for="b-phone">Teléfono / WhatsApp *</label>
-                                <input type="tel" id="b-phone" placeholder="+506 XXXX XXXX" required autocomplete="tel">
-                            </div>
-                            <div class="form-group-modal form-span-full">
-                                <label for="b-sede">Sede de preferencia *</label>
-                                <div class="select-wrapper">
-                                    <select id="b-sede" required>
-                                        <option value="" disabled selected>Selecciona una sede...</option>
-                                        <option value="Bataan (Clínica ODONTOBATAAN)">Bataan — Clínica ODONTOBATAAN</option>
-                                        <option value="Guápiles (Clínica Medical Numancia)">Guápiles — Clínica Medical Numancia</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-section">
-                        <p class="modal-section-label">Fecha y horario</p>
-                        <div class="booking-form-grid">
-                            <div class="form-group-modal form-span-full">
-                                <label>Fecha preferida</label>
-                                <div class="cal-wrapper" id="b-cal-wrapper" role="group" aria-label="Seleccionar fecha de cita"></div>
-                                <input type="hidden" id="b-date">
-                            </div>
-                            <div class="form-group-modal form-span-full">
-                                <label for="b-time">Horario disponible</label>
-                                <div class="select-wrapper">
-                                    <select id="b-time">
-                                        <option value="">Selecciona una fecha primero</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-section">
-                        <p class="modal-section-label">Información adicional</p>
-                        <div class="booking-form-grid">
-                            <div class="form-group-modal form-span-full">
-                                <label for="b-notes">Notas</label>
-                                <textarea id="b-notes" rows="3" maxlength="500" placeholder="Condición médica relevante, alergias, preguntas..."></textarea>
-                            </div>
-                            <div class="form-group-modal form-span-full habeas-data">
-                                <label class="habeas-label">
-                                    <input type="checkbox" id="b-consent" required>
-                                    <span>Acepto el <a href="/privacidad" target="_blank" rel="noopener">tratamiento de mis datos personales</a> conforme a la Ley 8968 para gestionar mi cita.</span>
-                                </label>
-                            </div>
-                            <div class="form-group-modal form-span-full">
-                                <div id="b-turnstile" class="cf-turnstile"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn modal-submit-btn" id="modal-submit-btn">
-                        Confirmar reserva
-                        <span class="modal-submit-icon" aria-hidden="true">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                        </span>
-                    </button>
-                </form>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-
-    document.getElementById('modal-close-btn').addEventListener('click', closeBookingModal);
-    modal.addEventListener('click', e => { if (e.target === modal) closeBookingModal(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) closeBookingModal(); });
-    document.getElementById('booking-form').addEventListener('submit', submitBooking);
-
-    renderTurnstile();
     updateCartBadges();
 }
 
@@ -202,48 +104,46 @@ function renderTurnstile() {
     else window.addEventListener('turnstile-loaded', mount, { once: true });
 }
 
-function renderModalItems() {
-    const section = document.getElementById('modal-items-section');
+function renderReservarItems() {
+    const section = document.getElementById('reservar-items-section');
     if (!section) return;
     const cart = getCart();
 
     if (cart.length === 0) {
         section.innerHTML = `
-            <div class="modal-empty-state">
+            <div class="reservar-empty">
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="1.25" opacity="0.5">
                     <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
                     <line x1="3" y1="6" x2="21" y2="6"/>
                     <path d="M16 10a4 4 0 01-8 0"/>
                 </svg>
                 <p>Tu lista de tratamientos está vacía.</p>
-                <a href="/tratamientos" class="btn" style="font-size:0.82rem; padding:0.65rem 1.4rem; margin-top:0.25rem" onclick="closeBookingModal()">Explorar tratamientos</a>
+                <a href="/tratamientos" class="btn" style="font-size:0.82rem; padding:0.65rem 1.4rem; margin-top:0.25rem">Explorar tratamientos</a>
             </div>
         `;
         return;
     }
 
     section.innerHTML = `
-        <div class="modal-section">
-            <div class="modal-items-header">
-                <p class="modal-section-label">Tratamientos seleccionados (${cart.length})</p>
-            </div>
-            <ul class="modal-items-list">
+        <section class="reservar-section reservar-items-section">
+            <h2 class="reservar-section-title">Tratamientos seleccionados <span class="reservar-count">(${cart.length})</span></h2>
+            <ul class="reservar-items-list">
                 ${cart.map(item => `
-                    <li class="modal-item-row">
-                        <span class="modal-item-check" aria-hidden="true">
+                    <li class="reservar-item-row">
+                        <span class="reservar-item-check" aria-hidden="true">
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
                         </span>
-                        <span class="modal-item-name">${item.name}</span>
-                        <button class="modal-item-del" data-id="${item.id}" aria-label="Eliminar ${item.name}">
+                        <span class="reservar-item-name">${item.name}</span>
+                        <button type="button" class="reservar-item-del" data-id="${item.id}" aria-label="Eliminar ${item.name}">
                             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                         </button>
                     </li>
                 `).join('')}
             </ul>
-        </div>
+        </section>
     `;
 
-    section.querySelectorAll('.modal-item-del').forEach(btn => {
+    section.querySelectorAll('.reservar-item-del').forEach(btn => {
         btn.addEventListener('click', () => removeFromCart(btn.dataset.id));
     });
 }
@@ -571,24 +471,28 @@ async function refreshFullDays(year, month, schedules, availableSet) {
     } catch {}
 }
 
-function openBookingModal() {
-    const modal = document.getElementById('booking-modal');
-    if (!modal) return;
-    renderModalItems();
+// =====================================================
+// /reservar page init — runs once when DOM is ready on that route
+// =====================================================
+function initReservarPage() {
+    if (!document.getElementById('booking-form')) return;
+    renderReservarItems();
     _calState = { year: null, month: null, selected: null, fullDays: new Set() };
     _availCache = {};
     renderCalendar();
-    modal.classList.add('open');
-    lockScroll();
-    _lenis?.stop();
+    renderTurnstile();
+    document.getElementById('booking-form').addEventListener('submit', submitBooking);
 }
 
-function closeBookingModal() {
-    const modal = document.getElementById('booking-modal');
-    if (modal) {
-        modal.classList.remove('open');
-        unlockScroll();
-        _lenis?.start();
+function showReservarSuccess() {
+    const form = document.getElementById('booking-form');
+    const items = document.getElementById('reservar-items-section');
+    const success = document.getElementById('reservar-success');
+    if (form) form.hidden = true;
+    if (items) items.hidden = true;
+    if (success) {
+        success.hidden = false;
+        success.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 }
 
@@ -616,7 +520,7 @@ async function submitBooking(e) {
         ? window.turnstile.getResponse(turnstileWidgetId)
         : 'BYPASS_DEV';
 
-    const btn = document.getElementById('modal-submit-btn');
+    const btn = document.getElementById('reservar-submit-btn');
     const originalHTML = btn.innerHTML;
     btn.textContent = 'Enviando...';
     btn.disabled = true;
@@ -658,12 +562,11 @@ async function submitBooking(e) {
         }
 
         clearCart();
-        closeBookingModal();
-        showToast('¡Cita registrada! Te contactaremos pronto para confirmar.');
         e.target.reset();
         if (window.turnstile && turnstileWidgetId !== null) {
             window.turnstile.reset(turnstileWidgetId);
         }
+        showReservarSuccess();
     } catch (err) {
         console.error(err);
         showToast('Error de conexión. Verifica tu internet e intenta de nuevo.');
@@ -714,6 +617,9 @@ const initSite = () => {
 
     // Treatment detail cart button
     injectTreatmentCartBtn();
+
+    // /reservar page: render cart items, calendar, captcha, bind submit
+    initReservarPage();
 
     // Hamburger menu
     const headerEl = document.querySelector('header');
@@ -1037,10 +943,6 @@ const initSite = () => {
         });
     });
 };
-
-// Expose needed functions globally for inline onclick handlers
-window.openBookingModal = openBookingModal;
-window.closeBookingModal = closeBookingModal;
 
 initSite();
 document.addEventListener('astro:after-swap', initSite);

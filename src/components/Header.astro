@@ -15,11 +15,7 @@ const { isHome = false } = Astro.props;
       <li><a href="/tratamientos/">Tratamientos</a></li>
       <li><a href={isHome ? '#contacto' : '/#contacto'}>Contacto</a></li>
       <li>
-        <a
-          href="#"
-          onclick="event.preventDefault(); openBookingModal();"
-          class="nav-reservar-btn"
-        >Reservar Cita</a>
+        <a href="/reservar" class="nav-reservar-btn">Reservar Cita</a>
       </li>
     </ul>
   </nav>

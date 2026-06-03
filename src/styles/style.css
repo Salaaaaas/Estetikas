@@ -1946,66 +1946,57 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
    BOOKING MODAL
    ===================================================== */
 /* =====================================================
-   BOOKING MODAL — Redesign
-   Desktop: right drawer (560px, full height, slides from right)
-   Mobile: full-screen overlay (100dvh) — eliminates iOS scroll issues
-   No backdrop-filter on any scrolling content.
+   /reservar PAGE
+   Dedicated booking page (replaces former modal).
+   Native page scroll — no iOS Safari interference.
    ===================================================== */
 
-.booking-modal-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 200;
-    background: rgba(17, 17, 17, 0.45);
-    display: flex;
-    align-items: stretch;
-    justify-content: flex-end;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 300ms var(--ease-out);
+.reservar-body #cart-float-btn { display: none !important; }
+
+.reservar-page {
+    background: var(--bg-light);
+    min-height: calc(100vh - 120px);
+    padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 4vw, 2rem) 5rem;
 }
 
-.booking-modal-overlay.open {
-    opacity: 1;
-    pointer-events: all;
-}
-
-.booking-modal-panel {
-    background: #FFFFFF;
-    width: 100%;
-    max-width: 540px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    box-shadow: -2px 0 0 rgba(0,0,0,0.04), -24px 0 80px rgba(0,0,0,0.12);
-    transform: translateX(100%);
-    transition: transform 420ms var(--ease-drawer);
-    overflow: hidden;
-    will-change: transform;
-}
-
-.booking-modal-overlay.open .booking-modal-panel {
-    transform: translateX(0);
-}
-
-/* ---- Header ---- */
-.modal-header {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.75rem 2rem 1.5rem;
-    border-bottom: 1px solid rgba(0,0,0,0.06);
+.reservar-container {
+    max-width: 680px;
+    margin: 0 auto;
     background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.04), 0 24px 60px -20px rgba(0,0,0,0.12);
+    padding: clamp(1.75rem, 4vw, 3rem);
 }
 
-.modal-header-text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
+/* Back link */
+.reservar-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-light);
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    transition: color 200ms var(--ease-out);
 }
 
-.modal-header-eyebrow {
+.reservar-back:hover { color: var(--primary-color); }
+
+.reservar-back svg {
+    transition: transform 200ms var(--ease-out);
+}
+
+.reservar-back:hover svg { transform: translateX(-2px); }
+
+/* Page header */
+.reservar-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.reservar-eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
@@ -2014,10 +2005,10 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     color: var(--primary-color);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.5rem;
 }
 
-.modal-header-eyebrow::before {
+.reservar-eyebrow::before {
     content: '';
     display: inline-block;
     width: 5px;
@@ -2027,91 +2018,49 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     flex-shrink: 0;
 }
 
-.modal-header-text h2 {
+.reservar-header h1 {
     font-family: var(--font-heading);
-    font-size: 1.55rem;
+    font-size: clamp(1.9rem, 4.5vw, 2.6rem);
     font-weight: 700;
     color: var(--secondary-color);
     letter-spacing: -0.03em;
     line-height: 1.05;
+    margin-bottom: 0.5rem;
 }
 
-.modal-close-btn {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    border: 1px solid rgba(0,0,0,0.1);
-    background: var(--bg-light);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.reservar-header p {
     color: var(--text-light);
-    transition: background 180ms var(--ease-out), color 180ms var(--ease-out), transform 100ms var(--ease-out);
-    flex-shrink: 0;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    max-width: 52ch;
 }
 
-.modal-close-btn:hover {
-    background: #e8e8e8;
-    color: var(--secondary-color);
-}
-
-.modal-close-btn:active {
-    transform: scale(0.92);
-}
-
-/* ---- Scrollable body ---- */
-.modal-body {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
-    padding: 1.75rem 2rem 2.5rem;
-}
-
-/* ---- Section separators inside the body ---- */
-.modal-section {
-    padding-bottom: 1.5rem;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid rgba(0,0,0,0.055);
-}
-
-.modal-section:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
+/* Cart items */
+.reservar-items-section {
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    padding-bottom: 1.75rem;
     margin-bottom: 0;
 }
 
-.modal-section-label {
-    font-size: 0.7rem;
-    font-weight: 600;
+.reservar-count {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.9rem;
     color: var(--text-light);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 0.85rem;
+    letter-spacing: 0;
 }
 
-/* ---- Cart items ---- */
-.modal-items-header { margin-bottom: 0.7rem; }
-.modal-items-header p {
-    font-size: 0.82rem;
-    color: var(--text-light);
-    font-weight: 400;
-}
-
-.modal-items-list {
+.reservar-items-list {
     list-style: none;
     padding: 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
-    margin-bottom: 0;
+    gap: 0.4rem;
 }
 
-/* Double-bezel card for each treatment */
-.modal-item-row {
+.reservar-item-row {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -2121,7 +2070,7 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     border-radius: 10px;
 }
 
-.modal-item-check {
+.reservar-item-check {
     width: 22px;
     height: 22px;
     border-radius: 50%;
@@ -2133,14 +2082,14 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     color: var(--primary-color);
 }
 
-.modal-item-name {
+.reservar-item-name {
     flex: 1;
-    font-size: 0.9rem;
+    font-size: 0.92rem;
     color: var(--secondary-color);
     font-weight: 400;
 }
 
-.modal-item-del {
+.reservar-item-del {
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -2155,54 +2104,73 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     flex-shrink: 0;
 }
 
-.modal-item-del:hover {
+.reservar-item-del:hover {
     background: #fee2e2;
     color: #dc2626;
 }
 
-.modal-items-divider {
-    height: 1px;
-    background: rgba(0,0,0,0.055);
-    margin: 1.25rem 0;
-}
-
-.modal-empty-state {
+/* Empty state */
+.reservar-empty {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 1.5rem 0 0.5rem;
-    gap: 0.65rem;
+    padding: 2rem 0 1.5rem;
+    gap: 0.75rem;
     color: var(--text-light);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    margin-bottom: 2rem;
 }
 
-/* ---- Booking Form ---- */
-.booking-form-grid {
+/* Form sections */
+.reservar-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.reservar-section {
+    padding: 1.75rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.reservar-section:last-of-type { border-bottom: none; }
+
+.reservar-section-title {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    letter-spacing: -0.02em;
+    margin-bottom: 1.25rem;
+    line-height: 1.2;
+}
+
+.reservar-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
 }
 
-.form-group-modal {
+.reservar-field {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.4rem;
 }
 
-.form-span-full { grid-column: 1 / -1; }
+.reservar-span-full { grid-column: 1 / -1; }
 
-.form-group-modal label {
-    font-size: 0.8rem;
+.reservar-field label {
+    font-size: 0.82rem;
     font-weight: 500;
     color: var(--text-color);
 }
 
-.form-group-modal input:not([type="checkbox"]),
-.form-group-modal select,
-.form-group-modal textarea {
+.reservar-field input:not([type="checkbox"]),
+.reservar-field select,
+.reservar-field textarea {
     width: 100%;
-    padding: 0.8rem 1rem;
+    padding: 0.85rem 1rem;
     border: 1.5px solid rgba(0,0,0,0.12);
     border-radius: 8px;
     font-size: 0.95rem;
@@ -2215,22 +2183,23 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     appearance: none;
 }
 
-.form-group-modal input:focus,
-.form-group-modal select:focus,
-.form-group-modal textarea:focus {
+.reservar-field input:focus,
+.reservar-field select:focus,
+.reservar-field textarea:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(0,125,136,0.1);
 }
 
-.form-group-modal textarea {
+.reservar-field textarea {
     resize: vertical;
-    min-height: 80px;
+    min-height: 90px;
+    line-height: 1.5;
 }
 
 /* Select arrow */
-.form-group-modal .select-wrapper { position: relative; }
+.reservar-field .select-wrapper { position: relative; }
 
-.form-group-modal .select-wrapper::after {
+.reservar-field .select-wrapper::after {
     content: '';
     pointer-events: none;
     position: absolute;
@@ -2244,26 +2213,31 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     border-top: 5.5px solid var(--primary-color);
 }
 
-.form-group-modal .select-wrapper select { padding-right: 2.5rem; }
+.reservar-field .select-wrapper select { padding-right: 2.5rem; }
 
-/* ---- Submit — Button-in-Button pattern ---- */
-.modal-submit-btn {
+/* Submit zone */
+.reservar-submit-zone {
+    padding-top: 2rem;
+}
+
+.reservar-submit-btn {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.6rem;
-    padding: 0.95rem 1.5rem;
-    font-size: 0.95rem;
+    gap: 0.65rem;
+    padding: 1.05rem 1.5rem;
+    font-size: 1rem;
     font-weight: 600;
-    border-radius: 8px;
-    margin-top: 1.5rem;
+    border-radius: 10px;
     transition: background 200ms var(--ease-out), transform 100ms var(--ease-out);
 }
 
-.modal-submit-btn:active { transform: translateY(1px); }
+.reservar-submit-btn:disabled { opacity: 0.7; cursor: wait; }
 
-.modal-submit-icon {
+.reservar-submit-btn:active { transform: translateY(1px); }
+
+.reservar-submit-icon {
     width: 28px;
     height: 28px;
     border-radius: 50%;
@@ -2275,9 +2249,83 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     transition: background 200ms var(--ease-out), transform 180ms var(--ease-out);
 }
 
-.modal-submit-btn:hover .modal-submit-icon {
+.reservar-submit-btn:hover .reservar-submit-icon {
     background: rgba(255,255,255,0.28);
     transform: translateX(2px);
+}
+
+.reservar-submit-note {
+    margin-top: 0.85rem;
+    font-size: 0.78rem;
+    color: var(--text-light);
+    text-align: center;
+    line-height: 1.45;
+}
+
+/* Success state */
+.reservar-success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 3rem 1rem;
+    gap: 1rem;
+}
+
+.reservar-success-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(0,125,136,0.12);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.reservar-success h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.6rem, 3vw, 2rem);
+    font-weight: 700;
+    color: var(--secondary-color);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+.reservar-success p {
+    color: var(--text-light);
+    max-width: 42ch;
+    line-height: 1.55;
+}
+
+.reservar-success-cta {
+    margin-top: 1rem;
+    padding: 0.85rem 2rem;
+}
+
+/* =====================================================
+   /reservar — MOBILE
+   ===================================================== */
+@media (max-width: 600px) {
+    .reservar-page {
+        padding: 1.25rem 0 2rem;
+    }
+
+    .reservar-container {
+        border-radius: 0;
+        box-shadow: none;
+        padding: 1.25rem;
+    }
+
+    .reservar-header h1 { font-size: 1.7rem; }
+    .reservar-header p  { font-size: 0.92rem; }
+
+    .reservar-section-title { font-size: 1rem; }
+
+    .reservar-grid { grid-template-columns: 1fr; }
+
+    .reservar-submit-btn { padding: 1rem 1.25rem; }
 }
 
 /* =====================================================
@@ -2450,51 +2498,11 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     padding: 0.4rem 0;
 }
 
-/* =====================================================
-   BOOKING MODAL — MOBILE
-   Full-screen approach: eliminates iOS Safari scroll issues
-   that occur with partial-height fixed panels.
-   ===================================================== */
+/* Larger touch targets on mobile calendar */
 @media (max-width: 600px) {
-    .booking-modal-overlay {
-        align-items: flex-end;
-        justify-content: center;
-    }
-
-    .booking-modal-panel {
-        max-width: 100%;
-        width: 100%;
-        /* Full screen minus a small safe peek at the top */
-        height: calc(100dvh - 40px);
-        border-radius: 20px 20px 0 0;
-        transform: translateY(100%);
-        box-shadow: 0 -8px 40px rgba(0,0,0,0.14);
-    }
-
-    .booking-modal-overlay.open .booking-modal-panel {
-        transform: translateY(0);
-    }
-
-    .modal-header {
-        padding: 1.25rem 1.25rem 1rem;
-    }
-
-    .modal-body {
-        padding: 1.25rem 1.25rem 2rem;
-    }
-
-    .booking-form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    /* Larger touch targets on mobile calendar */
     .cal-day {
         min-height: 40px;
         font-size: 0.84rem;
-    }
-
-    .modal-header-text h2 {
-        font-size: 1.35rem;
     }
 }
 
