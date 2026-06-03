@@ -92,67 +92,80 @@ function injectCartUI() {
         <div class="booking-modal-panel">
             <div class="modal-header">
                 <div class="modal-header-text">
+                    <span class="modal-header-eyebrow">Esteti'Kas</span>
                     <h2 id="modal-heading">Reservar Cita</h2>
-                    <p>Completa tus datos y te contactamos</p>
                 </div>
-                <button class="modal-close-btn" id="modal-close-btn" aria-label="Cerrar">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <button class="modal-close-btn" id="modal-close-btn" aria-label="Cerrar modal">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
             </div>
             <div class="modal-body">
                 <div id="modal-items-section"></div>
                 <form id="booking-form" novalidate>
-                    <div class="booking-form-grid">
-                        <div class="form-group-modal">
-                            <label for="b-name">Nombre Completo *</label>
-                            <input type="text" id="b-name" placeholder="Tu nombre completo" required autocomplete="name">
-                        </div>
-                        <div class="form-group-modal">
-                            <label for="b-phone">Teléfono / WhatsApp *</label>
-                            <input type="tel" id="b-phone" placeholder="+506 XXXX XXXX" required autocomplete="tel">
-                        </div>
-                        <div class="form-group-modal form-span-full">
-                            <label for="b-sede">Sede de Preferencia *</label>
-                            <div class="select-wrapper">
-                                <select id="b-sede" required>
-                                    <option value="" disabled selected>Selecciona una sede...</option>
-                                    <option value="Bataan (Clínica ODONTOBATAAN)">Bataan — Clínica ODONTOBATAAN</option>
-                                    <option value="Guápiles (Clínica Medical Numancia)">Guápiles — Clínica Medical Numancia</option>
-                                </select>
+                    <div class="modal-section">
+                        <p class="modal-section-label">Datos de contacto</p>
+                        <div class="booking-form-grid">
+                            <div class="form-group-modal">
+                                <label for="b-name">Nombre completo *</label>
+                                <input type="text" id="b-name" placeholder="Tu nombre completo" required autocomplete="name">
+                            </div>
+                            <div class="form-group-modal">
+                                <label for="b-phone">Teléfono / WhatsApp *</label>
+                                <input type="tel" id="b-phone" placeholder="+506 XXXX XXXX" required autocomplete="tel">
+                            </div>
+                            <div class="form-group-modal form-span-full">
+                                <label for="b-sede">Sede de preferencia *</label>
+                                <div class="select-wrapper">
+                                    <select id="b-sede" required>
+                                        <option value="" disabled selected>Selecciona una sede...</option>
+                                        <option value="Bataan (Clínica ODONTOBATAAN)">Bataan — Clínica ODONTOBATAAN</option>
+                                        <option value="Guápiles (Clínica Medical Numancia)">Guápiles — Clínica Medical Numancia</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group-modal form-span-full">
-                            <label>Fecha Preferida</label>
-                            <div class="cal-wrapper" id="b-cal-wrapper" role="group" aria-label="Seleccionar fecha de cita"></div>
-                            <input type="hidden" id="b-date">
-                        </div>
-                        <div class="form-group-modal form-span-full">
-                            <label for="b-time">Horario</label>
-                            <div class="select-wrapper">
-                                <select id="b-time">
-                                    <option value="">Selecciona una fecha primero</option>
-                                </select>
+                    </div>
+                    <div class="modal-section">
+                        <p class="modal-section-label">Fecha y horario</p>
+                        <div class="booking-form-grid">
+                            <div class="form-group-modal form-span-full">
+                                <label>Fecha preferida</label>
+                                <div class="cal-wrapper" id="b-cal-wrapper" role="group" aria-label="Seleccionar fecha de cita"></div>
+                                <input type="hidden" id="b-date">
+                            </div>
+                            <div class="form-group-modal form-span-full">
+                                <label for="b-time">Horario disponible</label>
+                                <div class="select-wrapper">
+                                    <select id="b-time">
+                                        <option value="">Selecciona una fecha primero</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group-modal form-span-full">
-                            <label for="b-notes">Notas Adicionales</label>
-                            <textarea id="b-notes" rows="3" maxlength="500" placeholder="Condición médica relevante, alergias, preguntas..."></textarea>
-                        </div>
-                        <div class="form-group-modal form-span-full habeas-data">
-                            <label class="habeas-label">
-                                <input type="checkbox" id="b-consent" required>
-                                <span>Acepto el <a href="/privacidad" target="_blank" rel="noopener">tratamiento de mis datos personales</a> conforme a la Ley 1581 de 2012 (Habeas Data) para gestionar mi cita y recibir información de mi tratamiento.</span>
-                            </label>
-                        </div>
-                        <div class="form-group-modal form-span-full">
-                            <div id="b-turnstile" class="cf-turnstile"></div>
+                    </div>
+                    <div class="modal-section">
+                        <p class="modal-section-label">Información adicional</p>
+                        <div class="booking-form-grid">
+                            <div class="form-group-modal form-span-full">
+                                <label for="b-notes">Notas</label>
+                                <textarea id="b-notes" rows="3" maxlength="500" placeholder="Condición médica relevante, alergias, preguntas..."></textarea>
+                            </div>
+                            <div class="form-group-modal form-span-full habeas-data">
+                                <label class="habeas-label">
+                                    <input type="checkbox" id="b-consent" required>
+                                    <span>Acepto el <a href="/privacidad" target="_blank" rel="noopener">tratamiento de mis datos personales</a> conforme a la Ley 8968 para gestionar mi cita.</span>
+                                </label>
+                            </div>
+                            <div class="form-group-modal form-span-full">
+                                <div id="b-turnstile" class="cf-turnstile"></div>
+                            </div>
                         </div>
                     </div>
                     <button type="submit" class="btn modal-submit-btn" id="modal-submit-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right:8px; flex-shrink:0; vertical-align:middle">
-                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                        </svg>
-                        Confirmar Reserva
+                        Confirmar reserva
+                        <span class="modal-submit-icon" aria-hidden="true">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </span>
                     </button>
                 </form>
             </div>
@@ -197,34 +210,37 @@ function renderModalItems() {
     if (cart.length === 0) {
         section.innerHTML = `
             <div class="modal-empty-state">
-                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="1.5" opacity="0.6">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="1.25" opacity="0.5">
                     <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
                     <line x1="3" y1="6" x2="21" y2="6"/>
                     <path d="M16 10a4 4 0 01-8 0"/>
                 </svg>
-                <p>Tu lista de citas está vacía.</p>
-                <a href="/tratamientos" class="btn" style="font-size:0.82rem; padding:0.65rem 1.4rem; margin-top:0.5rem" onclick="closeBookingModal()">Explorar Tratamientos</a>
+                <p>Tu lista de tratamientos está vacía.</p>
+                <a href="/tratamientos" class="btn" style="font-size:0.82rem; padding:0.65rem 1.4rem; margin-top:0.25rem" onclick="closeBookingModal()">Explorar tratamientos</a>
             </div>
         `;
         return;
     }
 
     section.innerHTML = `
-        <div class="modal-items-header">
-            <p>Tratamientos seleccionados <strong>(${cart.length})</strong></p>
+        <div class="modal-section">
+            <div class="modal-items-header">
+                <p class="modal-section-label">Tratamientos seleccionados (${cart.length})</p>
+            </div>
+            <ul class="modal-items-list">
+                ${cart.map(item => `
+                    <li class="modal-item-row">
+                        <span class="modal-item-check" aria-hidden="true">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </span>
+                        <span class="modal-item-name">${item.name}</span>
+                        <button class="modal-item-del" data-id="${item.id}" aria-label="Eliminar ${item.name}">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                    </li>
+                `).join('')}
+            </ul>
         </div>
-        <ul class="modal-items-list">
-            ${cart.map(item => `
-                <li class="modal-item-row">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                    <span class="modal-item-name">${item.name}</span>
-                    <button class="modal-item-del" data-id="${item.id}" aria-label="Eliminar ${item.name}">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                    </button>
-                </li>
-            `).join('')}
-        </ul>
-        <div class="modal-items-divider"></div>
     `;
 
     section.querySelectorAll('.modal-item-del').forEach(btn => {
