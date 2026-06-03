@@ -357,6 +357,7 @@ function getSessionsForDate(dateStr, schedules) {
 }
 
 let _calState = { year: null, month: null, selected: null, fullDays: new Set() };
+let _availCache = {}; // "year-month" → grouped availability data, reset on modal open
 
 function renderCalendar() {
     const wrapper = document.getElementById('b-cal-wrapper');
@@ -442,7 +443,7 @@ function renderCalendar() {
         btn.addEventListener('click', () => {
             _calState.selected = btn.dataset.date;
             document.getElementById('b-date').value = btn.dataset.date;
-            renderCalendar();
+            updateCalendarSelection(btn.dataset.date);
             updateSessionSelect(getSessionsForDate(btn.dataset.date, schedules), btn.dataset.date);
         });
     });
@@ -453,6 +454,16 @@ function renderCalendar() {
     }
 
     refreshFullDays(year, month + 1, schedules, availableSet);
+}
+
+function updateCalendarSelection(dateStr) {
+    document.querySelectorAll('.cal-day[data-date]').forEach(btn => {
+        const isSel = btn.dataset.date === dateStr;
+        btn.classList.toggle('cal-day--sel', isSel);
+        btn.setAttribute('aria-pressed', String(isSel));
+    });
+    const hint = document.querySelector('.cal-hint');
+    if (hint) hint.style.display = 'none';
 }
 
 async function updateSessionSelect(sessions, dateStr) {
@@ -510,9 +521,15 @@ async function updateSessionSelect(sessions, dateStr) {
 }
 
 async function refreshFullDays(year, month, schedules, availableSet) {
+    const cacheKey = `${year}-${month}`;
     try {
-        const res     = await fetch(`/api/get-availability?year=${year}&month=${month}`);
-        const grouped = await res.json(); // { "2026-06-10": ["17:30", ...], ... }
+        let grouped = _availCache[cacheKey];
+        if (!grouped) {
+            const res = await fetch(`/api/get-availability?year=${year}&month=${month}`);
+            grouped = await res.json();
+            _availCache[cacheKey] = grouped;
+        }
+        // { "2026-06-10": ["17:30", ...], ... }
 
         const fullDays = new Set();
         availableSet.forEach(dateStr => {
@@ -543,6 +560,7 @@ function openBookingModal() {
     if (!modal) return;
     renderModalItems();
     _calState = { year: null, month: null, selected: null, fullDays: new Set() };
+    _availCache = {};
     renderCalendar();
     modal.classList.add('open');
     lockScroll();
