@@ -3042,13 +3042,25 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
 .faq-icon::after { content: '+'; }
 
 .faq-homepage .faq-answer {
-    max-height: 0;
+    display: grid;
+    grid-template-rows: 0fr;
     overflow: hidden;
+    transition: grid-template-rows 360ms var(--ease-out), padding-bottom 360ms var(--ease-out);
     color: var(--text-light);
     font-size: 0.98rem;
     line-height: 1.7;
     font-weight: 300;
     padding-bottom: 0;
+}
+
+.faq-homepage .faq-answer > * {
+    overflow: hidden;
+    min-height: 0;
+}
+
+.faq-homepage .faq-question.active + .faq-answer {
+    grid-template-rows: 1fr;
+    padding-bottom: 1.5rem;
 }
 
 /* =====================================================
