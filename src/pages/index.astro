@@ -115,9 +115,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <div class="profile-block">
       <div class="profile-image-side">
-        <div class="profile-image-placeholder">
-          <span aria-hidden="true">MG</span>
-          <p class="profile-placeholder-note">Foto próximamente</p>
+        <div class="profile-image-placeholder" style="background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%); display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; min-height: 400px; border-radius: 4px;">
+          <span style="font-family: var(--font-heading, serif); font-size: clamp(5rem, 10vw, 8rem); color: rgba(255,255,255,0.9); font-weight: 700; letter-spacing: -2px; line-height: 1;">MG</span>
         </div>
       </div>
       <div class="profile-content-side">
@@ -160,7 +159,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
     <div class="specialties-right">
       <div class="specialty-card">
-        <span class="specialty-num">01</span>
         <h3>Facial &amp; Regeneración</h3>
         <p>Revitaliza la textura y luminosidad de tu piel con protocolos clínicamente respaldados.</p>
         <ul>
@@ -172,7 +170,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <a href="/tratamientos" class="specialty-link">Explorar tratamientos <span aria-hidden="true">→</span></a>
       </div>
       <div class="specialty-card">
-        <span class="specialty-num">02</span>
         <h3>Bioestimulación</h3>
         <p>Activa tu producción interna de colágeno y recupera la estructura natural del rostro.</p>
         <ul>
@@ -184,7 +181,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <a href="/tratamientos" class="specialty-link">Explorar tratamientos <span aria-hidden="true">→</span></a>
       </div>
       <div class="specialty-card">
-        <span class="specialty-num">03</span>
         <h3>Cuidado Corporal</h3>
         <p>Soluciones integrales para esculpir tu silueta, recuperar el bienestar y regenerar desde adentro.</p>
         <ul>
@@ -283,6 +279,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
         </div>
       </div>
+    </div>
+    <div style="text-align: center; margin-top: 3rem;">
+      <a href="/tratamientos" style="font-size: 0.95rem; color: var(--primary-color); text-decoration: none; font-weight: 500; border-bottom: 1px solid currentColor; padding-bottom: 2px;">Ver resultados de tratamientos →</a>
     </div>
   </section>
 
