@@ -1,3 +1,30 @@
+function toTime12(isoDatetime) {
+  const match = isoDatetime?.match(/T(\d{2}):(\d{2})/);
+  if (!match) return null;
+  let h = parseInt(match[1]);
+  const m = match[2];
+  const period = h >= 12 ? 'PM' : 'AM';
+  if (h > 12) h -= 12;
+  else if (h === 0) h = 12;
+  return `${h}:${m} ${period}`;
+}
+
+function sedeFromLocation(location) {
+  if (!location) return null;
+  const l = location.toLowerCase();
+  if (l.includes('bataan'))                              return 'Bataan (Clínica ODONTOBATAAN)';
+  if (l.includes('guápiles') || l.includes('guapiles')) return 'Guápiles (Clínica Medical Numancia)';
+  return null;
+}
+
+function forIdsFromTitle(title) {
+  if (!title) return ['*'];
+  const t = title.toLowerCase();
+  if (t.includes('masaje'))   return ['masajes', 'limpieza-facial'];
+  if (t.includes('limpieza')) return ['limpieza-facial'];
+  return ['*'];
+}
+
 async function getAccessToken() {
   const res = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
@@ -60,4 +87,49 @@ export async function createCalendarEvent(cita) {
   const data = await res.json();
   if (!res.ok) throw new Error('google_calendar_error: ' + JSON.stringify(data));
   return data.id;
+}
+
+export async function getScheduleFromCalendar(timeMin, timeMax) {
+  const accessToken = await getAccessToken();
+  const calendarId  = encodeURIComponent(process.env.GOOGLE_CALENDAR_ID);
+
+  const params = new URLSearchParams({
+    timeMin,
+    timeMax,
+    singleEvents: 'true',
+    orderBy:      'startTime',
+    maxResults:   '250',
+  });
+
+  const res  = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?${params}`,
+    { headers: { authorization: `Bearer ${accessToken}` } }
+  );
+  const data = await res.json();
+  if (!res.ok) throw new Error('google_calendar_error: ' + JSON.stringify(data));
+
+  const schedule = [];
+  for (const event of data.items ?? []) {
+    const sede = sedeFromLocation(event.location);
+    if (!sede) continue;
+
+    const dateStr = event.start?.date ?? event.start?.dateTime?.split('T')[0];
+    if (!dateStr) continue;
+
+    const start12 = toTime12(event.start?.dateTime);
+    const end12   = toTime12(event.end?.dateTime);
+    if (!start12 || !end12) continue; // skip all-day events
+
+    schedule.push({
+      id:     `cal-${event.id}`,
+      type:   'date',
+      date:   dateStr,
+      hours:  `${start12} – ${end12}`,
+      label:  event.summary ?? 'Disponible',
+      forIds: forIdsFromTitle(event.summary),
+      sede,
+    });
+  }
+
+  return schedule;
 }

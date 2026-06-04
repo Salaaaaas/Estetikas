@@ -73,6 +73,18 @@ export default async function handler(req, res) {
   const v = validateBookingInput(payload);
   if (!v.ok) return send(res, 400, { error: 'validacion_fallida', detalles: v.errors });
 
+  // Sede validation: if another booking already exists for this day, lock to its sede
+  const { data: existingSede } = await supabase
+    .from('citas')
+    .select('sede')
+    .eq('fecha', v.data.fecha)
+    .neq('estado', 'cancelada')
+    .limit(1);
+  if (existingSede?.length && existingSede[0].sede !== v.data.sede) {
+    const locked = existingSede[0].sede.includes('Bataan') ? 'Bataan' : 'Guápiles';
+    return send(res, 400, { error: 'sede_no_disponible', mensaje: `Este día solo se atiende en ${locked}.` });
+  }
+
   const skipTurnstile = v.data.turnstile_token === 'BYPASS_DEV' && process.env.TURNSTILE_BYPASS === '1';
   if (!skipTurnstile) {
     const ts = await verifyTurnstile(v.data.turnstile_token, ip);

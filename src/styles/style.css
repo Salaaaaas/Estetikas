@@ -1995,7 +1995,7 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
 .reservar-header {
     margin-bottom: 2rem;
     padding-bottom: 1.75rem;
-    border-bottom: 1px solid rgba(0,0,0,0.06);
+    border-bottom: 2px solid rgba(0,0,0,0.06);
 }
 
 .reservar-eyebrow {
@@ -2196,6 +2196,15 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     resize: vertical;
     min-height: 90px;
     line-height: 1.5;
+}
+
+.reservar-sede-hint {
+    font-size: 0.72rem;
+    color: var(--primary-color);
+    margin-top: 0.5rem;
+    line-height: 1.4;
+    padding-left: 0.8rem;
+    border-left: 2px solid var(--primary-color);
 }
 
 /* Select arrow */
