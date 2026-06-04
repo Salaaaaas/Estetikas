@@ -2630,6 +2630,10 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     position: relative;
     overflow: hidden;
     cursor: default;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .specialty-card::before {
@@ -2680,7 +2684,7 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     font-weight: 300;
     line-height: 1.65;
     margin-bottom: 1.25rem;
-    max-width: 420px;
+    max-width: 380px;
 }
 
 .specialty-card ul {
@@ -2696,20 +2700,18 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     font-size: 0.9rem;
     color: var(--text-light);
     font-weight: 300;
-    padding-left: 1.2rem;
+    padding-left: 0;
     position: relative;
     line-height: 1.6;
 }
 
 .specialty-card li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0.6em;
-    width: 5px;
-    height: 1px;
-    background: var(--primary-color);
-    opacity: 0.5;
+    content: '–';
+    display: inline-block;
+    margin-right: 0.45em;
+    color: var(--primary-color);
+    opacity: 0.6;
+    font-weight: 400;
 }
 
 /* Specialty link — revealed on hover */
