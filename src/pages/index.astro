@@ -8,55 +8,40 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   bodyClass="home-page"
   isHome={true}
 >
-  <section id="inicio" class="hero-cinematic" aria-label="Esteti'Kas — Medicina Estética Avanzada">
-    <div class="hero-bg" aria-hidden="true">
-      <img
-        class="hero-bg-img"
-        src="/img/facial.webp"
-        alt=""
-        width="1200" height="1600"
-        loading="eager"
-        fetchpriority="high"
-      />
-      <!-- Set src to a clinic video to enable cinematic crossfade loop -->
-      <video class="hero-bg-video" id="hero-video" muted playsinline preload="auto"></video>
-    </div>
-    <div class="hero-overlay" aria-hidden="true"></div>
-
-    <div class="hero-c-body">
-      <div class="hero-c-content">
-        <span class="hero-c-badge liquid-glass">Medicina Estética Avanzada</span>
-        <h1 class="hero-c-heading">
-          <em>Medicina</em>
-          <span>Estética</span>
-          <span>Avanzada</span>
-        </h1>
-        <p class="hero-c-sub">Procedimientos con respaldo médico especializado. Resultados armónicos, naturales y seguros en Bataan y Guápiles, CR.</p>
-        <div class="hero-c-ctas">
-          <a href="#contacto" class="hero-cta-primary liquid-glass-strong">
-            Agendar Valoración
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-          </a>
-          <a href="/tratamientos" class="hero-cta-secondary">
-            Ver Tratamientos
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-          </a>
+  <section id="inicio" class="hero">
+    <div class="hero-content">
+      <div class="hero-eyemark" aria-hidden="true"></div>
+      <h1 class="hero-display">
+        <em>Medicina</em>
+        <span>Estética</span>
+        <span>Avanzada</span>
+      </h1>
+      <div class="hero-bottom">
+        <p>Procedimientos con respaldo médico especializado.<br>Resultados armónicos — Bataan y Guápiles, CR.</p>
+        <div class="hero-cta-group">
+          <a href="#contacto" class="btn">Agendar Valoración</a>
+          <a href="/tratamientos" class="btn btn-outline-dark">Ver Tratamientos</a>
         </div>
       </div>
+    </div>
+    <div class="hero-image-wrap">
+      <img class="hero-image" src="/img/facial.webp" alt="Tratamiento facial en Esteti'Kas" loading="eager" fetchpriority="high" width="600" height="750" />
+    </div>
+  </section>
 
-      <div class="hero-c-trust" aria-label="Por qué Esteti'Kas">
-        <span class="hero-trust-pill liquid-glass">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          2 sedes en Costa Rica
-        </span>
-        <span class="hero-trust-pill liquid-glass">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          Médicos certificados
-        </span>
-        <span class="hero-trust-pill liquid-glass">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-          Resultados naturales
-        </span>
+  <section class="trust-bar" aria-label="Por qué Esteti'Kas">
+    <div class="trust-bar-grid">
+      <div class="trust-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>2 sedes en Costa Rica</span>
+      </div>
+      <div class="trust-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Médicos especialistas certificados</span>
+      </div>
+      <div class="trust-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        <span>Resultados armónicos y naturales</span>
       </div>
     </div>
   </section>

@@ -166,7 +166,36 @@ function unlockScroll() {
     window.scrollTo(0, _savedScrollY);
 }
 
-let _schedule = null; // loaded from /api/get-schedule on page init
+// ---- SCHEDULE DATA ----
+// To update for a new month: edit 'date' entries below.
+// 'weekly' entries repeat on weekdays forever (good for recurring slots).
+// 'date'   entries are one-time specific dates.
+const SCHEDULE = [
+    {
+        id:       'limpiezas-sem',
+        type:     'weekly',
+        weekdays: [2, 3, 4, 5],           // Tue=2, Wed=3, Thu=4, Fri=5
+        hours:    '5:30 PM – 7:30 PM',
+        label:    'Limpiezas Faciales',
+        forIds:   ['limpieza-facial'],
+    },
+    {
+        id:       'masajes-06jun',
+        type:     'date',
+        date:     '2026-06-06',
+        hours:    '9:00 AM – 3:00 PM',
+        label:    'Masajes y Limpiezas',
+        forIds:   ['masajes', 'limpieza-facial'],
+    },
+    {
+        id:       'medicina-20jun',
+        type:     'date',
+        date:     '2026-06-20',
+        hours:    '8:00 AM – 4:00 PM',
+        label:    'Medicina Estética',
+        forIds:   ['*'],                   // all other treatments
+    },
+];
 
 const SLOT_DURATION_MIN = 60;
 
@@ -208,12 +237,11 @@ function generateSlots(hoursStr) {
 }
 
 function getApplicableSchedules(cartIds) {
-    const schedule = _schedule ?? [];
-    if (cartIds.length === 0) return schedule;
-    const hasLimpieza    = cartIds.includes('limpieza-facial');
-    const hasMasaje      = cartIds.includes('masajes');
-    const hasMedEstetica = cartIds.some(id => id !== 'limpieza-facial' && id !== 'masajes');
-    return schedule.filter(s => {
+    if (cartIds.length === 0) return SCHEDULE;
+    const hasLimpieza     = cartIds.includes('limpieza-facial');
+    const hasMasaje       = cartIds.includes('masajes');
+    const hasMedEstetica  = cartIds.some(id => id !== 'limpieza-facial' && id !== 'masajes');
+    return SCHEDULE.filter(s => {
         if (s.forIds.includes('*')) return hasMedEstetica;
         return s.forIds.some(id => cartIds.includes(id));
     });
@@ -333,7 +361,6 @@ function renderCalendar() {
             document.getElementById('b-date').value = btn.dataset.date;
             updateCalendarSelection(btn.dataset.date);
             updateSessionSelect(getSessionsForDate(btn.dataset.date, schedules), btn.dataset.date);
-            updateSedeForDate(btn.dataset.date, schedules);
         });
     });
 
@@ -444,73 +471,17 @@ async function refreshFullDays(year, month, schedules, availableSet) {
     } catch {}
 }
 
-function sedeShortName(sede) {
-    return sede.includes('Bataan') ? 'Bataan' : 'Guápiles';
-}
-
-function lockSede(sel, hint, sede) {
-    sel.value    = sede;
-    sel.disabled = true;
-    const locked = sedeShortName(sede);
-    const other  = locked === 'Bataan' ? 'Guápiles' : 'Bataan';
-    hint.textContent = `Este día solo se atiende en ${locked}. Si prefieres ${other}, selecciona otra fecha.`;
-    hint.hidden = false;
-}
-
-function unlockSede(sel, hint) {
-    if (sel.disabled) {
-        sel.value    = '';
-        sel.disabled = false;
-    }
-    hint.hidden = true;
-}
-
-async function updateSedeForDate(dateStr, schedules) {
-    const sel  = document.getElementById('b-sede');
-    const hint = document.getElementById('b-sede-hint');
-    if (!sel || !hint) return;
-
-    const dow = new Date(dateStr + 'T00:00:00').getDay();
-    const daySchedules = schedules.filter(s =>
-        s.type === 'date' ? s.date === dateStr : s.weekdays.includes(dow)
-    );
-    const schedSede = daySchedules.find(s => s.sede)?.sede ?? null;
-
-    if (schedSede) { lockSede(sel, hint, schedSede); return; }
-
-    try {
-        const res  = await fetch(`/api/sede-for-date?date=${dateStr}`);
-        const data = await res.json();
-        if (data.sede) { lockSede(sel, hint, data.sede); return; }
-    } catch {}
-
-    unlockSede(sel, hint);
-}
-
 // =====================================================
 // /reservar page init — runs once when DOM is ready on that route
 // =====================================================
-async function initReservarPage() {
+function initReservarPage() {
     if (!document.getElementById('booking-form')) return;
     renderReservarItems();
     _calState = { year: null, month: null, selected: null, fullDays: new Set() };
     _availCache = {};
+    renderCalendar();
     renderTurnstile();
     document.getElementById('booking-form').addEventListener('submit', submitBooking);
-
-    const wrapper = document.getElementById('b-cal-wrapper');
-    if (wrapper) wrapper.innerHTML = '<p class="cal-no-slots">Cargando horarios disponibles...</p>';
-
-    try {
-        const res  = await fetch('/api/get-schedule');
-        const data = await res.json();
-        _schedule  = data.schedule ?? [];
-    } catch {
-        if (wrapper) wrapper.innerHTML = '<p class="cal-no-slots">No se pudo cargar el horario. Recarga la página.</p>';
-        return;
-    }
-
-    renderCalendar();
 }
 
 function showReservarSuccess() {
@@ -577,8 +548,6 @@ async function submitBooking(e) {
 
             if (res.status === 429) {
                 showToast('Demasiados intentos. Por favor espera unos minutos.');
-            } else if (res.status === 400 && data.error === 'sede_no_disponible') {
-                showToast(data.mensaje ?? 'Sede no disponible para esta fecha. Selecciona otra.');
             } else if (res.status === 400 && data.detalles) {
                 showToast('Revisa los datos: ' + data.detalles[0]);
             } else if (res.status === 403) {
@@ -635,56 +604,6 @@ function injectTreatmentCartBtn() {
         cartBtn.style.borderColor = '#218838';
     });
     cta.appendChild(cartBtn);
-}
-
-// =====================================================
-// HERO — CINEMATIC ENTRANCE + FADING VIDEO
-// =====================================================
-function initHeroCinematic() {
-    const hero = document.querySelector('.hero-cinematic');
-    if (!hero) return;
-
-    // Blur-in word animation
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        const tl = gsap.timeline({ defaults: { ease: 'power3.out', clearProps: 'filter,transform,opacity' } });
-        tl.from('.hero-c-badge',        { opacity: 0, filter: 'blur(8px)',  y: 10, duration: 0.55, delay: 0.15 })
-          .from('.hero-c-heading em',   { opacity: 0, filter: 'blur(14px)', y: 22, duration: 0.72 }, '-=0.22')
-          .from('.hero-c-heading span', { opacity: 0, filter: 'blur(14px)', y: 22, duration: 0.72, stagger: 0.13 }, '-=0.48')
-          .from('.hero-c-sub',          { opacity: 0, filter: 'blur(8px)',  y: 14, duration: 0.62 }, '-=0.32')
-          .from('.hero-c-ctas',         { opacity: 0, y: 12,                duration: 0.52 },        '-=0.28')
-          .from('.hero-trust-pill',     { opacity: 0, y: 8,                 duration: 0.42, stagger: 0.09 }, '-=0.20');
-    }
-
-    // FadingVideo crossfade — rAF-driven, no CSS transitions
-    const video = document.getElementById('hero-video');
-    if (!video || !video.getAttribute('src')) return;
-
-    const FADE_MS = 500;
-    const FADE_OUT_LEAD = 0.55;
-    const raf = { id: null };
-    let fadingOut = false;
-
-    function fadeTo(target) {
-        if (raf.id) cancelAnimationFrame(raf.id);
-        const from = parseFloat(video.style.opacity) || 0;
-        const t0 = performance.now();
-        (function step(now) {
-            const p = Math.min((now - t0) / FADE_MS, 1);
-            video.style.opacity = from + (target - from) * p;
-            raf.id = p < 1 ? requestAnimationFrame(step) : null;
-        })(t0);
-    }
-
-    video.addEventListener('loadeddata', () => { video.style.opacity = '0'; video.play(); fadeTo(1); });
-    video.addEventListener('timeupdate', () => {
-        const rem = video.duration - video.currentTime;
-        if (!fadingOut && rem <= FADE_OUT_LEAD && rem > 0) { fadingOut = true; fadeTo(0); }
-    });
-    video.addEventListener('ended', () => {
-        video.style.opacity = '0';
-        setTimeout(() => { video.currentTime = 0; video.play(); fadingOut = false; fadeTo(1); }, 100);
-    });
-    video.loop = false;
 }
 
 // =====================================================
@@ -776,8 +695,14 @@ const initSite = () => {
         once: true
     });
 
-    // Hero entrance — cinematic blur-in
-    initHeroCinematic();
+    // Hero entrance — staggered editorial reveal
+    if (document.querySelector('.hero-display')) {
+        const heroLines = gsap.utils.toArray('.hero-display em, .hero-display span');
+        gsap.from('.hero-eyemark', { opacity: 0, scaleX: 0, transformOrigin: 'left center', duration: 0.5, delay: 0.05, ease: "power3.out", clearProps: 'transform,opacity' });
+        gsap.from(heroLines, { opacity: 0, y: 40, duration: 0.9, stagger: 0.12, delay: 0.15, ease: "power3.out", clearProps: 'transform,opacity' });
+        gsap.from('.hero-bottom', { opacity: 0, y: 24, duration: 0.8, delay: 0.6, ease: "power3.out", clearProps: 'transform,opacity' });
+        gsap.from('.hero-image-wrap', { opacity: 0, scale: 0.95, duration: 1.6, delay: 0.1, ease: "expo.out", clearProps: 'transform,opacity' });
+    }
 
     // Staff intro: heading + description entrance
     const staffIntro = document.querySelector('.staff-intro');

@@ -2198,15 +2198,6 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     line-height: 1.5;
 }
 
-.reservar-sede-hint {
-    font-size: 0.72rem;
-    color: var(--primary-color);
-    margin-top: 0.5rem;
-    line-height: 1.4;
-    padding-left: 0.8rem;
-    border-left: 2px solid var(--primary-color);
-}
-
 /* Select arrow */
 .reservar-field .select-wrapper { position: relative; }
 
@@ -3359,264 +3350,201 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
 }
 
 /* =====================================================
-   LIQUID-GLASS DESIGN SYSTEM
+   LIQUID GLASS — Botones y tarjetas de tratamientos
    ===================================================== */
-.liquid-glass {
-    background: rgba(255,255,255,0.06);
-    backdrop-filter: blur(12px) saturate(160%);
-    -webkit-backdrop-filter: blur(12px) saturate(160%);
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.14), 0 2px 12px rgba(0,0,0,0.12);
+
+/* Mesh sutil en secciones con cards para que el blur tenga algo que refractar */
+.specialties-pinned {
+    background:
+        radial-gradient(ellipse 80% 60% at 20% 50%, rgba(0,125,136,.06) 0%, transparent 100%),
+        radial-gradient(ellipse 60% 50% at 80% 30%, rgba(201,168,76,.04) 0%, transparent 100%),
+        var(--bg-light);
+}
+
+/* ---- Botones ---------------------------------------- */
+.btn {
+    border-radius: 10px;
+    background: rgba(0,125,136,.84);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(255,255,255,.28);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.25),
+        0 4px 16px rgba(0,125,136,.30),
+        0 1px 4px rgba(0,0,0,.10);
+    color: var(--white);
+    transition: background 200ms var(--ease-out), transform 160ms var(--ease-out), box-shadow 200ms var(--ease-out);
+}
+/* Asegura que el texto quede por encima de los pseudoelementos de animación */
+.btn::before { z-index: -1; }
+.btn::after  { z-index: -1; }
+
+@media (hover: hover) and (pointer: fine) {
+    .btn:hover {
+        background: rgba(0,94,103,.90);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.25),
+            0 8px 24px rgba(0,125,136,.36),
+            0 2px 6px rgba(0,0,0,.12);
+        transform: translateY(-2px);
+        color: var(--white);
+    }
+}
+.btn:active { transform: translateY(0); }
+
+.btn-outline-dark {
+    border-radius: 10px;
+    background: rgba(255,255,255,.40);
+    backdrop-filter: blur(14px) saturate(150%);
+    -webkit-backdrop-filter: blur(14px) saturate(150%);
+    border: 1px solid rgba(17,17,17,.16);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.70), 0 2px 10px rgba(0,0,0,.07);
+    color: var(--secondary-color);
+    transition: background 200ms var(--ease-out), transform 160ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+    .btn-outline-dark:hover {
+        background: rgba(255,255,255,.60);
+        transform: translateY(-2px);
+        color: var(--secondary-color);
+    }
+}
+.btn-outline-dark:active { transform: translateY(0); }
+
+/* ---- Botón Reservar (tarjetas de tratamientos) ------ */
+.reserve-btn {
+    border-radius: 10px;
+    background: rgba(0,125,136,.84);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(255,255,255,.28);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.25),
+        0 4px 16px rgba(0,125,136,.30),
+        0 1px 4px rgba(0,0,0,.10);
+    color: #fff;
+    transition: background 200ms var(--ease-out), transform 160ms var(--ease-out), box-shadow 200ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+    .reserve-btn:hover {
+        background: rgba(0,94,103,.90);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.25),
+            0 8px 24px rgba(0,125,136,.36),
+            0 2px 6px rgba(0,0,0,.12);
+        transform: translateY(-2px);
+        color: #fff;
+    }
+}
+.reserve-btn:active { transform: translateY(0); }
+.reserve-btn.reserved {
+    background: rgba(33,136,56,.80);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border-color: rgba(255,255,255,.22);
+}
+
+/* ---- Tarjetas de tratamientos (página /tratamientos) - */
+.t-card {
+    background: rgba(255,255,255,.72);
+    backdrop-filter: blur(18px) saturate(170%);
+    -webkit-backdrop-filter: blur(18px) saturate(170%);
+    border: 1px solid rgba(255,255,255,.70);
+    box-shadow: 0 4px 24px rgba(0,0,0,.07), inset 0 1px 0 rgba(255,255,255,.90);
     position: relative;
     overflow: hidden;
+    transition: transform 240ms var(--ease-out), box-shadow 240ms var(--ease-out);
 }
-.liquid-glass::before {
+.t-card::after {
     content: "";
     position: absolute; inset: 0;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(
-        180deg,
-        rgba(255,255,255,0.40) 0%,
-        rgba(255,255,255,0.12) 20%,
-        rgba(255,255,255,0) 45%,
-        rgba(255,255,255,0) 60%,
-        rgba(255,255,255,0.12) 80%,
-        rgba(255,255,255,0.40) 100%
+    background: linear-gradient(150deg,
+        rgba(255,255,255,.80) 0%,
+        rgba(255,255,255,.12) 50%,
+        rgba(255,255,255,.50) 100%
     );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
-}
-.liquid-glass-strong {
-    background: rgba(0,125,136,0.18);
-    backdrop-filter: blur(40px) saturate(200%);
-    -webkit-backdrop-filter: blur(40px) saturate(200%);
-    box-shadow: 4px 4px 10px rgba(0,0,0,0.14), inset 0 1px 1px rgba(255,255,255,0.22);
-    position: relative;
-    overflow: hidden;
-}
-.liquid-glass-strong::before {
-    content: "";
-    position: absolute; inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(
-        180deg,
-        rgba(255,255,255,0.48) 0%,
-        rgba(255,255,255,0.18) 20%,
-        rgba(255,255,255,0) 45%,
-        rgba(255,255,255,0) 60%,
-        rgba(255,255,255,0.18) 80%,
-        rgba(255,255,255,0.48) 100%
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-}
-
-/* =====================================================
-   HERO — Cinematic Full-Viewport
-   ===================================================== */
-.hero-cinematic {
-    position: relative;
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.hero-bg {
-    position: absolute;
-    inset: 0;
     z-index: 0;
 }
-
-.hero-bg-img {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: 120%;
-    height: 120%;
-    transform: translateX(-50%);
-    object-fit: cover;
-    object-position: center top;
+@media (hover: hover) and (pointer: fine) {
+    .t-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 40px rgba(0,125,136,.12), inset 0 1px 0 rgba(255,255,255,.90);
+    }
 }
 
-.hero-bg-video {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 1;
-    opacity: 0;
+/* Mesh sutil en secciones alternas de tratamientos */
+.treatment-category-section {
+    background:
+        radial-gradient(ellipse 70% 50% at 15% 60%, rgba(0,125,136,.04) 0%, transparent 100%),
+        radial-gradient(ellipse 55% 45% at 85% 25%, rgba(201,168,76,.03) 0%, transparent 100%),
+        var(--bg-color, transparent);
 }
 
-.hero-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    background: linear-gradient(
-        155deg,
-        rgba(0, 18, 22, 0.78) 0%,
-        rgba(0, 50, 60, 0.50) 55%,
-        rgba(0, 18, 22, 0.82) 100%
-    );
-}
-
-.hero-c-body {
+/* ---- Specialty cards -------------------------------- */
+.specialty-card {
+    background: rgba(255,255,255,.62);
+    backdrop-filter: blur(20px) saturate(175%);
+    -webkit-backdrop-filter: blur(20px) saturate(175%);
+    border: 1px solid rgba(255,255,255,.74);
+    box-shadow: 0 4px 28px rgba(0,0,0,.07), inset 0 1px 0 rgba(255,255,255,.90);
     position: relative;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    min-height: 100dvh;
-    padding: 148px 8% 3.5rem;
+    overflow: hidden;
+    transition: transform 240ms var(--ease-out), box-shadow 240ms var(--ease-out);
 }
-
-.hero-c-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    max-width: 680px;
-    padding-bottom: 3rem;
-}
-
-.hero-c-badge {
-    display: inline-flex;
-    align-items: center;
-    align-self: flex-start;
-    padding: 0.45rem 1.1rem;
-    border-radius: 9999px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: rgba(255,255,255,0.82);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 1.8rem;
-}
-
-.hero-c-heading {
-    font-family: var(--font-heading);
-    font-size: clamp(3.8rem, 7.5vw, 7rem);
-    font-weight: 700;
-    color: white;
-    line-height: 0.88;
-    letter-spacing: -0.03em;
-    margin-bottom: 1.6rem;
-}
-
-.hero-c-heading em {
-    font-style: italic;
-    font-weight: 400;
-    display: block;
-    color: rgba(255,255,255,0.90);
-}
-
-.hero-c-heading span {
-    display: block;
-}
-
-.hero-c-sub {
-    font-size: clamp(0.9rem, 1.4vw, 1.02rem);
-    color: rgba(255,255,255,0.62);
-    font-weight: 300;
-    line-height: 1.68;
-    max-width: 46ch;
-    margin-bottom: 2.6rem;
-}
-
-.hero-c-ctas {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-}
-
-.hero-cta-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    padding: 0.85rem 1.9rem;
-    border-radius: 9999px;
-    color: white;
-    text-decoration: none;
-    font-size: 0.87rem;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-    transition: opacity 220ms var(--ease-out), transform 160ms var(--ease-out);
+.specialty-card::before {
+    content: "";
+    position: absolute; inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(150deg,
+        rgba(255,255,255,.82) 0%,
+        rgba(255,255,255,.15) 50%,
+        rgba(255,255,255,.52) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
 }
 @media (hover: hover) and (pointer: fine) {
-    .hero-cta-primary:hover { opacity: 0.8; }
+    .specialty-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 40px rgba(0,125,136,.13), inset 0 1px 0 rgba(255,255,255,.90);
+    }
 }
-.hero-cta-primary:active { transform: scale(0.97); }
 
-.hero-cta-secondary {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    color: rgba(255,255,255,0.68);
-    text-decoration: none;
-    font-size: 0.87rem;
-    font-weight: 400;
-    border-bottom: 1px solid rgba(255,255,255,0.22);
-    padding-bottom: 2px;
-    transition: color 200ms var(--ease-out), border-color 200ms var(--ease-out);
+/* ---- Botón navbar "Reservar Cita" ------------------- */
+.nav-reservar-btn {
+    border-radius: 10px !important;
+    background: rgba(0,125,136,.84) !important;
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(255,255,255,.28) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.25),
+        0 4px 16px rgba(0,125,136,.30),
+        0 1px 4px rgba(0,0,0,.10);
+    color: #fff !important;
+    transition: background 200ms var(--ease-out), transform 160ms var(--ease-out), box-shadow 200ms var(--ease-out) !important;
 }
 @media (hover: hover) and (pointer: fine) {
-    .hero-cta-secondary:hover { color: white; border-bottom-color: rgba(255,255,255,0.55); }
+    .nav-reservar-btn:hover {
+        background: rgba(0,94,103,.90) !important;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.25),
+            0 8px 24px rgba(0,125,136,.36),
+            0 2px 6px rgba(0,0,0,.12);
+        transform: translateY(-2px) !important;
+        color: #fff !important;
+    }
 }
 
-.hero-c-trust {
-    display: flex;
-    gap: 0.65rem;
-    flex-wrap: wrap;
-    padding-top: 0.5rem;
-}
-
-.hero-trust-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    padding: 0.42rem 0.95rem;
-    border-radius: 9999px;
-    font-size: 0.74rem;
-    font-weight: 500;
-    color: rgba(255,255,255,0.80);
-}
-
-/* Nav — white links over cinematic dark hero (home page, before scroll) */
-body.home-page header:not(.scrolled) nav a {
-    color: rgba(255,255,255,0.86) !important;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.35) !important;
-}
-
-body.home-page header:not(.scrolled) .logo img {
-    filter: brightness(0) invert(1) opacity(0.92);
-}
-
-body.home-page header.scrolled .logo img {
-    filter: none;
-    transition: filter 280ms var(--ease-out);
-}
-
-body.home-page header:not(.scrolled) .nav-toggle span {
-    background: rgba(255,255,255,0.88);
-}
-
-/* Mobile: header is always white — keep logo normal */
-@media (max-width: 899px) {
-    body.home-page .logo img { filter: none !important; }
-    body.home-page header:not(.scrolled) nav a { color: var(--secondary-color) !important; text-shadow: none !important; }
-    body.home-page header:not(.scrolled) .nav-toggle span { background: var(--secondary-color); }
-    .hero-c-body { padding: 100px 5% 2.5rem; }
-    .hero-c-heading { letter-spacing: -0.025em; }
-}
-
-/* reduced-motion: skip blur animations */
 @media (prefers-reduced-motion: reduce) {
-    .hero-c-badge, .hero-c-heading em, .hero-c-heading span,
-    .hero-c-sub, .hero-c-ctas, .hero-trust-pill { opacity: 1 !important; filter: none !important; transform: none !important; }
+    .btn, .btn-outline-dark, .specialty-card, .reserve-btn, .t-card, .nav-reservar-btn { transition: none !important; }
 }
