@@ -1590,7 +1590,9 @@ body:not(.home-page) header.scrolled nav a {
 		content: '';
 		position: absolute;
 		top: 0; left: 0; right: 0; bottom: 0;
-		background: rgba(0,0,0,0.4);
+		background:
+			radial-gradient(ellipse 90% 100% at 75% 40%, rgba(0,94,103,.28) 0%, transparent 65%),
+			linear-gradient(160deg, rgba(8,24,28,.82) 0%, rgba(11,35,40,.78) 60%, rgba(5,18,22,.88) 100%);
 	}
 	.hero-text-wrapper { position: relative; z-index: 2; }
 	.hero-text-wrapper h1 { font-size: 3.5rem; font-family: var(--font-heading); margin-bottom: 1rem; }
