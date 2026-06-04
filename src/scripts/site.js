@@ -638,6 +638,56 @@ function injectTreatmentCartBtn() {
 }
 
 // =====================================================
+// HERO — CINEMATIC ENTRANCE + FADING VIDEO
+// =====================================================
+function initHeroCinematic() {
+    const hero = document.querySelector('.hero-cinematic');
+    if (!hero) return;
+
+    // Blur-in word animation
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out', clearProps: 'filter,transform,opacity' } });
+        tl.from('.hero-c-badge',        { opacity: 0, filter: 'blur(8px)',  y: 10, duration: 0.55, delay: 0.15 })
+          .from('.hero-c-heading em',   { opacity: 0, filter: 'blur(14px)', y: 22, duration: 0.72 }, '-=0.22')
+          .from('.hero-c-heading span', { opacity: 0, filter: 'blur(14px)', y: 22, duration: 0.72, stagger: 0.13 }, '-=0.48')
+          .from('.hero-c-sub',          { opacity: 0, filter: 'blur(8px)',  y: 14, duration: 0.62 }, '-=0.32')
+          .from('.hero-c-ctas',         { opacity: 0, y: 12,                duration: 0.52 },        '-=0.28')
+          .from('.hero-trust-pill',     { opacity: 0, y: 8,                 duration: 0.42, stagger: 0.09 }, '-=0.20');
+    }
+
+    // FadingVideo crossfade — rAF-driven, no CSS transitions
+    const video = document.getElementById('hero-video');
+    if (!video || !video.getAttribute('src')) return;
+
+    const FADE_MS = 500;
+    const FADE_OUT_LEAD = 0.55;
+    const raf = { id: null };
+    let fadingOut = false;
+
+    function fadeTo(target) {
+        if (raf.id) cancelAnimationFrame(raf.id);
+        const from = parseFloat(video.style.opacity) || 0;
+        const t0 = performance.now();
+        (function step(now) {
+            const p = Math.min((now - t0) / FADE_MS, 1);
+            video.style.opacity = from + (target - from) * p;
+            raf.id = p < 1 ? requestAnimationFrame(step) : null;
+        })(t0);
+    }
+
+    video.addEventListener('loadeddata', () => { video.style.opacity = '0'; video.play(); fadeTo(1); });
+    video.addEventListener('timeupdate', () => {
+        const rem = video.duration - video.currentTime;
+        if (!fadingOut && rem <= FADE_OUT_LEAD && rem > 0) { fadingOut = true; fadeTo(0); }
+    });
+    video.addEventListener('ended', () => {
+        video.style.opacity = '0';
+        setTimeout(() => { video.currentTime = 0; video.play(); fadingOut = false; fadeTo(1); }, 100);
+    });
+    video.loop = false;
+}
+
+// =====================================================
 // MAIN SITE INIT
 // =====================================================
 const initSite = () => {
@@ -726,14 +776,8 @@ const initSite = () => {
         once: true
     });
 
-    // Hero entrance — staggered editorial reveal
-    if (document.querySelector('.hero-display')) {
-        const heroLines = gsap.utils.toArray('.hero-display em, .hero-display span');
-        gsap.from('.hero-eyemark', { opacity: 0, scaleX: 0, transformOrigin: 'left center', duration: 0.5, delay: 0.05, ease: "power3.out", clearProps: 'transform,opacity' });
-        gsap.from(heroLines, { opacity: 0, y: 40, duration: 0.9, stagger: 0.12, delay: 0.15, ease: "power3.out", clearProps: 'transform,opacity' });
-        gsap.from('.hero-bottom', { opacity: 0, y: 24, duration: 0.8, delay: 0.6, ease: "power3.out", clearProps: 'transform,opacity' });
-        gsap.from('.hero-image-wrap', { opacity: 0, scale: 0.95, duration: 1.6, delay: 0.1, ease: "expo.out", clearProps: 'transform,opacity' });
-    }
+    // Hero entrance — cinematic blur-in
+    initHeroCinematic();
 
     // Staff intro: heading + description entrance
     const staffIntro = document.querySelector('.staff-intro');
