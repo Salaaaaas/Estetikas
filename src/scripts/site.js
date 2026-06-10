@@ -41,7 +41,13 @@ function updateCartBadges() {
 
 function showToast(msg) {
     let toast = document.getElementById('ek-toast');
-    if (!toast) { toast = document.createElement('div'); toast.id = 'ek-toast'; document.body.appendChild(toast); }
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'ek-toast';
+        toast.setAttribute('role', 'status');
+        toast.setAttribute('aria-live', 'polite');
+        document.body.appendChild(toast);
+    }
     toast.textContent = msg;
     toast.classList.add('visible');
     clearTimeout(toast._t);
@@ -589,7 +595,8 @@ function injectTreatmentCartBtn() {
     if (!cta || !h1 || cta.querySelector('.add-to-list-btn')) return;
 
     const name = h1.textContent.trim();
-    const id = window.location.pathname.split('/').pop().replace('.html', '') || 'tratamiento';
+    // filter(Boolean) handles trailing-slash URLs (/tratamientos/peelings/)
+    const id = (window.location.pathname.split('/').filter(Boolean).pop() || 'tratamiento').replace('.html', '');
 
     const cartBtn = document.createElement('button');
     cartBtn.className = 'btn add-to-list-btn';
@@ -611,6 +618,7 @@ function injectTreatmentCartBtn() {
 // =====================================================
 const initSite = () => {
     const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Cart UI (inject on all pages)
     injectCartUI();
@@ -620,6 +628,13 @@ const initSite = () => {
 
     // /reservar page: render cart items, calendar, captcha, bind submit
     initReservarPage();
+
+    // "Volver" link on /reservar: go back if there is history, else home
+    document.querySelectorAll('[data-back]').forEach(el => {
+        el.addEventListener('click', (e) => {
+            if (window.history.length > 1) { e.preventDefault(); window.history.back(); }
+        });
+    });
 
     // Hamburger menu
     const headerEl = document.querySelector('header');
@@ -655,16 +670,17 @@ const initSite = () => {
         document.body.classList.add('is-touch');
     }
 
-    // Smooth Scroll (Lenis)
-    _lenis = new Lenis({
-        duration: 1.1,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        syncTouch: true,
-        touchMultiplier: 1.5,
-    });
-    _lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => { _lenis.raf(time * 1000); });
-    gsap.ticker.lagSmoothing(0);
+    // Smooth Scroll (Lenis) — desktop only. On touch devices native scroll is
+    // faster and avoids fighting the browser's own momentum scrolling.
+    if (!isTouch && !reduceMotion) {
+        _lenis = new Lenis({
+            duration: 1.1,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        });
+        _lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => { _lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+    }
 
     // Header scroll effect
     if (headerEl) {
@@ -679,24 +695,34 @@ const initSite = () => {
             const href = this.getAttribute('href');
             if (!href || !href.startsWith('#')) return;
             const target = document.querySelector(href);
-            if (target) { e.preventDefault(); _lenis.scrollTo(target, { offset: -80, duration: 1.5 }); }
+            if (!target) return;
+            e.preventDefault();
+            if (_lenis) {
+                _lenis.scrollTo(target, { offset: -80, duration: 1.5 });
+            } else {
+                const top = target.getBoundingClientRect().top + window.scrollY - 80;
+                window.scrollTo({ top, behavior: reduceMotion ? 'auto' : 'smooth' });
+            }
         });
     });
 
-    // Reveal animations — will-change is set in CSS to pre-promote GPU layers.
-    // After animation completes it's removed so desktop doesn't hold all layers in VRAM.
+    // Reveal animations — content is visible by default (no CSS opacity:0), so
+    // nothing ships hidden if JS fails. GSAP hides right before animating.
     const revealTargets = ".service-card, .faq-item, .before-after-container, .testimonial-featured, .testimonial-card-compact, .contact-info, .contact-form-wrapper, .treatment-detail-block, .trust-item, .t-card";
-    ScrollTrigger.batch(revealTargets, {
-        start: "top 88%",
-        onEnter: batch => gsap.to(batch, {
-            opacity: 1, y: 0, stagger: 0.08, duration: 0.65, ease: "power3.out", overwrite: true,
-            onComplete() { batch.forEach(el => { el.style.willChange = 'auto'; }); }
-        }),
-        once: true
-    });
+    if (!reduceMotion && document.querySelector(revealTargets)) {
+        gsap.set(revealTargets, { opacity: 0, y: 30, willChange: 'transform, opacity' });
+        ScrollTrigger.batch(revealTargets, {
+            start: "top 88%",
+            onEnter: batch => gsap.to(batch, {
+                opacity: 1, y: 0, stagger: 0.08, duration: 0.65, ease: "power3.out", overwrite: true,
+                onComplete() { batch.forEach(el => { el.style.willChange = 'auto'; }); }
+            }),
+            once: true
+        });
+    }
 
     // Hero entrance — staggered editorial reveal
-    if (document.querySelector('.hero-display')) {
+    if (!reduceMotion && document.querySelector('.hero-display')) {
         const heroLines = gsap.utils.toArray('.hero-display em, .hero-display span');
         gsap.from('.hero-eyemark', { opacity: 0, scaleX: 0, transformOrigin: 'left center', duration: 0.5, delay: 0.05, ease: "power3.out", clearProps: 'transform,opacity' });
         gsap.from(heroLines, { opacity: 0, y: 40, duration: 0.9, stagger: 0.12, delay: 0.15, ease: "power3.out", clearProps: 'transform,opacity' });
@@ -705,7 +731,7 @@ const initSite = () => {
     }
 
     // Staff intro: heading + description entrance
-    const staffIntro = document.querySelector('.staff-intro');
+    const staffIntro = !reduceMotion && document.querySelector('.staff-intro');
     if (staffIntro) {
         const tl = gsap.timeline({
             scrollTrigger: { trigger: staffIntro, start: 'top 80%', once: true }
@@ -715,7 +741,7 @@ const initSite = () => {
     }
 
     // Profile content sides: slide in from the appropriate direction
-    gsap.utils.toArray('.profile-block').forEach((block, i) => {
+    if (!reduceMotion) gsap.utils.toArray('.profile-block').forEach((block, i) => {
         const side = block.querySelector('.profile-content-side');
         const isReverse = block.classList.contains('reverse');
         if (side) {
@@ -728,7 +754,7 @@ const initSite = () => {
     });
 
     // Profile images: scale up on enter, darken on exit (ImageScaleFade paradigm)
-    gsap.utils.toArray('.profile-image-side img').forEach(img => {
+    if (!reduceMotion) gsap.utils.toArray('.profile-image-side img').forEach(img => {
         gsap.fromTo(img,
             { scale: 0.88, opacity: 0 },
             { scale: 1, opacity: 1, duration: 1.1, ease: "power3.out",
@@ -744,7 +770,7 @@ const initSite = () => {
     });
 
     // Specialties heading: entrance
-    const specHeading = document.querySelector('.specialties-heading');
+    const specHeading = !reduceMotion && document.querySelector('.specialties-heading');
     if (specHeading) {
         const fromVars = (y) => ({ opacity: 0, y });
         const toVars   = (y, dur, ease) => ({ opacity: 1, y: 0, duration: dur, ease: ease || 'power3.out', clearProps: 'transform,opacity' });
@@ -758,7 +784,7 @@ const initSite = () => {
     }
 
     // Specialty cards: staggered fade-in from bottom
-    gsap.utils.toArray('.specialty-card').forEach((card, i) => {
+    if (!reduceMotion) gsap.utils.toArray('.specialty-card').forEach((card, i) => {
         gsap.fromTo(card,
             { opacity: 0, y: 40 },
             { opacity: 1, y: 0, duration: 0.7, delay: i * 0.1,
@@ -768,7 +794,7 @@ const initSite = () => {
     });
 
     // Philosophy section: GSAP word-by-word scrubbing text reveal
-    const philosophyEl = document.querySelector('#philosophy-text');
+    const philosophyEl = !reduceMotion && document.querySelector('#philosophy-text');
     if (philosophyEl) {
         const text = philosophyEl.textContent;
         const words = text.split(' ');
@@ -809,10 +835,17 @@ const initSite = () => {
 
     // FAQ Accordion (pure CSS grid-template-rows, no layout reflow)
     document.querySelectorAll('.faq-question').forEach(question => {
+        question.setAttribute('aria-expanded', question.classList.contains('active') ? 'true' : 'false');
         question.addEventListener('click', () => {
             const isOpen = question.classList.contains('active');
-            document.querySelectorAll('.faq-question.active').forEach(q => q.classList.remove('active'));
-            if (!isOpen) question.classList.add('active');
+            document.querySelectorAll('.faq-question.active').forEach(q => {
+                q.classList.remove('active');
+                q.setAttribute('aria-expanded', 'false');
+            });
+            if (!isOpen) {
+                question.classList.add('active');
+                question.setAttribute('aria-expanded', 'true');
+            }
         });
     });
 
@@ -837,7 +870,7 @@ const initSite = () => {
 
     // Magnetic Buttons — getBoundingClientRect only on mouseenter (once per hover),
     // not on every mousemove to avoid forced synchronous layout per pixel.
-    if (!isTouch) {
+    if (!isTouch && !reduceMotion) {
         document.querySelectorAll('.btn, .social-icon-btn, .logo img').forEach(btn => {
             const xTo = gsap.quickTo(btn, 'x', { duration: 0.3, ease: 'power2.out' });
             const yTo = gsap.quickTo(btn, 'y', { duration: 0.3, ease: 'power2.out' });
@@ -859,13 +892,14 @@ const initSite = () => {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const name = document.getElementById('contact-name').value;
-            const treatment = document.getElementById('contact-treatment').value;
+            const treatmentSelect = document.getElementById('contact-treatment');
+            const treatment = treatmentSelect.selectedOptions[0]?.textContent.trim() || 'Consulta general';
             const message = document.getElementById('contact-message').value;
             const btn = contactForm.querySelector('button');
             const originalText = btn.innerText;
             btn.innerText = 'Redirigiendo a WhatsApp...';
             btn.disabled = true;
-            let text = `Hola *Esteti'Kas*, mi nombre es *${name}*.\n\nMe interesa el tratamiento: *${treatment.toUpperCase()}*.`;
+            let text = `Hola *Esteti'Kas*, mi nombre es *${name}*.\n\nMe interesa el tratamiento: *${treatment}*.`;
             if (message) text += `\n\nMensaje adicional: ${message}`;
             text += `\n\n_Enviado desde el sitio web._`;
             setTimeout(() => {
@@ -885,31 +919,11 @@ const initSite = () => {
     }
 
     // Parallax hero image
-    if (document.querySelector('.hero-image-wrap')) {
+    if (!reduceMotion && document.querySelector('.hero-image-wrap')) {
         gsap.to(".hero-image", {
             scrollTrigger: { trigger: ".hero", start: "top top", scrub: true },
             y: 60, ease: "none"
         });
-    }
-
-    // Custom Select
-    const customSelect = document.querySelector('.custom-select-wrapper');
-    if (customSelect) {
-        const trigger = customSelect.querySelector('.custom-select-trigger');
-        const options = customSelect.querySelectorAll('.custom-option');
-        const realSelect = document.getElementById('contact-treatment');
-        trigger.addEventListener('click', () => customSelect.classList.toggle('open'));
-        options.forEach(option => {
-            option.addEventListener('click', () => {
-                const value = option.getAttribute('data-value');
-                trigger.querySelector('span').innerText = option.innerText;
-                realSelect.value = value;
-                options.forEach(opt => opt.classList.remove('selected'));
-                option.classList.add('selected');
-                customSelect.classList.remove('open');
-            });
-        });
-        document.addEventListener('click', (e) => { if (!customSelect.contains(e.target)) customSelect.classList.remove('open'); });
     }
 
     // Care Slider
@@ -919,14 +933,22 @@ const initSite = () => {
         let current = 0;
         function showSlide(index) {
             careSlides.forEach(s => s.classList.remove('active'));
-            careDots.forEach(d => { d.classList.remove('active'); d.setAttribute('aria-selected', 'false'); });
+            careDots.forEach(d => { d.classList.remove('active'); d.setAttribute('aria-pressed', 'false'); });
             careSlides[index].classList.add('active');
-            if (careDots[index]) { careDots[index].classList.add('active'); careDots[index].setAttribute('aria-selected', 'true'); }
+            if (careDots[index]) { careDots[index].classList.add('active'); careDots[index].setAttribute('aria-pressed', 'true'); }
             current = index;
         }
-        let timer = setInterval(() => showSlide((current + 1) % careSlides.length), 10000);
+        const startTimer = () => setInterval(() => {
+            if (!document.hidden) showSlide((current + 1) % careSlides.length);
+        }, 10000);
+        // No autoplay when the user prefers reduced motion
+        let timer = reduceMotion ? null : startTimer();
         careDots.forEach((dot, i) => {
-            dot.addEventListener('click', () => { clearInterval(timer); showSlide(i); timer = setInterval(() => showSlide((current + 1) % careSlides.length), 10000); });
+            dot.addEventListener('click', () => {
+                if (timer) clearInterval(timer);
+                showSlide(i);
+                if (!reduceMotion) timer = startTimer();
+            });
         });
     }
 

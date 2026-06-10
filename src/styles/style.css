@@ -30,7 +30,6 @@
 html {
     scroll-behavior: auto;
     overscroll-behavior: none;
-    text-rendering: optimizeSpeed;
 }
 
 body {
@@ -38,7 +37,11 @@ body {
     color: var(--text-color);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    padding-top: 120px; /* Offset for fixed header - adjusted for new logo size */
+}
+
+/* Anchored sections clear the fixed header on native scroll */
+[id] {
+    scroll-margin-top: 90px;
 }
 
 *:focus-visible {
@@ -170,12 +173,12 @@ body {
 }
 
 .hero-image-wrap {
-    flex: 1;
-    max-width: 45%;
+    width: 100%;
+    align-self: center;
     border-radius: 4px;
     overflow: hidden;
     box-shadow: 0 24px 60px rgba(0,0,0,0.1);
-    height: 640px;
+    height: min(640px, 70vh);
 }
 
 .hero-image {
@@ -361,19 +364,8 @@ footer .footer-logo img:hover {
 
 
 
-.service-card,
-.faq-item,
-.before-after-container,
-.testimonial-featured,
-.testimonial-card-compact,
-.contact-info,
-.contact-form-wrapper,
-.treatment-detail-block,
-.trust-item {
-    opacity: 0;
-    transform: translateY(30px);
-    will-change: transform, opacity;
-}
+/* Reveal targets stay visible by default; site.js hides them just before
+   animating so content never ships invisible when JS fails. */
 
 .faq-section {
     padding: 5rem 5%;
@@ -415,17 +407,6 @@ footer .footer-logo img:hover {
 
 .faq-question:hover {
     color: var(--primary-color);
-}
-
-.faq-icon::after {
-    content: '+';
-    font-size: 1.5rem;
-    color: var(--primary-color);
-    transition: transform 240ms var(--ease-out);
-}
-
-.faq-question.active .faq-icon::after {
-    content: '−';
 }
 
 .faq-answer {
@@ -607,173 +588,72 @@ footer .footer-logo img:hover {
     object-fit: contain;
 }
 
-/* Custom Liquid Glass Dropdown */
-.custom-select-wrapper {
-    position: relative;
+/* Inputs del formulario de contacto (sección oscura).
+   Fondo translúcido sin backdrop-filter: detrás hay un color sólido,
+   el blur no aportaba nada visual y costaba GPU en móvil. */
+.form-group input,
+.form-group textarea,
+.form-group select {
     width: 100%;
-    user-select: none;
-}
-
-/* Redefiniendo estilos base para todos los inputs/textareas junto con el trigger */
-.form-group input, 
-.form-group textarea, 
-.custom-select-trigger {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.1); 
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.25);
     padding: 1rem 1.2rem;
     color: var(--white);
     border-radius: 14px;
     font-size: 1rem;
-    transition: transform 220ms var(--ease-out), background-color 220ms var(--ease-out), border-color 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
+    font-family: var(--font-body);
+    transition: background-color 220ms var(--ease-out), border-color 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-.custom-select-trigger {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.68);
+    opacity: 1;
 }
 
-.form-group input:focus, 
-.form-group textarea:focus, 
-.custom-select-trigger:hover,
-.custom-select-wrapper.open .custom-select-trigger {
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
     outline: none;
     border-color: rgba(255, 255, 255, 0.7);
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15), 0 10px 30px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.14);
 }
 
-.custom-select-trigger::after {
+/* Select nativo estilizado (reemplaza el dropdown custom inaccesible) */
+.form-group .select-wrapper-dark {
+    position: relative;
+}
+
+.form-group .select-wrapper-dark::after {
     content: '';
-    width: 0.8rem;
-    height: 0.8rem;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    pointer-events: none;
+    position: absolute;
+    right: 1.1rem;
+    top: 50%;
+    width: 0.7rem;
+    height: 0.7rem;
+    transform: translateY(-50%);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-size: contain;
     background-repeat: no-repeat;
-    transition: transform 240ms var(--ease-out);
+    opacity: 0.85;
 }
 
-.custom-select-wrapper.open .custom-select-trigger::after {
-    transform: rotate(180deg);
-}
-
-.custom-options {
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 0;
-    right: 0;
-    background: rgba(25, 25, 25, 0.85); /* Más oscuro para legibilidad */
-    backdrop-filter: saturate(180%) blur(30px);
-    -webkit-backdrop-filter: saturate(180%) blur(30px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 14px;
-    overflow: hidden;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-8px) scale(0.98);
-    transform-origin: top center;
-    transition: opacity 200ms var(--ease-out), visibility 200ms var(--ease-out), transform 200ms var(--ease-out);
-    z-index: 150;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column; /* Asegura orden vertical */
-}
-
-.custom-select-wrapper.open .custom-options {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-.custom-option {
-    padding: 1rem 1.2rem;
-    color: rgba(255, 255, 255, 0.8);
+.form-group select {
+    -webkit-appearance: none;
+    appearance: none;
+    padding-right: 2.8rem;
     cursor: pointer;
-    transition: background-color 180ms var(--ease-out), color 180ms var(--ease-out), padding-left 180ms var(--ease-out);
-    font-size: 0.95rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.custom-option:last-child {
-    border-bottom: none;
+.form-group select:invalid {
+    color: rgba(255, 255, 255, 0.65);
 }
 
-.custom-option:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--white);
-    padding-left: 1.5rem;
-}
-
-.custom-option.selected {
-    background: var(--primary-color);
-    color: var(--white);
-}
-
-#contact-treatment {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-}
-
-/* Micro-animations */
-.btn {
-    position: relative;
-    overflow: hidden;
-}
-
-.btn::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 300%;
-    height: 300%;
-    background: rgba(255,255,255,0.1);
-    transform: translate(-50%, -50%) scale(0);
-    transition: transform 500ms var(--ease-out);
-    border-radius: 50%;
-    z-index: 0;
-}
-
-.btn:hover::before {
-    transform: translate(-50%, -50%) scale(1);
-}
-
-/* Shimmer Animation */
-@keyframes shimmer {
-    0% { transform: translateX(-100%) skewX(-15deg); }
-    100% { transform: translateX(200%) skewX(-15deg); }
-}
-
-.btn::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(
-        to right,
-        rgba(255,255,255,0) 0%,
-        rgba(255,255,255,0.3) 50%,
-        rgba(255,255,255,0) 100%
-    );
-    animation: none;
-    z-index: 1;
-}
-
-.btn:hover::after {
-    animation: shimmer 0.6s forwards;
-}
-
-.service-card {
-    cursor: pointer;
+.form-group select option {
+    color: var(--text-color);
+    background: var(--white);
 }
 
 /* Before & After Slider */
@@ -872,9 +752,7 @@ footer .footer-logo img:hover {
 }
 
 .testimonial-card {
-    background: rgba(249, 251, 252, 0.6); /* Translucent */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(249, 251, 252, 0.9);
     padding: 3rem 2rem;
     border-radius: 16px;
     text-align: left;
@@ -1224,9 +1102,7 @@ body:not(.home-page) header.scrolled nav a {
 }
 
 .care-card {
-    background: rgba(255, 255, 255, 0.7); /* Aumentado de 0.55 a 0.7 para mejor legibilidad */
-    backdrop-filter: saturate(180%) blur(25px);
-    -webkit-backdrop-filter: saturate(180%) blur(25px);
+    background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.9);
     border-radius: 28px;
     padding: 3.5rem;
@@ -1321,11 +1197,6 @@ body:not(.home-page) header.scrolled nav a {
     }
 }
 @media (max-width: 768px) {
-    .care-card, .contact-form-wrapper, .custom-options, header.scrolled {
-        backdrop-filter: blur(8px) !important;
-        -webkit-backdrop-filter: blur(8px) !important;
-    }
-
     .staff-profiles, .care-section, .contact, .treatment-category-section {
         content-visibility: auto;
         contain-intrinsic-size: 0 500px;
@@ -1574,55 +1445,363 @@ body:not(.home-page) header.scrolled nav a {
 	}
 
 
-/* --- Tratamientos Styles --- */
+/* =====================================================
+   /tratamientos — HERO EDITORIAL
+   ===================================================== */
+.trat-hero {
+    background:
+        radial-gradient(ellipse 70% 80% at 85% 10%, rgba(0,125,136,.14) 0%, transparent 70%),
+        var(--secondary-color);
+    color: var(--white);
+    padding: clamp(9rem, 16vh, 12rem) 8% clamp(4rem, 7vw, 6rem);
+}
 
-	.page-hero {
-		height: 40vh;
-		background-size: cover;
-		background-position: center;
-		display: flex;
-		align-items: center;
-		padding: 0 8%;
-		color: white;
-		position: relative;
-	}
-	.page-hero::after {
-		content: '';
-		position: absolute;
-		top: 0; left: 0; right: 0; bottom: 0;
-		background:
-			radial-gradient(ellipse 90% 100% at 75% 40%, rgba(0,94,103,.28) 0%, transparent 65%),
-			linear-gradient(160deg, rgba(8,24,28,.82) 0%, rgba(11,35,40,.78) 60%, rgba(5,18,22,.88) 100%);
-		backdrop-filter: blur(6px);
-		-webkit-backdrop-filter: blur(6px);
-	}
-	.hero-text-wrapper { position: relative; z-index: 2; }
-	.hero-text-wrapper h1 { font-size: 3.5rem; font-family: var(--font-heading); margin-bottom: 1rem; }
+.trat-hero-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: clamp(3rem, 7vw, 7rem);
+    align-items: center;
+}
 
-	.treatment-category-section { padding: 5rem 8%; }
-	.category-title { font-size: 2rem; margin-bottom: 3rem; color: var(--secondary-color); text-transform: uppercase; letter-spacing: 2px; }
+.trat-hero-title {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    font-weight: 400;
+    line-height: 0.98;
+    letter-spacing: -2px;
+    margin-bottom: 1.75rem;
+    text-wrap: balance;
+}
 
-	.treatment-cards-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-		gap: 2.5rem;
-	}
+.trat-hero-title em {
+    font-style: italic;
+    color: var(--accent-gold);
+}
 
-	.t-card {
-		text-decoration: none;
-		background: white;
-		border-radius: 12px;
-		overflow: hidden;
-		box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-		transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
-		will-change: transform;
-	}
-	.t-card:hover { transform: translateY(-10px); }
-	.t-card-image { width: 100%; height: 250px; object-fit: cover; }
-	.t-card-info { padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; min-height: 220px; }
-	.t-card-info h3 { font-size: 1.2rem; color: var(--secondary-color); margin-bottom: 0.8rem; }
-	.t-card-info p { font-size: 0.95rem; color: var(--text-light); line-height: 1.5; margin-bottom: 1rem; }
-	.t-card-link { color: var(--primary-color); font-weight: 600; font-size: 0.9rem; margin-top: auto; display: flex; align-items: center; gap: 5px; }
+.trat-hero-sub {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    font-weight: 300;
+    color: rgba(255,255,255,0.82);
+    max-width: 46ch;
+    margin-bottom: 2.25rem;
+}
+
+.trat-hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: rgba(255,255,255,0.75);
+}
+
+.trat-hero-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.trat-hero-meta span::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent-gold);
+    flex-shrink: 0;
+}
+
+/* Índice de categorías (navegación por anclas) */
+.trat-hero-index {
+    display: flex;
+    flex-direction: column;
+}
+
+.trat-index-row {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 1.5rem 0.25rem;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    text-decoration: none;
+    color: var(--white);
+    transition: padding-left 240ms var(--ease-out), background-color 240ms var(--ease-out);
+}
+
+.trat-index-row:last-child {
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+.trat-index-name {
+    font-family: var(--font-heading);
+    font-size: clamp(1.25rem, 2vw, 1.6rem);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: var(--white);
+    flex: 1;
+}
+
+.trat-index-count {
+    font-size: 0.8rem;
+    color: var(--accent-gold);
+    font-weight: 500;
+}
+
+.trat-index-row svg {
+    color: rgba(255,255,255,0.5);
+    flex-shrink: 0;
+    align-self: center;
+    transition: transform 240ms var(--ease-out), color 240ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .trat-index-row:hover {
+        padding-left: 0.9rem;
+    }
+    .trat-index-row:hover svg {
+        transform: translateX(4px);
+        color: var(--accent-gold);
+    }
+}
+
+@media (max-width: 900px) {
+    .trat-hero-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+    .trat-hero {
+        padding-top: 8rem;
+    }
+}
+
+/* =====================================================
+   /tratamientos — CATEGORÍAS Y TARJETAS
+   ===================================================== */
+.treatment-category-section { padding: clamp(4rem, 7vw, 6rem) 8%; }
+
+.category-header {
+    max-width: 1200px;
+    margin: 0 auto 3rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.category-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.9rem, 3.2vw, 2.6rem);
+    font-weight: 400;
+    color: var(--secondary-color);
+    letter-spacing: -0.5px;
+    margin-bottom: 0.6rem;
+    text-wrap: balance;
+}
+
+.category-desc {
+    color: var(--text-light);
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.65;
+    max-width: 58ch;
+}
+
+.category-count {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+.treatment-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.t-card {
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.t-card-media {
+    overflow: hidden;
+}
+
+.t-card-image {
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+    display: block;
+    transition: transform 450ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .t-card:hover .t-card-image { transform: scale(1.05); }
+}
+
+.t-card-info {
+    padding: 1.75rem 1.75rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.t-card-info h3 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--secondary-color);
+    margin-bottom: 0.6rem;
+    line-height: 1.3;
+}
+
+.t-card-title-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Stretched link: toda la tarjeta navega al detalle */
+.t-card-title-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.t-card:has(.t-card-title-link:focus-visible) {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 3px;
+}
+
+.t-card-info p {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    line-height: 1.6;
+    font-weight: 300;
+}
+
+.t-card-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.t-card-actions .reserve-btn { pointer-events: auto; }
+
+.t-card-link {
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: gap 200ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .t-card:hover .t-card-link { gap: 9px; }
+}
+
+/* Tarjeta destacada: primera de cada categoría, a lo ancho */
+.t-card--featured {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+}
+
+/* La imagen se posiciona absoluta para seguir la altura del contenido,
+   no su altura intrínseca (las fotos son verticales) */
+.t-card--featured .t-card-media {
+    position: relative;
+    min-height: 340px;
+}
+
+.t-card--featured .t-card-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.t-card--featured .t-card-info {
+    padding: clamp(2rem, 4vw, 3.25rem);
+    justify-content: center;
+    gap: 1.75rem;
+}
+
+.t-card--featured h3 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.7rem, 2.6vw, 2.2rem);
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.9rem;
+}
+
+.t-card--featured .t-card-info p {
+    font-size: 1.02rem;
+    line-height: 1.7;
+    max-width: 48ch;
+}
+
+@media (max-width: 768px) {
+    .t-card--featured {
+        grid-template-columns: 1fr;
+    }
+    .t-card--featured .t-card-media {
+        position: static;
+        min-height: 0;
+    }
+    .t-card--featured .t-card-image {
+        position: static;
+        height: 230px;
+    }
+}
+
+/* CTA final de /tratamientos */
+.trat-cta {
+    background: var(--secondary-color);
+    padding: clamp(4.5rem, 8vw, 6.5rem) 8%;
+    text-align: center;
+}
+
+.trat-cta h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    font-weight: 400;
+    color: var(--white);
+    letter-spacing: -0.5px;
+    margin-bottom: 1rem;
+    text-wrap: balance;
+}
+
+.trat-cta p {
+    color: rgba(255,255,255,0.72);
+    font-size: 1.05rem;
+    font-weight: 300;
+    max-width: 52ch;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+}
+
+.trat-cta-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
 
 
 /* --- Treatment Detail Styles --- */
@@ -1696,22 +1875,17 @@ body:not(.home-page) header.scrolled nav a {
 	}
 
 /* =========================================
-   UNIVERSAL HERO EXPANSION & LIQUID GLASS
+   UNIVERSAL HERO EXPANSION
    ========================================= */
 
-/* Remove global body padding that forces a white gap */
-body {
-    padding-top: 0 !important;
-}
-
-/* Ensure ALL heroes start from the absolute top and push text down perfectly */
+/* Los heroes inician desde el tope absoluto y empujan su texto hacia abajo */
 .hero {
     padding-top: 15vh !important;
 }
 
-.page-hero, .treatment-detail-hero {
+.treatment-detail-hero {
     margin-top: 0 !important;
-    padding-top: 15vh !important; 
+    padding-top: 15vh !important;
 }
 
 /* Mobile Header: solid background, NO backdrop-filter.
@@ -1736,6 +1910,17 @@ body {
 nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     color: var(--secondary-color) !important;
     text-shadow: none !important;
+}
+
+/* Páginas con hero oscuro: links blancos mientras el header está transparente
+   (en móvil el header siempre tiene fondo blanco sólido, no aplica) */
+@media (min-width: 900px) {
+    body.dark-hero header:not(.scrolled) nav a {
+        color: var(--white) !important;
+    }
+    body.dark-hero header:not(.scrolled) .nav-reservar-btn {
+        color: #fff !important;
+    }
 }
 
 /* =====================================================
@@ -2315,7 +2500,8 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
    ===================================================== */
 @media (max-width: 600px) {
     .reservar-page {
-        padding: 1.25rem 0 2rem;
+        /* despeja el header fijo (~110px en móvil) */
+        padding: 8rem 0 2rem;
     }
 
     .reservar-container {
@@ -2553,9 +2739,11 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     font-size: 0.7rem !important;
 }
 
+/* Cada copia se desplaza su ancho completo: la segunda copia termina exactamente
+   donde empezó la primera, así el reinicio del loop es invisible (sin saltos). */
 @keyframes marquee-scroll {
     0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    100% { transform: translateX(-100%); }
 }
 
 .treatments-marquee:hover .marquee-inner {
@@ -2621,12 +2809,11 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     padding: 10rem 0 8rem;
     display: flex;
     flex-direction: column;
-    gap: 0;
+    gap: 1.5rem;
 }
 
 .specialty-card {
-    border-top: 1px solid rgba(0,0,0,0.08);
-    padding: 3rem 0;
+    padding: 3rem 2rem;
     position: relative;
     overflow: hidden;
     cursor: default;
@@ -2648,10 +2835,6 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
 
 @media (hover: hover) and (pointer: fine) {
     .specialty-card:hover::before { opacity: 1; }
-}
-
-.specialty-card:last-child {
-    border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 
 .specialty-num {
@@ -3310,7 +3493,8 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     .specialties-cta,
     .treatment-detail-block,
     .stat-item,
-    .trust-item {
+    .trust-item,
+    .philosophy-scrubbable .word {
         opacity: 1 !important;
         transform: none !important;
     }
@@ -3337,17 +3521,17 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     margin-top: 3px;
     width: 18px;
     height: 18px;
-    accent-color: #16a3a3;
+    accent-color: var(--primary-color);
     cursor: pointer;
 }
 
 .habeas-label a {
-    color: #16a3a3;
+    color: var(--primary-color);
     text-decoration: underline;
     text-underline-offset: 2px;
 }
 
-.habeas-label a:hover { color: #0f7f7f; }
+.habeas-label a:hover { color: var(--primary-color-hover); }
 
 #b-turnstile {
     display: flex;
@@ -3356,10 +3540,12 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
 }
 
 /* =====================================================
-   LIQUID GLASS — Botones y tarjetas de tratamientos
+   BOTONES Y TARJETAS — superficie sólida
+   (sin backdrop-filter decorativo: en móvil cada blur
+   obligaba a repintar la capa completa en GPU)
    ===================================================== */
 
-/* Mesh sutil en secciones con cards para que el blur tenga algo que refractar */
+/* Mesh sutil en secciones con cards */
 .specialties-pinned {
     background:
         radial-gradient(ellipse 80% 60% at 20% 50%, rgba(0,125,136,.06) 0%, transparent 100%),
@@ -3369,118 +3555,98 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
 
 /* ---- Botones ---------------------------------------- */
 .btn {
-    border-radius: 10px;
-    background: rgba(0,125,136,.84);
-    backdrop-filter: blur(14px) saturate(160%);
-    -webkit-backdrop-filter: blur(14px) saturate(160%);
-    border: 1px solid rgba(255,255,255,.28);
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.25),
-        0 4px 16px rgba(0,125,136,.30),
-        0 1px 4px rgba(0,0,0,.10);
+    border-radius: 4px;
+    background: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 4px 14px rgba(0,125,136,.22);
     color: var(--white);
     transition: background 200ms var(--ease-out), transform 160ms var(--ease-out), box-shadow 200ms var(--ease-out);
 }
-/* Asegura que el texto quede por encima de los pseudoelementos de animación */
-.btn::before { z-index: -1; }
-.btn::after  { z-index: -1; }
 
 @media (hover: hover) and (pointer: fine) {
     .btn:hover {
-        background: rgba(0,94,103,.90);
-        box-shadow:
-            inset 0 1px 0 rgba(255,255,255,.25),
-            0 8px 24px rgba(0,125,136,.36),
-            0 2px 6px rgba(0,0,0,.12);
+        background: var(--primary-color-hover);
+        border-color: var(--primary-color-hover);
+        box-shadow: 0 8px 22px rgba(0,125,136,.30);
         transform: translateY(-2px);
         color: var(--white);
     }
 }
-.btn:active { transform: translateY(0); }
+.btn:active { transform: translateY(1px); box-shadow: 0 2px 8px rgba(0,125,136,.20); }
+
+/* Variante outline clara (sobre fondos oscuros) — debe redeclararse aquí
+   para ganar al .btn sólido anterior en el orden de cascada */
+.btn.btn-outline {
+    background: transparent;
+    border-color: rgba(255,255,255,.55);
+    box-shadow: none;
+    color: var(--white);
+}
+@media (hover: hover) and (pointer: fine) {
+    .btn.btn-outline:hover {
+        background: var(--white);
+        border-color: var(--white);
+        color: var(--secondary-color);
+        box-shadow: none;
+    }
+}
 
 .btn-outline-dark {
-    border-radius: 10px;
-    background: rgba(255,255,255,.40);
-    backdrop-filter: blur(14px) saturate(150%);
-    -webkit-backdrop-filter: blur(14px) saturate(150%);
-    border: 1px solid rgba(17,17,17,.16);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.70), 0 2px 10px rgba(0,0,0,.07);
+    border-radius: 4px;
+    background: transparent;
+    border: 1px solid rgba(17,17,17,.22);
+    box-shadow: none;
     color: var(--secondary-color);
-    transition: background 200ms var(--ease-out), transform 160ms var(--ease-out);
+    transition: background 200ms var(--ease-out), border-color 200ms var(--ease-out), transform 160ms var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
     .btn-outline-dark:hover {
-        background: rgba(255,255,255,.60);
+        background: rgba(17,17,17,.04);
+        border-color: var(--secondary-color);
         transform: translateY(-2px);
         color: var(--secondary-color);
     }
 }
-.btn-outline-dark:active { transform: translateY(0); }
+.btn-outline-dark:active { transform: translateY(1px); }
 
 /* ---- Botón Reservar (tarjetas de tratamientos) ------ */
 .reserve-btn {
-    border-radius: 10px;
-    background: rgba(0,125,136,.84);
-    backdrop-filter: blur(14px) saturate(160%);
-    -webkit-backdrop-filter: blur(14px) saturate(160%);
-    border: 1px solid rgba(255,255,255,.28);
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.25),
-        0 4px 16px rgba(0,125,136,.30),
-        0 1px 4px rgba(0,0,0,.10);
+    border-radius: 4px;
+    background: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 2px 10px rgba(0,125,136,.20);
     color: #fff;
     transition: background 200ms var(--ease-out), transform 160ms var(--ease-out), box-shadow 200ms var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
     .reserve-btn:hover {
-        background: rgba(0,94,103,.90);
-        box-shadow:
-            inset 0 1px 0 rgba(255,255,255,.25),
-            0 8px 24px rgba(0,125,136,.36),
-            0 2px 6px rgba(0,0,0,.12);
+        background: var(--primary-color-hover);
+        border-color: var(--primary-color-hover);
+        box-shadow: 0 6px 18px rgba(0,125,136,.28);
         transform: translateY(-2px);
         color: #fff;
     }
 }
-.reserve-btn:active { transform: translateY(0); }
+.reserve-btn:active { transform: translateY(1px); }
 .reserve-btn.reserved {
-    background: rgba(33,136,56,.80);
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
-    border-color: rgba(255,255,255,.22);
+    background: #218838;
+    border-color: #218838;
 }
 
 /* ---- Tarjetas de tratamientos (página /tratamientos) - */
 .t-card {
-    background: rgba(255,255,255,.72);
-    backdrop-filter: blur(18px) saturate(170%);
-    -webkit-backdrop-filter: blur(18px) saturate(170%);
-    border: 1px solid rgba(255,255,255,.70);
-    box-shadow: 0 4px 24px rgba(0,0,0,.07), inset 0 1px 0 rgba(255,255,255,.90);
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 4px 24px rgba(0,0,0,.06);
     position: relative;
     overflow: hidden;
-    transition: transform 240ms var(--ease-out), box-shadow 240ms var(--ease-out);
-}
-.t-card::after {
-    content: "";
-    position: absolute; inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(150deg,
-        rgba(255,255,255,.80) 0%,
-        rgba(255,255,255,.12) 50%,
-        rgba(255,255,255,.50) 100%
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-    z-index: 0;
+    transition: transform 240ms var(--ease-out), box-shadow 240ms var(--ease-out), border-color 240ms var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
     .t-card:hover {
         transform: translateY(-4px);
-        box-shadow: 0 14px 40px rgba(0,125,136,.12), inset 0 1px 0 rgba(255,255,255,.90);
+        box-shadow: 0 14px 40px rgba(0,125,136,.12);
+        border-color: rgba(0,125,136,.18);
     }
 }
 
@@ -3494,58 +3660,35 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
 
 /* ---- Specialty cards -------------------------------- */
 .specialty-card {
-    background: rgba(255,255,255,.62);
-    backdrop-filter: blur(20px) saturate(175%);
-    -webkit-backdrop-filter: blur(20px) saturate(175%);
-    border: 1px solid rgba(255,255,255,.74);
-    box-shadow: 0 4px 28px rgba(0,0,0,.07), inset 0 1px 0 rgba(255,255,255,.90);
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 4px 24px rgba(0,0,0,.06);
     position: relative;
     overflow: hidden;
-    transition: transform 240ms var(--ease-out), box-shadow 240ms var(--ease-out);
-}
-.specialty-card::before {
-    content: "";
-    position: absolute; inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(150deg,
-        rgba(255,255,255,.82) 0%,
-        rgba(255,255,255,.15) 50%,
-        rgba(255,255,255,.52) 100%
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
+    transition: transform 240ms var(--ease-out), box-shadow 240ms var(--ease-out), border-color 240ms var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
     .specialty-card:hover {
         transform: translateY(-4px);
-        box-shadow: 0 14px 40px rgba(0,125,136,.13), inset 0 1px 0 rgba(255,255,255,.90);
+        box-shadow: 0 14px 40px rgba(0,125,136,.13);
+        border-color: rgba(0,125,136,.18);
     }
 }
 
 /* ---- Botón navbar "Reservar Cita" ------------------- */
 .nav-reservar-btn {
-    border-radius: 10px !important;
-    background: rgba(0,125,136,.84) !important;
-    backdrop-filter: blur(14px) saturate(160%);
-    -webkit-backdrop-filter: blur(14px) saturate(160%);
-    border: 1px solid rgba(255,255,255,.28) !important;
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.25),
-        0 4px 16px rgba(0,125,136,.30),
-        0 1px 4px rgba(0,0,0,.10);
+    border-radius: 4px !important;
+    background: var(--primary-color) !important;
+    border: 1px solid var(--primary-color) !important;
+    box-shadow: 0 2px 10px rgba(0,125,136,.20);
     color: #fff !important;
     transition: background 200ms var(--ease-out), transform 160ms var(--ease-out), box-shadow 200ms var(--ease-out) !important;
 }
 @media (hover: hover) and (pointer: fine) {
     .nav-reservar-btn:hover {
-        background: rgba(0,94,103,.90) !important;
-        box-shadow:
-            inset 0 1px 0 rgba(255,255,255,.25),
-            0 8px 24px rgba(0,125,136,.36),
-            0 2px 6px rgba(0,0,0,.12);
+        background: var(--primary-color-hover) !important;
+        border-color: var(--primary-color-hover) !important;
+        box-shadow: 0 6px 18px rgba(0,125,136,.28);
         transform: translateY(-2px) !important;
         color: #fff !important;
     }

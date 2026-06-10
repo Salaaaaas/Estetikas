@@ -4,57 +4,112 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const all = await getCollection('tratamientos');
 
-const CATEGORY_ORDER = [
-  'Facial & Regeneración',
-  'Bioestimulación & Contorno',
-  'Cuidado Corporal',
+const CATEGORIES = [
+  {
+    name: 'Facial & Regeneración',
+    slug: 'facial-regeneracion',
+    desc: 'Limpieza, textura y luminosidad: protocolos faciales que devuelven la salud de tu piel con respaldo médico.',
+    featured: 'limpieza-facial',
+  },
+  {
+    name: 'Bioestimulación & Contorno',
+    slug: 'bioestimulacion-contorno',
+    desc: 'Activa tu propio colágeno y recupera la estructura natural del rostro, sin resultados artificiales.',
+    featured: 'bioestimuladores-colageno',
+  },
+  {
+    name: 'Cuidado Corporal',
+    slug: 'cuidado-corporal',
+    desc: 'Silueta, recuperación y bienestar desde adentro: terapias corporales diseñadas para tu cuerpo.',
+    featured: 'sueroterapia',
+  },
 ];
 
-const byCategory = CATEGORY_ORDER.map(cat => ({
-  cat,
-  items: all.filter(t => t.data.category === cat),
-}));
+const byCategory = CATEGORIES.map(cat => {
+  const items = all.filter(t => t.data.category === cat.name);
+  // La destacada va primero; el resto conserva su orden
+  items.sort((a, b) => (a.id === cat.featured ? -1 : b.id === cat.featured ? 1 : 0));
+  return { ...cat, items };
+});
+
+const totalCount = all.length;
 
 const RESERVE_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
+const ARROW_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
 ---
 
 <BaseLayout
   title="Tratamientos | Esteti'Kas"
-  description="Descubre todos los tratamientos de belleza y cuidado personal que Esteti'Kas tiene para ti en Bataan y Guápiles."
+  description={`${totalCount} tratamientos de medicina estética para rostro, cuerpo y bienestar en Bataan y Guápiles, Costa Rica.`}
+  bodyClass="dark-hero"
 >
-  <section class="page-hero" style="background-image: url('/img/fondo_tratamientos.webp');">
-    <div class="hero-text-wrapper">
-      <h1>Nuestros Tratamientos</h1>
-      <p>Excelencia en medicina estética y cuidado integral</p>
+  <section class="trat-hero">
+    <div class="trat-hero-grid">
+      <div class="trat-hero-main">
+        <h1 class="trat-hero-title">Nuestros<br><em>Tratamientos</em></h1>
+        <p class="trat-hero-sub">
+          {totalCount} procedimientos médico-estéticos para rostro, cuerpo y bienestar celular.
+          Cada uno comienza con una valoración para diseñar tu plan a la medida.
+        </p>
+        <div class="trat-hero-meta">
+          <span>Valoración inicial gratuita</span>
+          <span>Profesionales en salud certificados</span>
+          <span>Bataan · Guápiles</span>
+        </div>
+      </div>
+      <!-- div con role: el selector global `nav a` (header) re-estiliza cualquier <nav> -->
+      <div class="trat-hero-index" role="navigation" aria-label="Categorías de tratamientos">
+        {byCategory.map(({ name, slug, items }) => (
+          <a href={`#${slug}`} class="trat-index-row">
+            <span class="trat-index-name">{name}</span>
+            <span class="trat-index-count">{items.length} tratamientos</span>
+            <Fragment set:html={ARROW_ICON} />
+          </a>
+        ))}
+      </div>
     </div>
   </section>
 
-  {byCategory.map(({ cat, items }, i) => (
+  {byCategory.map(({ name, slug, desc, items }, i) => (
     <section
       class="treatment-category-section"
+      id={slug}
       style={i % 2 === 1 ? 'background-color: var(--bg-light);' : ''}
     >
-      <h2 class="category-title">{cat}</h2>
+      <div class="category-header">
+        <div>
+          <h2 class="category-title">{name}</h2>
+          <p class="category-desc">{desc}</p>
+        </div>
+        <span class="category-count">{items.length} tratamientos</span>
+      </div>
       <div class="treatment-cards-grid">
-        {items.map(t => (
-          <a href={`/tratamientos/${t.id}`} class="t-card trigger-reveal">
-            <img
-              src={`/img/${t.data.cardImage}`}
-              alt={t.data.cardImageAlt}
-              class="t-card-image"
-              width="400"
-              height="250"
-              loading={t.data.cardLoading}
-            />
+        {items.map((t, j) => {
+          const isFeatured = j === 0 && items.length >= 4;
+          return (
+          <article class={`t-card${isFeatured ? ' t-card--featured' : ''}`}>
+            <div class="t-card-media">
+              <img
+                src={`/img/${t.data.cardImage}`}
+                alt={t.data.cardImageAlt}
+                class="t-card-image"
+                width="400"
+                height="250"
+                loading={t.data.cardLoading}
+                decoding="async"
+              />
+            </div>
             <div class="t-card-info">
-              <div>
-                <h3>{t.data.cardTitle}</h3>
-                <p>{t.data.cardDescription}</p>
+              <div class="t-card-text">
+                <h3>
+                  <a href={`/tratamientos/${t.id}`} class="t-card-title-link">{t.data.cardTitle}</a>
+                </h3>
+                <p>{isFeatured ? t.data.about : t.data.cardDescription}</p>
               </div>
               <div class="t-card-actions">
-                <span class="t-card-link">
-                  Leer Más
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                <span class="t-card-link" aria-hidden="true">
+                  Leer más
+                  <Fragment set:html={ARROW_ICON} />
                 </span>
                 <button
                   class="reserve-btn"
@@ -66,22 +121,22 @@ const RESERVE_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none
                 </button>
               </div>
             </div>
-          </a>
-        ))}
+          </article>
+          );
+        })}
       </div>
     </section>
   ))}
 
-  <!-- CTA Booking -->
-  <section style="background: var(--secondary-color); padding: 5rem 5%; text-align: center;">
-    <h2 style="font-family: var(--font-heading); font-size: 2.4rem; font-weight: 400; color: white; margin-bottom: 1rem;">
-      ¿Lista para tu transformación?
-    </h2>
-    <p style="color: rgba(255,255,255,0.65); font-size: 1.05rem; font-weight: 300; margin-bottom: 2.5rem; max-width: 500px; margin-left: auto; margin-right: auto;">
-      Selecciona los tratamientos de interés y envíanos tu solicitud en segundos.
+  <section class="trat-cta">
+    <h2>¿Lista para tu transformación?</h2>
+    <p>
+      Agrega los tratamientos que te interesan con el botón Reservar y envíanos tu
+      solicitud en segundos. Te confirmamos por WhatsApp.
     </p>
-    <a href="/reservar" class="btn" style="font-size: 1rem; padding: 1rem 3rem;">
-      Ver Mi Lista de Citas
-    </a>
+    <div class="trat-cta-actions">
+      <a href="/reservar" class="btn">Ver mi lista de citas</a>
+      <a href="https://wa.me/50684320647" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+    </div>
   </section>
 </BaseLayout>

@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esteti'Kas — Estrategia Instagram & Templates</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #007D88;
+            --primary-dark: #005E67;
+            --secondary: #111111;
+            --accent-gold: #C9A84C;
+            --bg-light: #F7F9FA;
+            --text-light: #4A4A4A;
+            --danger: #E74C3C;
+        }
+
+        body {
+            font-family: 'Jost', sans-serif;
+            background: #fafafa;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 3rem 2rem;
+            margin: -40px -20px 3rem;
+            text-align: center;
+            border-bottom: 4px solid var(--accent-gold);
+        }
+
+        header h1 {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* NAVIGATION */
+        nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 0.7rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 200ms;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* SECTIONS */
+        .section {
+            background: white;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        section h2 {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 0.8rem;
+        }
+
+        section h3 {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-top: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        section h4 {
+            font-family: 'Jost', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-top: 1.2rem;
+            margin-bottom: 0.6rem;
+        }
+
+        p, li {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-bottom: 0.8rem;
+            line-height: 1.7;
+        }
+
+        strong {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* CARDS & BOXES */
+        .info-box {
+            background: var(--bg-light);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .info-box.warning {
+            border-left-color: var(--danger);
+            background: rgba(231, 76, 60, 0.05);
+        }
+
+        .info-box.success {
+            border-left-color: #27AE60;
+            background: rgba(39, 174, 96, 0.05);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .card {
+            background: var(--bg-light);
+            padding: 1.8rem;
+            border-radius: 8px;
+            border-top: 4px solid var(--primary);
+        }
+
+        .card h4 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+
+        /* INSTAGRAM POSTS */
+        .ig-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .ig-post-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ig-post-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 0.8rem;
+        }
+
+        .ig-post {
+            width: 100%;
+            max-width: 100%;
+            aspect-ratio: 4/5;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            position: relative;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2rem;
+        }
+
+        /* Template: Detalle de Tratamiento */
+        .post-tratamiento {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .post-tratamiento h3 {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 1.6rem;
+            color: white;
+            margin: 0 0 0.8rem 0;
+        }
+
+        .post-tratamiento .benefits {
+            font-size: 0.8rem;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 1rem;
+        }
+
+        .post-tratamiento .benefits li {
+            margin-bottom: 0.4rem;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .post-btn {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            width: fit-content;
+        }
+
+        /* Template: Antes/Después */
+        .post-resultado {
+            background: white;
+            color: var(--secondary);
+        }
+
+        .post-resultado h3 {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin: 0 0 1rem 0;
+        }
+
+        .resultado-img {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .resultado-img div {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #e0e0e0, #f5f5f5);
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 0.5rem;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        /* Template: Tips/Educativo */
+        .post-tip {
+            background: linear-gradient(160deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .post-tip .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .post-tip h3 {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 1.5rem;
+            color: white;
+            margin: 0 0 0.8rem 0;
+        }
+
+        .post-tip p {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.85);
+            margin: 0;
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0.8rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            color: var(--text-light);
+        }
+
+        tr:hover {
+            background: var(--bg-light);
+        }
+
+        /* COPY EXAMPLES */
+        .copy-box {
+            background: #f5f5f5;
+            border-left: 4px solid var(--accent-gold);
+            padding: 1.2rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            font-family: 'Jost', sans-serif;
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }
+
+        .copy-box strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* CADENCE TABLE */
+        .cadence-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .cadence-day {
+            background: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-top: 3px solid var(--primary);
+        }
+
+        .cadence-day h4 {
+            color: var(--primary);
+            margin: 0 0 0.8rem 0;
+        }
+
+        .cadence-post {
+            background: white;
+            padding: 0.8rem;
+            margin-bottom: 0.6rem;
+            border-left: 3px solid var(--accent-gold);
+            border-radius: 2px;
+            font-size: 0.85rem;
+        }
+
+        .cadence-post .type {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.75rem;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+            border-top: 1px solid rgba(0,0,0,0.1);
+            margin-top: 3rem;
+            font-size: 0.85rem;
+        }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.8rem; }
+            section h2 { font-size: 1.4rem; }
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Esteti'Kas Instagram Strategy</h1>
+        <p>Guía completa: contenido, templates, copy y cadencia para visibilidad y engagement</p>
+    </header>
+
+    <div class="container">
+        <!-- NAVIGATION -->
+        <nav>
+            <button class="nav-btn active" onclick="showSection('estrategia')">📊 Estrategia</button>
+            <button class="nav-btn" onclick="showSection('templates')">🎨 Templates</button>
+            <button class="nav-btn" onclick="showSection('copy')">✍️ Copy Template</button>
+            <button class="nav-btn" onclick="showSection('cadencia')">📅 Cadencia</button>
+            <button class="nav-btn" onclick="showSection('growth')">📈 Growth Tips</button>
+        </nav>
+
+        <!-- SECTION 1: ESTRATEGIA -->
+        <section id="estrategia" class="section active">
+            <h2>📊 Estrategia de Contenido</h2>
+
+            <h3>¿Por qué cambiar ahora?</h3>
+            <p>El feed actual tiene mucho valor técnico pero poco engagement. Los algoritmos de Instagram premian:</p>
+            <ul>
+                <li><strong>Antes/Después visuales claros</strong> — Transformaciones reales generan 3x más saves</li>
+                <li><strong>Consistencia visual</strong> — Feed cohesionado = marca reconocible al scroll</li>
+                <li><strong>Copy corto y directo</strong> — La mayoría de usuarios no lee párrafos completos</li>
+                <li><strong>CTAs claros</strong> — "Reserva aquí", "Link en bio", etc.</li>
+                <li><strong>Mix de contenido</strong> — No solo educativo; también lifestyle, tips, casos de éxito</li>
+            </ul>
+
+            <div class="info-box success">
+                <strong>Meta:</strong> En 60 días, pasar de feed confuso a identidad clara que atraiga clientes nuevos a través de visibilidad (Explore, hashtags, reels).
+            </div>
+
+            <h3>Pilares de contenido</h3>
+            <div class="grid-2">
+                <div class="card">
+                    <h4>🎯 Resultados (35%)</h4>
+                    <p>Antes/después reales de clientes. Máximo impacto visual. <strong>Genera confianza y FOMO.</strong></p>
+                </div>
+                <div class="card">
+                    <h4>💡 Educación (35%)</h4>
+                    <p>Tips de skincare, explicaciones breves de tratamientos, FAQ. <strong>Posiciona como experta.</strong></p>
+                </div>
+                <div class="card">
+                    <h4>✨ Lifestyle (20%)</h4>
+                    <p>Day in the clinic, equipo, ambiente. <strong>Humaniza la marca.</strong></p>
+                </div>
+                <div class="card">
+                    <h4>🛍️ Producto (10%)</h4>
+                    <p>Home care, serums, mascarillas. <strong>Ingresos adicionales.</strong></p>
+                </div>
+            </div>
+
+            <h3>Objetivos primer mes</h3>
+            <ul>
+                <li>Publicar <strong>1 post/día</strong> (en lugar de irregular)</li>
+                <li>Alcanzar <strong>50% de engagement rate</strong> (comentarios + saves)</li>
+                <li>Posicionar <strong>15 hashtags relevantes</strong> en Explore</li>
+                <li>Llegar a <strong>500 nuevos followers</strong></li>
+                <li>Generar <strong>20+ consultas desde Instagram</strong></li>
+            </ul>
+        </section>
+
+        <!-- SECTION 2: TEMPLATES -->
+        <section id="templates" class="section">
+            <h2>🎨 Templates Específicos para Clínica Estética</h2>
+
+            <h3>Template 1: Resultado (Antes/Después)</h3>
+            <p><strong>Cadencia:</strong> 3x por semana | <strong>Engagement:</strong> ⭐⭐⭐⭐⭐ Máximo</p>
+            <div class="ig-grid">
+                <div class="ig-post-wrapper">
+                    <div class="ig-post-label">Ejemplo: Botox + Ácido Hialurónico</div>
+                    <div class="ig-post post-resultado">
+                        <h3>Naturalidad en Acción</h3>
+                        <div class="resultado-img">
+                            <div>ANTES</div>
+                            <div>DESPUÉS</div>
+                        </div>
+                        <strong style="color: var(--primary); display: block; margin-bottom: 0.5rem;">Botox + Ácido Hialurónico</strong>
+                        <p style="margin: 0; font-size: 0.8rem;">Resultados en 2 semanas. Expresión natural garantizada.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>Copy para este template:</strong>
+                <div class="copy-box">
+                    [Nombre del Tratamiento] ✨<br><br>
+                    "¿Ves la diferencia? Ni yo misma noto que me hice algo" — Cliente Katherine<br><br>
+                    Resultados naturales = mejor expresión + máximo impacto visual sin perder tu esencia.<br><br>
+                    📍 Bataan | Guápiles<br>
+                    📲 Link en bio para reservar
+                </div>
+            </div>
+
+            <h3>Template 2: Detalle de Tratamiento</h3>
+            <p><strong>Cadencia:</strong> 2x por semana | <strong>Engagement:</strong> ⭐⭐⭐⭐</p>
+            <div class="ig-grid">
+                <div class="ig-post-wrapper">
+                    <div class="ig-post-label">Ejemplo: Peeling Químico</div>
+                    <div class="ig-post post-tratamiento">
+                        <h3>Peeling Químico</h3>
+                        <ul class="benefits">
+                            <li>• Elimina manchas y acné</li>
+                            <li>• Textura suave en 7 días</li>
+                            <li>• Sin dolor, máximo efecto</li>
+                        </ul>
+                        <div class="post-btn">Conocer más</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="copy-box">
+                Peeling Químico 🧪<br><br>
+                "Me sacó acné que llevaba años" — María, 28<br><br>
+                ¿Piel dull? ¿Manchas? Peeling químico = reset completo en 3 sesiones. Sin irritación. Resultados garantizados.<br><br>
+                💬 Cuéntame qué problema quieres resolver → Link en bio
+            </div>
+
+            <h3>Template 3: Tip/Educativo</h3>
+            <p><strong>Cadencia:</strong> 2x por semana | <strong>Engagement:</strong> ⭐⭐⭐</p>
+            <div class="ig-grid">
+                <div class="ig-post-wrapper">
+                    <div class="ig-post-label">Ejemplo: Skincare Tip</div>
+                    <div class="ig-post post-tip">
+                        <div class="icon">☀️</div>
+                        <h3>SPF 50+ TODOS los días</h3>
+                        <p>No es opcional. Es el mejor anti-aging que existe. Aplica cada 2 horas en piscina/playa. Punto.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="copy-box">
+                ☀️ Skincare 101: SPF es tu mejor amigo<br><br>
+                Si usas Botox, peelings, o ácido hialurónico pero NO usas protector solar... estás tirando dinero.<br><br>
+                El 80% del envejecimiento es por UV. Serio.<br><br>
+                🧴 Recomendación: SPF 50+, cada 2 horas. Fin de la historia.
+            </div>
+
+            <h3>Template 4: Lifestyle/Day in Clinic</h3>
+            <p><strong>Cadencia:</strong> 1x por semana | <strong>Engagement:</strong> ⭐⭐⭐</p>
+            <div class="info-box">
+                <strong>Idea:</strong> Fotos del equipo (Katherine, asistentes), del consultorio limpio, procedimientos en acción, testimonios de clientes reales.
+                <br><br>
+                <strong>Copy:</strong> "Un día cualquiera en Esteti'Kas: 14 transformaciones, 1 equipo apasionado. ¿La próxima eres tú?"
+            </div>
+
+            <h3>Template 5: Producto/Home Care</h3>
+            <p><strong>Cadencia:</strong> 1x por semana | <strong>Engagement:</strong> ⭐⭐⭐</p>
+            <div class="info-box">
+                <strong>Productos a destacar:</strong> Serums, mascarillas, sunscreen, night creams que vendan en clínica.
+                <br><br>
+                <strong>Copy:</strong> "[Nombre producto] | Cuidado post-tratamiento | Uso diario<br>Precio: ¢[X]. Link en bio para ordenar."
+            </div>
+        </section>
+
+        <!-- SECTION 3: COPY TEMPLATES -->
+        <section id="copy" class="section">
+            <h2>✍️ Copy Templates (Recetas de Texto)</h2>
+
+            <h3>Estructura recomendada (aplica a 80% de posts)</h3>
+            <div class="info-box success">
+                <strong>Hook (1 línea):</strong> Pregunta o declaración que detiene el scroll<br>
+                <strong>Proof (2-3 líneas):</strong> Testimonio, número, resultado concreto<br>
+                <strong>CTA (1 línea):</strong> "Link en bio", "Reserva aquí", "Cuéntame"
+            </div>
+
+            <h3>Ejemplos por tipo de contenido</h3>
+
+            <h4>Antes/Después (Máximo engagement)</h4>
+            <div class="copy-box">
+                <strong>VERSIÓN 1 - Casual</strong><br>
+                [Tratamiento] ✨<br><br>
+                "¿Ves la diferencia? Ni yo misma noto que me hice algo" → Testimonio real<br><br>
+                Resultados naturales. Sin perder expresión.<br><br>
+                📍 Bataan | Guápiles<br>
+                🔗 Link en bio para reserva
+            </div>
+
+            <div class="copy-box">
+                <strong>VERSIÓN 2 - Datos</strong><br>
+                Botox + Ácido Hialurónico 💉<br><br>
+                ✓ Resultados en 14 días<br>
+                ✓ Efecto 4-6 meses<br>
+                ✓ Sin tiempo de recuperación<br><br>
+                Consulta gratis. Cuéntame qué quieres lograr → Link en bio
+            </div>
+
+            <div class="copy-box">
+                <strong>VERSIÓN 3 - Problema/Solución</strong><br>
+                ¿Acné + manchas? 🎯<br><br>
+                La solución: Peeling Químico<br>
+                → Elimina bacterias (acné)<br>
+                → Regenera (nuevas células)<br>
+                → Claridad en 3 sesiones<br><br>
+                Costo: ¢25,000/sesión<br>
+                📲 Reserva ahora → Link en bio
+            </div>
+
+            <h4>Tips/Educativo (Máximo alcance)</h4>
+            <div class="copy-box">
+                <strong>FÓRMULA: Insight + Por qué + Acción</strong><br><br>
+                🚨 Mito: "El protector solar es solo para playa"<br><br>
+                Realidad: El 80% del envejecimiento viene del UV diario (no solo playa). Cada. Día.<br><br>
+                Acción: SPF 50+, cada 2 horas, todos los días = mejor anti-aging que existe.<br><br>
+                💬 ¿Lo haces? ¿O todavía resistes?
+            </div>
+
+            <h4>Producto (Corto y directo)</h4>
+            <div class="copy-box">
+                <strong>Sérum Vitamínico Esteti'Kas</strong><br><br>
+                • Hidratación profunda<br>
+                • Ilumina (48 horas visible)<br>
+                • Ingredientes premium<br><br>
+                Precio: ¢18,000<br>
+                📦 Pide el tuyo → Link en bio
+            </div>
+
+            <h3>Palabras clave a usar (SEO Instagram)</h3>
+            <ul>
+                <li><strong>Tratamientos:</strong> Botox Costa Rica, Peeling Químico, Ácido Hialurónico, Bioestimuladores</li>
+                <li><strong>Beneficios:</strong> Resultados naturales, Sin cirugía, Rápido, Sin dolor</li>
+                <li><strong>Locales:</strong> Bataan, Guápiles, Medicina Estética CR, Clínica Estética</li>
+            </ul>
+
+            <h3>Hashtags estratégicos (5-10 por post)</h3>
+            <p>Mezcla: 2 grandes (100k+) + 5 medianos (10-100k) + 3 pequeños (1-10k)</p>
+            <div class="copy-box">
+                #EstéticaCostaRica #MedicinaEstética #BotoxCR #ResultadosNaturales #SkinCare #ClinicaEstética #TransformaciónBeauty #BeautyCostaRica #AcidoHialuronico #TratamientosDePiel
+            </div>
+        </section>
+
+        <!-- SECTION 4: CADENCIA SEMANAL -->
+        <section id="cadencia" class="section">
+            <h2>📅 Cadencia de Publicación (Plan 30 días)</h2>
+
+            <div class="info-box success">
+                <strong>Meta:</strong> 1 post/día (30 posts en 30 días), rotando entre los 5 tipos de contenido.
+            </div>
+
+            <h3>Semana 1: "Foundation" (Establece identidad visual)</h3>
+            <div class="cadence-grid">
+                <div class="cadence-day">
+                    <h4>Lunes</h4>
+                    <div class="cadence-post">
+                        <span class="type">Resultado</span>
+                        Botox natural
+                    </div>
+                </div>
+                <div class="cadence-day">
+                    <h4>Martes</h4>
+                    <div class="cadence-post">
+                        <span class="type">Educativo</span>
+                        Tip: Protector solar
+                    </div>
+                </div>
+                <div class="cadence-day">
+                    <h4>Miércoles</h4>
+                    <div class="cadence-post">
+                        <span class="type">Tratamiento</span>
+                        Peeling químico
+                    </div>
+                </div>
+                <div class="cadence-day">
+                    <h4>Jueves</h4>
+                    <div class="cadence-post">
+                        <span class="type">Resultado</span>
+                        Acne solution
+                    </div>
+                </div>
+                <div class="cadence-day">
+                    <h4>Viernes</h4>
+                    <div class="cadence-post">
+                        <span class="type">Lifestyle</span>
+                        Day in clinic
+                    </div>
+                </div>
+                <div class="cadence-day">
+                    <h4>Sábado</h4>
+                    <div class="cadence-post">
+                        <span class="type">Educativo</span>
+                        Skincare routine
+                    </div>
+                </div>
+                <div class="cadence-day">
+                    <h4>Domingo</h4>
+                    <div class="cadence-post">
+                        <span class="type">Producto</span>
+                        Sérum recomendado
+                    </div>
+                </div>
+            </div>
+
+            <h3>Semana 2-4: Repite rotación con nuevos ejemplos</h3>
+            <table>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Frecuencia</th>
+                    <th>Mejor día</th>
+                    <th>Engagement</th>
+                </tr>
+                <tr>
+                    <td><strong>Resultado (Antes/Después)</strong></td>
+                    <td>3x/semana</td>
+                    <td>Lunes, Miércoles, Viernes</td>
+                    <td>⭐⭐⭐⭐⭐</td>
+                </tr>
+                <tr>
+                    <td><strong>Educativo (Tips)</strong></td>
+                    <td>2x/semana</td>
+                    <td>Martes, Sábado</td>
+                    <td>⭐⭐⭐⭐</td>
+                </tr>
+                <tr>
+                    <td><strong>Detalle Tratamiento</strong></td>
+                    <td>2x/semana</td>
+                    <td>Miércoles, Jueves</td>
+                    <td>⭐⭐⭐⭐</td>
+                </tr>
+                <tr>
+                    <td><strong>Lifestyle</strong></td>
+                    <td>1x/semana</td>
+                    <td>Viernes</td>
+                    <td>⭐⭐⭐</td>
+                </tr>
+                <tr>
+                    <td><strong>Producto</strong></td>
+                    <td>1x/semana</td>
+                    <td>Domingo</td>
+                    <td>⭐⭐⭐</td>
+                </tr>
+            </table>
+
+            <h3>Horarios de publicación (Costa Rica)</h3>
+            <ul>
+                <li><strong>Mejor horario 1:</strong> 8-9 AM (mañana laboral)</li>
+                <li><strong>Mejor horario 2:</strong> 1-2 PM (lunch break)</li>
+                <li><strong>Mejor horario 3:</strong> 6-7 PM (después del trabajo)</li>
+            </ul>
+            <p><em>Tip: Publica 15 min después de estas horas para llegar a usuarios que scroll inmediatamente.</em></p>
+        </section>
+
+        <!-- SECTION 5: GROWTH TIPS -->
+        <section id="growth" class="section">
+            <h2>📈 Growth Tips (Cómo multiplicar alcance)</h2>
+
+            <h3>En las primeras 60 horas después de publicar</h3>
+            <ul>
+                <li><strong>Responde TODOS los comentarios</strong> en primer 1 hora. Algoritmo premia engagement rápido.</li>
+                <li><strong>Dale like a 20-30 perfiles</strong> que sigan hashtags relevantes. Muchos te seguirán de vuelta.</li>
+                <li><strong>Crea 2-3 stories</strong> complementarios. Mantén presencia en la home.</li>
+                <li><strong>Manda DMs personalizados</strong> a cuentas de clínicas similares o influencers beauty. Colaboraciones =  alcance exponencial.</li>
+            </ul>
+
+            <h3>Contenido que viraliza (extra)</h3>
+            <div class="card">
+                <h4>Reels (Video 15-30 seg)</h4>
+                <p>Algoritmo favorece reels 10x más que fotos. Ideas:</p>
+                <ul>
+                    <li>Before/After en video (2 sec antes, 2 sec después, loop)</li>
+                    <li>Tips rápidos: "5 tips skincare en 30 seg"</li>
+                    <li>Procedimiento en acción (respetando privacidad)</li>
+                    <li>Fails/Mitos: "3 cosas que NO hagas post-peeling"</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h4>Carousel Posts (2-5 slides)</h4>
+                <p>Alta retención. Ejemplos:</p>
+                <ul>
+                    <li>Slide 1: Problema | Slide 2: Solución | Slide 3: Resultados</li>
+                    <li>Slide 1: Mito | Slides 2-5: Por qué es mito</li>
+                    <li>Slide 1: "5 pasos skincare" + 1 slide por paso</li>
+                </ul>
+            </div>
+
+            <h3>Estrategia de crecimiento mes a mes</h3>
+            <table>
+                <tr>
+                    <th>Mes</th>
+                    <th>Contenido Focus</th>
+                    <th>Meta Followers</th>
+                    <th>Meta Engagement</th>
+                </tr>
+                <tr>
+                    <td><strong>Mes 1</strong></td>
+                    <td>Feed consistente + 10 reels</td>
+                    <td>+500 followers</td>
+                    <td>8-10% engagement rate</td>
+                </tr>
+                <tr>
+                    <td><strong>Mes 2</strong></td>
+                    <td>Colaboraciones + User-generated content</td>
+                    <td>+800 followers</td>
+                    <td>10-12% engagement rate</td>
+                </tr>
+                <tr>
+                    <td><strong>Mes 3</strong></td>
+                    <td>Ads de retargeting + affiliate</td>
+                    <td>+1000 followers</td>
+                    <td>12-15% engagement rate</td>
+                </tr>
+            </table>
+
+            <h3>User-Generated Content (UGC)</h3>
+            <p>Pídele a clientes satisfechos que compartan fotos post-tratamiento. Repostea en tu feed con crédito. <strong>Es 3x más creíble que contenido tuyo.</strong></p>
+
+            <div class="info-box warning">
+                <strong>❌ Errores a evitar:</strong>
+                <ul>
+                    <li>Publicar a horas random sin estrategia</li>
+                    <li>Copiar posts de clínicas competidoras (perderás autenticidad)</li>
+                    <li>Ignorar comentarios (mata el engagement)</li>
+                    <li>Usar demasiados emojis (spam)</li>
+                    <li>No usar call-to-action claro ("Link en bio" no cuenta solo; sé específico: "Reserva aquí" "DM para consulta")</li>
+                </ul>
+            </div>
+
+            <h3>Herramientas recomendadas</h3>
+            <ul>
+                <li><strong>Later / Buffer:</strong> Planifica posts 30 días adelante</li>
+                <li><strong>Canva Pro:</strong> Crea templates visuales en 2 min</li>
+                <li><strong>Meta Business Suite:</strong> Analiza qué funciona, replica</li>
+                <li><strong>Hashtag Generator (All Hashtags):</strong> Encuentra hashtags relevantes con alcance</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p><strong>Esteti'Kas Instagram Strategy</strong></p>
+            <p>Guía diseñada para Katherine. Actualiza según resultados reales después de 30 días.</p>
+            <p style="margin-top: 1rem; opacity: 0.7;">© 2026 Esteti'Kas | Medicina Estética</p>
+        </footer>
+    </div>
+
+    <script>
+        function showSection(id) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(s => s.classList.remove('active'));
+
+            // Remove active from all buttons
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+
+            // Show selected section
+            document.getElementById(id).classList.add('active');
+
+            // Add active to clicked button
+            event.target.classList.add('active');
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>

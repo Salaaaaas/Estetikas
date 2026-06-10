@@ -11,7 +11,7 @@ benefits:
   - "Estimulación de la microcirculación y drenaje"
 category: "Cuidado Corporal"
 cardTitle: "Mesoterapia Corporal"
-cardDescription: "Reducción efectiva de medidas y grasa localizada."
+cardDescription: "Infiltración de activos contra celulitis, flacidez y grasa localizada."
 cardImage: "mesoterapia.webp"
 cardImageAlt: "Mesoterapia Corporal"
 cartName: "Mesoterapia Enzimática Corporal"

@@ -92,7 +92,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <h2 class="profile-name">Dra. Karen<br>Mayorga Quirós</h2>
         <div class="profile-bio">
           <p>Médico especializada en estética regenerativa y armonización facial. Su enfoque, respaldado por actualización constante en tendencias globales, se basa en realzar la belleza natural de cada paciente.</p>
-          <p>Garantiza tratamientos seguros y personalizados mediante tecnología de vanguardia y productos de la más alta calidad.</p>
+          <p>Garantiza tratamientos seguros y personalizados con protocolos médicos actualizados y productos certificados de la más alta calidad.</p>
         </div>
         <a href="#contacto" class="profile-cta">Agendar con la Dra. Karen <span aria-hidden="true">→</span></a>
       </div>
@@ -115,9 +115,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <div class="profile-block">
       <div class="profile-image-side">
-        <div class="profile-image-placeholder" style="background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%); display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; min-height: 400px; border-radius: 4px;">
-          <span style="font-family: var(--font-heading, serif); font-size: clamp(5rem, 10vw, 8rem); color: rgba(255,255,255,0.9); font-weight: 700; letter-spacing: -2px; line-height: 1;">MG</span>
-        </div>
+          <img src="/img/dra_monica.webp" alt="Dra. Mónica Gamboa Calderón" width="400" height="500" loading="lazy" />
       </div>
       <div class="profile-content-side">
         <span class="profile-role">Especialista Corporal</span>
@@ -137,7 +135,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         Cada paciente<br>es <em>única</em>
       </h2>
       <div class="philosophy-body">
-        <p class="philosophy-scrubbable" id="philosophy-text">En Esteti'Kas comprendemos que cada paciente es única. Ofrecemos un portafolio completo de procedimientos faciales, corporales y de regeneración celular, utilizando tecnología médica de vanguardia y productos premium para brindarte resultados excepcionales, seguros y naturales.</p>
+        <p class="philosophy-scrubbable" id="philosophy-text">En Esteti'Kas comprendemos que cada paciente es única. Ofrecemos un portafolio completo de procedimientos faciales, corporales y de regeneración celular, con equipos médicos certificados y productos premium para brindarte resultados seguros y naturales.</p>
         <div class="philosophy-tags">
           <span class="ptag">Abordaje Médico Integral</span>
           <span class="ptag">Resultados Naturales</span>
@@ -241,9 +239,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </div>
     <div class="care-dots">
-      <button class="care-dot active" data-index="0" aria-label="Slide 1" aria-selected="true"></button>
-      <button class="care-dot" data-index="1" aria-label="Slide 2" aria-selected="false"></button>
-      <button class="care-dot" data-index="2" aria-label="Slide 3" aria-selected="false"></button>
+      <button class="care-dot active" data-index="0" aria-label="Cuidados faciales" aria-pressed="true"></button>
+      <button class="care-dot" data-index="1" aria-label="Cuidados de inyectables" aria-pressed="false"></button>
+      <button class="care-dot" data-index="2" aria-label="Cuidados corporales" aria-pressed="false"></button>
     </div>
   </section>
 
@@ -297,8 +295,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         { q: '¿Tienen disponibilidad en las dos sedes?', a: 'Sí, contamos con dos clínicas: una en <strong>Bataan</strong> (Clínica ODONTOBATAAN) y otra en <strong>Guápiles</strong> (Clínica Medical Numancia). Al momento de agendar puedes indicar tu sede de preferencia y te confirmamos disponibilidad.' },
       ].map(item => (
         <div class="faq-item">
-          <button class="faq-question">{item.q}<span class="faq-icon" aria-hidden="true"></span></button>
-          <div class="faq-answer" style="padding:0 0.5rem"><p set:html={item.a} /></div>
+          <button class="faq-question" aria-expanded="false">{item.q}<span class="faq-icon" aria-hidden="true"></span></button>
+          <div class="faq-answer"><p set:html={item.a} /></div>
         </div>
       ))}
     </div>
@@ -311,7 +309,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <p>Inicia tu camino hacia una piel radiante. Nuestro equipo te espera.</p>
         <div class="contact-methods">
           <div class="method-item"><h4>WhatsApp</h4><a href="https://wa.me/50684320647" class="phone-link">+506 8432 0647</a></div>
-          <div class="method-item"><h4>Ubicaciones</h4><p><strong>Bataan:</strong> Clínica ODONTOBATAAN</p><p><strong>Guápiles:</strong> Clínica Medical Numancia</p></div>
+          <div class="method-item"><h4>Ubicaciones</h4><p><strong>Bataan:</strong> Clínica ODONTOBATAAN</p><p><strong>Guápiles:</strong> Clínica Medical Numancia</p><p><strong>Guápiles:</strong> Eco Clinic</p></div>
         </div>
         <div class="social-links">
           <a href="https://wa.me/50684320647" class="social-icon-btn" aria-label="WhatsApp"><img src="/img/logo_whatsapp.webp" alt="WhatsApp" width="40" height="40" /></a>
@@ -320,18 +318,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
       <div class="contact-form-wrapper">
         <form id="premium-contact-form">
-          <div class="form-group"><label>Nombre Completo</label><input type="text" id="contact-name" placeholder="Tu nombre" required /></div>
+          <div class="form-group"><label for="contact-name">Nombre Completo</label><input type="text" id="contact-name" placeholder="Tu nombre" required /></div>
           <div class="form-group">
-            <label>Tratamiento de Interés</label>
-            <div class="custom-select-wrapper">
-              <div class="custom-select-trigger"><span>Selecciona un tratamiento</span></div>
-              <div class="custom-options">
-                <div class="custom-option" data-value="limpieza">Limpieza Facial Profunda</div>
-                <div class="custom-option" data-value="botox">Botox / Rellenos</div>
-                <div class="custom-option" data-value="regeneracion">Regeneración Facial</div>
-                <div class="custom-option" data-value="corporal">Tratamiento Corporal</div>
-                <div class="custom-option" data-value="otro">Otro</div>
-              </div>
+            <label for="contact-treatment">Tratamiento de Interés</label>
+            <div class="select-wrapper-dark">
               <select id="contact-treatment" required>
                 <option value="" disabled selected>Selecciona un tratamiento</option>
                 <option value="limpieza">Limpieza Facial Profunda</option>
@@ -342,7 +332,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               </select>
             </div>
           </div>
-          <div class="form-group"><label>Mensaje</label><textarea id="contact-message" placeholder="¿Cómo podemos ayudarte?" rows="4"></textarea></div>
+          <div class="form-group"><label for="contact-message">Mensaje</label><textarea id="contact-message" placeholder="¿Cómo podemos ayudarte?" rows="4"></textarea></div>
           <button type="submit" class="btn">Enviar Solicitud</button>
         </form>
       </div>

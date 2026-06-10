@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esteti'Kas — Instagram Templates</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #007D88;
+            --primary-dark: #005E67;
+            --secondary: #111111;
+            --accent-gold: #C9A84C;
+            --bg-light: #F7F9FA;
+            --text-light: #4A4A4A;
+        }
+
+        body {
+            font-family: 'Jost', sans-serif;
+            background: #f0f0f0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .template-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 0.8rem;
+        }
+
+        /* Instagram Post Base (1080x1350) */
+        .ig-post {
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 4/5;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            position: relative;
+            background: white;
+        }
+
+        /* ===== TEMPLATE 1: TRATAMIENTO ===== */
+        .template-1 {
+            background: linear-gradient(135deg, rgba(0,125,136,0.85) 0%, rgba(0,94,103,0.90) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2.5rem;
+            color: white;
+            position: relative;
+        }
+
+        .template-1::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350"><defs><pattern id="noise" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="0.5" fill="white" opacity="0.03"/></pattern></defs><rect width="1080" height="1350" fill="url(%23noise)"/></svg>');
+            opacity: 0.5;
+        }
+
+        .template-1-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .t1-title {
+            font-family: 'Bodoni Moda', serif;
+            font-size: clamp(1.8rem, 4vw, 2.4rem);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 0.8rem;
+            text-wrap: balance;
+        }
+
+        .t1-desc {
+            font-size: 0.85rem;
+            font-weight: 300;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 1.5rem;
+            max-width: 220px;
+        }
+
+        .t1-cta {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 200ms;
+        }
+
+        .t1-logo {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+            font-family: 'Bodoni Moda', serif;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            letter-spacing: 0.1em;
+            opacity: 0.8;
+        }
+
+        /* ===== TEMPLATE 2: HOME CARE ===== */
+        .template-2 {
+            background: white;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .t2-product-area {
+            width: 140px;
+            height: 160px;
+            background: linear-gradient(135deg, var(--bg-light), rgba(0,125,136,0.05));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 3rem;
+        }
+
+        .t2-title {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 1.6rem;
+            font-weight: 400;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .t2-subtitle {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .t2-desc {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            line-height: 1.5;
+            max-width: 160px;
+            margin-bottom: 1.5rem;
+        }
+
+        .t2-benefit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 0.6rem;
+        }
+
+        .t2-dot {
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .t2-logo {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            font-size: 0.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            opacity: 0.6;
+            letter-spacing: 0.1em;
+        }
+
+        /* ===== TEMPLATE 3: TIP DE CUIDADO ===== */
+        .template-3 {
+            background: linear-gradient(160deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .template-3::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .t3-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .t3-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            margin-bottom: 0.8rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .t3-title {
+            font-family: 'Bodoni Moda', serif;
+            font-size: clamp(1.4rem, 3.5vw, 2rem);
+            font-weight: 400;
+            line-height: 1.15;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .t3-content {
+            font-size: 0.85rem;
+            font-weight: 300;
+            line-height: 1.6;
+            max-width: 200px;
+            color: rgba(255,255,255,0.9);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ===== TEMPLATE 4: ANTES/DESPUÉS ===== */
+        .template-4 {
+            background: white;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .t4-header {
+            text-align: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .t4-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+
+        .t4-title {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: var(--secondary);
+        }
+
+        .t4-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .t4-image {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #e0e0e0, #f5f5f5);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .t4-image.before::after {
+            content: 'ANTES';
+            position: absolute;
+            bottom: 0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-light);
+            letter-spacing: 0.1em;
+            background: rgba(255,255,255,0.8);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+        }
+
+        .t4-image.after::after {
+            content: 'DESPUÉS';
+            position: absolute;
+            bottom: 0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: white;
+            letter-spacing: 0.1em;
+            background: var(--primary);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+        }
+
+        .t4-footer {
+            border-top: 1px solid rgba(0,0,0,0.08);
+            padding-top: 1rem;
+            text-align: center;
+        }
+
+        .t4-treatment {
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .t4-cta {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            font-weight: 300;
+        }
+
+        /* Info Panel */
+        .info-panel {
+            background: var(--bg-light);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-radius: 4px;
+        }
+
+        .info-panel h3 {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 1.1rem;
+            color: var(--secondary);
+            margin-bottom: 0.8rem;
+        }
+
+        .info-panel p {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--text-light);
+        }
+
+        .info-panel code {
+            background: white;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Esteti'Kas — Instagram Templates</h1>
+
+        <div class="templates-grid">
+            <!-- TEMPLATE 1: TRATAMIENTO -->
+            <div>
+                <div class="template-label">Template 1: Tratamiento</div>
+                <div class="ig-post template-1">
+                    <div class="t1-logo">© ESTETI'KAS</div>
+                    <div class="template-1-content">
+                        <h2 class="t1-title">Botox & Ácido Hialurónico</h2>
+                        <p class="t1-desc">Resultados naturales que realzan tu belleza sin perder expresión.</p>
+                        <button class="t1-cta">Reservar Cita</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TEMPLATE 2: HOME CARE -->
+            <div>
+                <div class="template-label">Template 2: Home Care</div>
+                <div class="ig-post template-2">
+                    <div class="t2-product-area">💧</div>
+                    <div class="t2-subtitle">Cuidado</div>
+                    <h2 class="t2-title">Sérum Vitamínico</h2>
+                    <p class="t2-desc">Hidratación profunda y protección antioxidante diaria</p>
+                    <div class="t2-benefit">
+                        <span class="t2-dot"></span>
+                        <span>Ilumina</span>
+                    </div>
+                    <div class="t2-benefit">
+                        <span class="t2-dot"></span>
+                        <span>Regenera</span>
+                    </div>
+                    <div class="t2-logo">ESTETI'KAS</div>
+                </div>
+            </div>
+
+            <!-- TEMPLATE 3: TIP -->
+            <div>
+                <div class="template-label">Template 3: Tip de Cuidado</div>
+                <div class="ig-post template-3">
+                    <div class="t3-icon">☀️</div>
+                    <div class="t3-label">Consejo</div>
+                    <h2 class="t3-title">SPF 50+ Todos los Días</h2>
+                    <p class="t3-content">El protector solar no es opcional. Es el mejor anti-aging que existe. Aplica cada 2 horas.</p>
+                </div>
+            </div>
+
+            <!-- TEMPLATE 4: ANTES/DESPUÉS -->
+            <div>
+                <div class="template-label">Template 4: Antes/Después</div>
+                <div class="ig-post template-4">
+                    <div class="t4-header">
+                        <div class="t4-label">Resultados</div>
+                        <h2 class="t4-title">Transformación Real</h2>
+                    </div>
+                    <div class="t4-comparison">
+                        <div class="t4-image before">👤</div>
+                        <div class="t4-image after">✨</div>
+                    </div>
+                    <div class="t4-footer">
+                        <div class="t4-treatment">Peeling Químico + ADN de Salmón</div>
+                        <div class="t4-cta">Resultados en 3 sesiones</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INFO PANELS -->
+        <div class="info-panel">
+            <h3>📋 Cómo usar estos templates:</h3>
+            <p>
+                <strong>Opción 1 (Fácil):</strong> Abre este archivo en navegador, haz screenshot de cada template, y úsalos como referencia visual en Canva. Replica colores, tipografía y layout.<br><br>
+                <strong>Opción 2 (Avanzado):</strong> Descarga este HTML, edita el texto/emojis directamente en el código, y toma screenshots para descargar como PNG.<br><br>
+                <strong>Opción 3 (Pro):</strong> Usa Figma o Adobe XD e importa estos layouts como mockups. Reemplaza placeholders con tus fotos reales.
+            </p>
+        </div>
+
+        <div class="info-panel">
+            <h3>🎨 Guía de personalización:</h3>
+            <p>
+                <strong>Colores:</strong> Teal primario <code>#007D88</code> | Teal oscuro <code>#005E67</code> | Oro <code>#C9A84C</code><br><br>
+                <strong>Tipografía:</strong> Títulos: <code>Bodoni Moda 400</code> | Body: <code>Jost 300-500</code><br><br>
+                <strong>Spacing:</strong> 1.2rem padding base | 1.5rem entre elementos | 2.5rem en bordes<br><br>
+                <strong>Border radius:</strong> 6-8px para botones | 12px para contenedores
+            </p>
+        </div>
+
+        <div class="info-panel">
+            <h3>💡 Rotación sugerida:</h3>
+            <p>
+                Semana 1: 3x Tratamiento + 1x Home Care<br>
+                Semana 2: 2x Antes/Después + 2x Tips<br>
+                Semana 3: 2x Tratamiento + 1x Home Care + 1x Resultado<br>
+                Semana 4: Mix libre — mantén la rotación equilibrada
+            </p>
+        </div>
+    </div>
+</body>
+</html>

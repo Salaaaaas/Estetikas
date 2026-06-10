@@ -8,6 +8,9 @@ interface Props {
   description?: string;
   bodyClass?: string;
   isHome?: boolean;
+  footerVariant?: 'full' | 'simple';
+  needsTurnstile?: boolean;
+  ogImage?: string;
 }
 
 const {
@@ -15,9 +18,13 @@ const {
   description = "Esteti'Kas: Clínica de medicina estética avanzada en Bataan y Guápiles, Costa Rica.",
   bodyClass = '',
   isHome = false,
+  footerVariant = 'full',
+  needsTurnstile = false,
+  ogImage = '/img/facial.webp',
 } = Astro.props;
 
 const turnstileSitekey = import.meta.env.PUBLIC_TURNSTILE_SITEKEY ?? '';
+const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
@@ -25,23 +32,37 @@ const turnstileSitekey = import.meta.env.PUBLIC_TURNSTILE_SITEKEY ?? '';
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/png" href="/img/logo_turquesa.png" />
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
   <title>{title}</title>
   <meta name="description" content={description} />
-  <meta name="turnstile-sitekey" content={turnstileSitekey} />
+  <meta name="theme-color" content="#007D88" />
+  <link rel="canonical" href={canonical} />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={new URL(ogImage, Astro.site)} />
+  <meta property="og:locale" content="es_CR" />
 
-  <!-- Cloudflare Turnstile (CAPTCHA invisible) -->
-  <script
-    src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad"
-    async
-    defer
-    is:inline
-  ></script>
-  <script is:inline>
-    window.onTurnstileLoad = function () {
-      window.dispatchEvent(new Event('turnstile-loaded'));
-    };
-  </script>
+  {needsTurnstile && (
+    <>
+      <meta name="turnstile-sitekey" content={turnstileSitekey} />
+      <!-- Cloudflare Turnstile (CAPTCHA invisible) — solo en /reservar -->
+      <script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad"
+        async
+        defer
+        is:inline
+      ></script>
+      <script is:inline>
+        window.onTurnstileLoad = function () {
+          window.dispatchEvent(new Event('turnstile-loaded'));
+        };
+      </script>
+    </>
+  )}
 
   <!-- Fonts: async load to avoid render-blocking -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -59,7 +80,7 @@ const turnstileSitekey = import.meta.env.PUBLIC_TURNSTILE_SITEKEY ?? '';
     <slot />
   </main>
 
-  <Footer variant="full" />
+  <Footer variant={footerVariant} />
 
   <script>
     import '../scripts/site.js';

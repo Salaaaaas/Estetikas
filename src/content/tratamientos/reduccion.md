@@ -11,7 +11,7 @@ benefits:
   - "Efecto reafirmante sobre la piel para combatir la flacidez"
 category: "Cuidado Corporal"
 cardTitle: "Mesoterapia Enzimática Reductiva"
-cardDescription: "Reducción efectiva de medidas y grasa localizada."
+cardDescription: "Remodela tu silueta sin cirugía con técnicas combinadas."
 cardImage: "reduccion.webp"
 cardImageAlt: "Mesoterapia Enzimática Corporal"
 cartName: "Mesoterapia Enzimática Corporal"

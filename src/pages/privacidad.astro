@@ -4,12 +4,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout
   title="Política de Privacidad | Esteti'Kas"
-  description="Política de tratamiento de datos personales de Esteti'Kas conforme a la Ley 1581 de 2012."
+  description="Política de tratamiento de datos personales de Esteti'Kas conforme a la Ley 8968 de Costa Rica."
 >
   <section class="legal-section">
     <div class="container legal-container">
       <h1>Política de Tratamiento de Datos Personales</h1>
-      <p class="legal-meta">Última actualización: junio de 2026 — Ley 1581 de 2012 (Habeas Data)</p>
+      <p class="legal-meta">Última actualización: junio de 2026 — Ley 8968, Protección de la Persona frente al Tratamiento de sus Datos Personales (Costa Rica)</p>
 
       <h2>1. Responsable del tratamiento</h2>
       <p>
@@ -65,7 +65,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <li>Solicitar la corrección de datos inexactos.</li>
         <li>Solicitar la eliminación de tus datos (derecho al olvido).</li>
         <li>Revocar el consentimiento otorgado.</li>
-        <li>Presentar una queja ante la Superintendencia de Industria y Comercio.</li>
+        <li>Presentar una denuncia ante la Agencia de Protección de Datos de los Habitantes (PRODHAB).</li>
       </ul>
 
       <h2>7. Contacto</h2>
@@ -95,10 +95,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       line-height: 1.7;
     }
     .legal-container h1 {
-      font-family: 'Playfair Display', serif;
+      font-family: var(--font-heading);
       font-size: clamp(2rem, 4vw, 2.8rem);
       margin-bottom: 8px;
-      color: #16a3a3;
+      color: var(--primary-color);
     }
     .legal-meta {
       color: #888;
@@ -106,7 +106,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       margin-bottom: 40px;
     }
     .legal-container h2 {
-      font-family: 'Playfair Display', serif;
+      font-family: var(--font-heading);
       font-size: 1.4rem;
       margin-top: 36px;
       margin-bottom: 12px;

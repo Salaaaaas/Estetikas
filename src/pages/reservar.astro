@@ -6,10 +6,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   title="Reservar Cita | Esteti'Kas"
   description="Reserva tu cita de medicina estética en Esteti'Kas. Completa tus datos y confirmamos por WhatsApp."
   bodyClass="reservar-body"
+  needsTurnstile={true}
 >
   <section class="reservar-page">
     <div class="reservar-container">
-      <a href="javascript:history.length > 1 ? history.back() : window.location.assign('/')" class="reservar-back">
+      <a href="/" class="reservar-back" data-back>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         Volver
       </a>
@@ -41,6 +42,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                   <option value="" disabled selected>Selecciona una sede...</option>
                   <option value="Bataan (Clínica ODONTOBATAAN)">Bataan — Clínica ODONTOBATAAN</option>
                   <option value="Guápiles (Clínica Medical Numancia)">Guápiles — Clínica Medical Numancia</option>
+                  <option value="Guápiles (Eco Clinic)"> Guápiles — Eco Clinic</option>
                 </select>
               </div>
               <p id="b-sede-hint" class="reservar-sede-hint" hidden></p>

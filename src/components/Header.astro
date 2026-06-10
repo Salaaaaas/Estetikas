@@ -5,14 +5,14 @@ const { isHome = false } = Astro.props;
 <header>
   <div class="logo">
     <a href="/" aria-label="Volver al inicio">
-      <img src="/img/logo_turquesa.webp" alt="Logotipo de Esteti'Kas" loading="eager" />
+      <img src="/img/logo_nav.webp" alt="Logotipo de Esteti'Kas" width="152" height="200" loading="eager" fetchpriority="high" />
     </a>
   </div>
   <nav>
     <ul>
       <li><a href={isHome ? '#inicio' : '/#inicio'}>Inicio</a></li>
       <li><a href={isHome ? '#nosotras' : '/#nosotras'}>Sobre Nosotras</a></li>
-      <li><a href="/tratamientos/">Tratamientos</a></li>
+      <li><a href="/tratamientos">Tratamientos</a></li>
       <li><a href={isHome ? '#contacto' : '/#contacto'}>Contacto</a></li>
       <li>
         <a href="/reservar" class="nav-reservar-btn">Reservar Cita</a>
