@@ -33,8 +33,9 @@ export default async function handler(req, res) {
     }
     const y = parseInt(year);
     const m = parseInt(month);
+    const lastDay   = new Date(y, m, 0).getDate();
     const startDate = `${y}-${String(m).padStart(2, '0')}-01`;
-    const endDate   = `${y}-${String(m).padStart(2, '0')}-31`;
+    const endDate   = `${y}-${String(m).padStart(2, '0')}-${lastDay}`;
 
     const { data, error } = await supabase
       .from('citas')

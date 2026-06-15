@@ -13,6 +13,7 @@ function sedeFromLocation(location) {
   if (!location) return null;
   const l = location.toLowerCase();
   if (l.includes('bataan'))                              return 'Bataan (Clínica ODONTOBATAAN)';
+  if (l.includes('eco clinic') || l.includes('eco-clinic')) return 'Guápiles (Eco Clinic)';
   if (l.includes('guápiles') || l.includes('guapiles')) return 'Guápiles (Clínica Medical Numancia)';
   return null;
 }
@@ -25,7 +26,7 @@ function forIdsFromTitle(title) {
   return ['*'];
 }
 
-async function getAccessToken() {
+export async function getAccessToken() {
   const res = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
     headers: { 'content-type': 'application/x-www-form-urlencoded' },
@@ -61,14 +62,14 @@ export async function createCalendarEvent(cita) {
   const [h, m]  = cita.hora.split(':').map(Number);
   const endHour = String(h + 1).padStart(2, '0');
   const endMin  = String(m).padStart(2, '0');
-  const startDT = `${cita.fecha}T${cita.hora}:00-05:00`;
-  const endDT   = `${cita.fecha}T${endHour}:${endMin}:00-05:00`;
+  const startDT = `${cita.fecha}T${cita.hora}:00-06:00`;
+  const endDT   = `${cita.fecha}T${endHour}:${endMin}:00-06:00`;
 
   const event = {
     summary:     `Cita — ${cita.nombre}`,
     description,
-    start: { dateTime: startDT, timeZone: 'America/Bogota' },
-    end:   { dateTime: endDT,   timeZone: 'America/Bogota' },
+    start: { dateTime: startDT, timeZone: 'America/Costa_Rica' },
+    end:   { dateTime: endDT,   timeZone: 'America/Costa_Rica' },
   };
 
   const calendarId = encodeURIComponent(process.env.GOOGLE_CALENDAR_ID);
