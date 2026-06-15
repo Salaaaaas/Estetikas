@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return send(res, 405, { error: 'method_not_allowed' });
 
   const authHeader = req.headers['authorization'];
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${process.env.CALENDAR_WEBHOOK_TOKEN}`) {
     return send(res, 401, { error: 'unauthorized' });
   }
 
