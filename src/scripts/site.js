@@ -173,10 +173,10 @@ function unlockScroll() {
 }
 
 // ---- SCHEDULE DATA ----
-// To update for a new month: edit 'date' entries below.
-// 'weekly' entries repeat on weekdays forever (good for recurring slots).
-// 'date'   entries are one-time specific dates.
-const SCHEDULE = [
+// Weekly recurring slots are hardcoded here.
+// Date-specific slots (Dra. days, special sessions) are fetched live from
+// Google Calendar via /api/get-schedule and merged in initReservarPage.
+const SCHEDULE_WEEKLY = [
     {
         id:       'limpiezas-sem',
         type:     'weekly',
@@ -185,23 +185,9 @@ const SCHEDULE = [
         label:    'Limpiezas Faciales',
         forIds:   ['limpieza-facial'],
     },
-    {
-        id:       'masajes-06jun',
-        type:     'date',
-        date:     '2026-06-06',
-        hours:    '9:00 AM – 3:00 PM',
-        label:    'Masajes y Limpiezas',
-        forIds:   ['masajes', 'limpieza-facial'],
-    },
-    {
-        id:       'medicina-20jun',
-        type:     'date',
-        date:     '2026-06-20',
-        hours:    '8:00 AM – 4:00 PM',
-        label:    'Medicina Estética',
-        forIds:   ['*'],                   // all other treatments
-    },
 ];
+
+let SCHEDULE = [...SCHEDULE_WEEKLY];
 
 const SLOT_DURATION_MIN = 60;
 
@@ -480,14 +466,28 @@ async function refreshFullDays(year, month, schedules, availableSet) {
 // =====================================================
 // /reservar page init — runs once when DOM is ready on that route
 // =====================================================
-function initReservarPage() {
+async function initReservarPage() {
     if (!document.getElementById('booking-form')) return;
     renderReservarItems();
     _calState = { year: null, month: null, selected: null, fullDays: new Set() };
     _availCache = {};
+
+    // Render immediately with weekly slots so the calendar isn't blank
+    SCHEDULE = [...SCHEDULE_WEEKLY];
     renderCalendar();
     renderTurnstile();
     document.getElementById('booking-form').addEventListener('submit', submitBooking);
+
+    // Fetch date-specific slots from Google Calendar and re-render
+    try {
+        const res  = await fetch('/api/get-schedule');
+        const data = await res.json();
+        if (Array.isArray(data.schedule) && data.schedule.length > 0) {
+            SCHEDULE = [...SCHEDULE_WEEKLY, ...data.schedule];
+            _calState.fullDays = new Set();
+            renderCalendar();
+        }
+    } catch {}
 }
 
 function showReservarSuccess() {

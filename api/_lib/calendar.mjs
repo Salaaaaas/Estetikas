@@ -133,3 +133,24 @@ export async function getScheduleFromCalendar(timeMin, timeMax) {
 
   return schedule;
 }
+
+export async function getRecentlyChangedEvents(minutesBack = 120) {
+  const accessToken = await getAccessToken();
+  const calendarId  = encodeURIComponent(process.env.GOOGLE_CALENDAR_ID);
+  const updatedMin  = new Date(Date.now() - minutesBack * 60 * 1000).toISOString();
+
+  const params = new URLSearchParams({
+    updatedMin,
+    showDeleted:  'true',
+    singleEvents: 'true',
+    maxResults:   '50',
+  });
+
+  const res  = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?${params}`,
+    { headers: { authorization: `Bearer ${accessToken}` } }
+  );
+  const data = await res.json();
+  if (!res.ok) throw new Error('google_calendar_error: ' + JSON.stringify(data));
+  return data.items ?? [];
+}

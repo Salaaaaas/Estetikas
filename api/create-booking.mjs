@@ -137,7 +137,7 @@ export default async function handler(req, res) {
   });
 
   try {
-    await createCalendarEvent({
+    const calEventId = await createCalendarEvent({
       nombre:    v.data.nombre,
       telefono:  v.data.telefono,
       servicios: v.data.servicios,
@@ -146,6 +146,9 @@ export default async function handler(req, res) {
       notas:     v.data.notas,
       sede:      v.data.sede,
     });
+    if (calEventId) {
+      await supabase.from('citas').update({ google_event_id: calEventId }).eq('id', data.id);
+    }
   } catch (err) {
     console.error('calendar_error', JSON.stringify({ message: err?.message, stack: err?.stack }));
   }
