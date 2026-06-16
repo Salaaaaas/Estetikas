@@ -13,7 +13,7 @@ benefits:
 category: "Facial & Regeneración"
 cardTitle: "Rejuvenecimiento Facial Integral"
 cardDescription: "5 técnicas en una sesión: limpieza, ozono, carbón, láser y alta frecuencia."
-cardImage: "despues.webp"
+cardImage: "rejuvencimiento.webp"
 cardImageAlt: "Rejuvenecimiento Facial Integral"
 cartName: "Rejuvenecimiento Facial Integral"
 cardLoading: "lazy"

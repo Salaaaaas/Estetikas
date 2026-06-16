@@ -14,7 +14,7 @@ benefits:
 category: "Facial & Regeneración"
 cardTitle: "Inyectables: Botox & Traptox"
 cardDescription: "Suaviza arrugas, relaja el trapecio y trata el bruxismo con toxina botulínica."
-cardImage: "dermapen.webp"
+cardImage: "botox.webp"
 cardImageAlt: "Botox y Traptox"
 cartName: "Botox & Traptox"
 cardLoading: "lazy"
