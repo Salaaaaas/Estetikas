@@ -1,7 +1,7 @@
 ---
 title: "Rejuvenecimiento Facial Integral"
 description: "Protocolo completo para una piel más fresca, luminosa y saludable"
-heroImage: "despues.webp"
+heroImage: "rejuvencimiento.webp"
 heroAlt: "Rejuvenecimiento Facial Integral"
 subtitle: "Protocolo completo para una piel más fresca, luminosa y saludable"
 about: "El Rejuvenecimiento Facial Integral combina cinco técnicas en una sola sesión: Limpieza Facial Profunda + Vapor de Ozono + Carbón Detox Peel + Diodo Láser + Alta Frecuencia. Este protocolo trabaja en múltiples capas de la piel para limpiar, desintoxicar, estimular y regenerar, logrando resultados visibles desde la primera sesión."
