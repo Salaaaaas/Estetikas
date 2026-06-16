@@ -1,7 +1,7 @@
 ---
 title: "Mesoterapia Corporal"
 description: "Moldear y reafirmar tu figura"
-heroImage: "mesoterapia.webp"
+heroImage: "mesoterapia_corporal.webp"
 heroAlt: "Mesoterapia Corporal"
 subtitle: "Moldear y reafirmar tu figura"
 about: "Infiltración de sustancias activas directamente en zonas con celulitis, flacidez o acúmulos de grasa rebeldes."
@@ -12,7 +12,7 @@ benefits:
 category: "Cuidado Corporal"
 cardTitle: "Mesoterapia Corporal"
 cardDescription: "Infiltración de activos contra celulitis, flacidez y grasa localizada."
-cardImage: "mesoterapia.webp"
+cardImage: "mesoterapia_corporal.webp"
 cardImageAlt: "Mesoterapia Corporal"
 cartName: "Mesoterapia Enzimática Corporal"
 cardLoading: "lazy"
