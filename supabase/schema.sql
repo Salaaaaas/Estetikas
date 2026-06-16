@@ -36,6 +36,12 @@ create table if not exists public.citas (
 create index if not exists citas_fecha_idx  on public.citas(fecha);
 create index if not exists citas_estado_idx on public.citas(estado);
 
+-- Anti doble-reserva: no puede existir más de una cita activa en el mismo
+-- (fecha, hora). Las citas canceladas no cuentan, así el slot se libera.
+create unique index if not exists citas_slot_unico_idx
+  on public.citas(fecha, hora)
+  where estado <> 'cancelada';
+
 -- ---------------------------------------------------------------------
 -- Auditoría
 -- ---------------------------------------------------------------------

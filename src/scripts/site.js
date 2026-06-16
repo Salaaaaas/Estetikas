@@ -554,6 +554,10 @@ async function submitBooking(e) {
 
             if (res.status === 429) {
                 showToast('Demasiados intentos. Por favor espera unos minutos.');
+            } else if (res.status === 409) {
+                showToast(data.mensaje || 'Ese horario acaba de ser reservado. Elige otra hora.');
+            } else if (res.status === 400 && data.mensaje) {
+                showToast(data.mensaje);
             } else if (res.status === 400 && data.detalles) {
                 showToast('Revisa los datos: ' + data.detalles[0]);
             } else if (res.status === 403) {
@@ -594,7 +598,9 @@ function injectTreatmentCartBtn() {
     const h1 = document.querySelector('.treatment-detail-hero h1');
     if (!cta || !h1 || cta.querySelector('.add-to-list-btn')) return;
 
-    const name = h1.textContent.trim();
+    // Fuente única del nombre en el carrito: cartName (mismo valor que usan las
+    // tarjetas en /tratamientos). Fallback al título solo si faltara el dato.
+    const name = (cta.dataset.cartName || h1.textContent).trim();
     // filter(Boolean) handles trailing-slash URLs (/tratamientos/peelings/)
     const id = (window.location.pathname.split('/').filter(Boolean).pop() || 'tratamiento').replace('.html', '');
 
@@ -606,7 +612,7 @@ function injectTreatmentCartBtn() {
     `;
     cartBtn.addEventListener('click', () => {
         addToCart(id, name);
-        cartBtn.innerHTML = `✓ Agregado a tu lista`;
+        cartBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="margin-right:8px;vertical-align:middle"><polyline points="20 6 9 17 4 12"/></svg>Agregado a tu lista`;
         cartBtn.style.background = '#218838';
         cartBtn.style.borderColor = '#218838';
     });

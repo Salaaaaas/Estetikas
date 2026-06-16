@@ -22,7 +22,6 @@ function isOriginAllowed(origin) {
   if (!origin) return false;
   if (String(origin).endsWith('.vercel.app')) return true;
   const allowed = new Set([
-    'https://estetikas.netlify.app',
     'https://estetikas.vercel.app',
     'http://localhost:4321',
     'http://localhost:3000',
@@ -125,6 +124,14 @@ export default async function handler(req, res) {
   if (error) {
     console.error('insert_error', JSON.stringify(error));
     await audit({ actor: 'public', action: 'create_cita_failed', metadata: { code: error.code }, ip });
+    // 23505 = unique_violation → el índice citas_slot_unico_idx bloqueó una
+    // doble reserva en el mismo (fecha, hora).
+    if (error.code === '23505') {
+      return send(res, 409, {
+        error: 'slot_no_disponible',
+        mensaje: 'Ese horario acaba de ser reservado. Por favor elige otra hora.'
+      });
+    }
     return send(res, 500, { error: 'no_se_pudo_guardar_la_cita' });
   }
 

@@ -60,8 +60,13 @@ export async function createCalendarEvent(cita) {
   if (!/^\d{2}:\d{2}$/.test(cita.hora)) throw new Error('hora_invalida: ' + cita.hora);
 
   const [h, m]  = cita.hora.split(':').map(Number);
-  const endHour = String(h + 1).padStart(2, '0');
-  const endMin  = String(m).padStart(2, '0');
+  // La cita dura 1h. Si empieza a las 23:xx, sumar una hora daría "24:00"
+  // (inválido); en ese caso topamos el fin a las 23:59 del mismo día.
+  let endH = h + 1;
+  let endM = m;
+  if (endH >= 24) { endH = 23; endM = 59; }
+  const endHour = String(endH).padStart(2, '0');
+  const endMin  = String(endM).padStart(2, '0');
   const startDT = `${cita.fecha}T${cita.hora}:00-06:00`;
   const endDT   = `${cita.fecha}T${endHour}:${endMin}:00-06:00`;
 

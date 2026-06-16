@@ -1,7 +1,7 @@
 ---
 title: "Botox & Traptox"
 description: "Toxina botulínica para expresión natural, relajación muscular y bruxismo"
-heroImage: "relleno_labios.webp"
+heroImage: "dermapen.webp"
 heroAlt: "Botox y Traptox"
 subtitle: "Toxina botulínica para expresión natural, relajación muscular y bruxismo"
 about: "La toxina botulínica (Botox) es el tratamiento médico estético más solicitado del mundo. Bloquea temporalmente la contracción muscular para suavizar arrugas dinámicas (frente, entrecejo, patas de gallo) y prevenir su formación. Además de su uso estético, la aplicamos en dos indicaciones médicas: el Traptox (relajación del músculo trapecio para reducir tensión cervical y estilizar el cuello) y el tratamiento del bruxismo (apriete o rechinamiento de dientes), que mejora el dolor mandibular y protege la dentadura."
@@ -14,7 +14,7 @@ benefits:
 category: "Facial & Regeneración"
 cardTitle: "Inyectables: Botox & Traptox"
 cardDescription: "Suaviza arrugas, relaja el trapecio y trata el bruxismo con toxina botulínica."
-cardImage: "relleno_labios.webp"
+cardImage: "dermapen.webp"
 cardImageAlt: "Botox y Traptox"
 cartName: "Botox & Traptox"
 cardLoading: "lazy"

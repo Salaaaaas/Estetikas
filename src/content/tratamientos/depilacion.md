@@ -1,7 +1,7 @@
 ---
 title: "Depilación Láser"
 description: "Tecnología Soprano Titanium para la reducción progresiva del vello"
-heroImage: "despues.webp"
+heroImage: "masajes.webp"
 heroAlt: "Depilación Láser"
 subtitle: "Láser Diodo Soprano Titanium — prácticamente indoloro y seguro para todo tipo de piel"
 about: "El Láser Diodo Soprano Titanium combina tres láseres en uno (tecnología TRIO) para alcanzar diferentes profundidades de vello. Con enfriamiento continuo ICE Plus y tecnología SHR (Super Hair Removal), los tratamientos son rápidos, prácticamente indoloros y eficaces para todos los fototipos de piel."
@@ -14,7 +14,7 @@ benefits:
 category: "Cuidado Corporal"
 cardTitle: "Depilación Láser Soprano Titanium"
 cardDescription: "Eliminación del vello no deseado de forma segura y eficiente."
-cardImage: "facial.webp"
+cardImage: "masajes.webp"
 cardImageAlt: "Depilación Láser"
 cartName: "Depilación Láser"
 cardLoading: "lazy"

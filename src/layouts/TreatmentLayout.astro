@@ -8,9 +8,10 @@ interface Props {
   heroAlt: string;
   heroTitle: string;
   heroSubtitle: string;
+  cartName: string;
 }
 
-const { title, description, heroImage, heroAlt, heroTitle, heroSubtitle } = Astro.props;
+const { title, description, heroImage, heroAlt, heroTitle, heroSubtitle, cartName } = Astro.props;
 ---
 
 <BaseLayout
@@ -32,7 +33,7 @@ const { title, description, heroImage, heroAlt, heroTitle, heroSubtitle } = Astr
     <div class="content-wrapper">
       <slot />
 
-      <div class="whatsapp-cta-container trigger-reveal">
+      <div class="whatsapp-cta-container trigger-reveal" data-cart-name={cartName}>
         <h3>¿Te interesa este tratamiento?</h3>
         <p>Haz clic en el botón debajo para consultarnos directamente por WhatsApp sobre disponibilidad, precios, o cualquier duda que tengas.</p>
         <a

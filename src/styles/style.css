@@ -1390,17 +1390,15 @@ body:not(.home-page) header.scrolled nav a {
 
 	/* Specific page styles that are not in globals.css */
 	.specialty-card {
-		background: var(--bg-light);
-		border: 1px solid rgba(0, 125, 136, 0.08);
-		padding: 2.5rem;
-		border-radius: 4px;
-		transition: transform 400ms var(--ease-out), box-shadow 400ms var(--ease-out), border-color 400ms var(--ease-out);
+		background: transparent;
+		border: none;
+		padding: 2.5rem 0;
+		border-radius: 0;
+		transition: border-color 400ms var(--ease-out);
 	}
 	@media (hover: hover) and (pointer: fine) {
 		.specialty-card:hover {
-			transform: translateY(-6px);
-			box-shadow: 0 16px 40px rgba(0, 125, 136, 0.1);
-			border-color: rgba(0, 125, 136, 0.18);
+			transform: none;
 		}
 	}
 	.specialty-card h3 { color: var(--secondary-color); font-size: 1.15rem; margin-bottom: 0.75rem; font-weight: 500; letter-spacing: 0; }
@@ -1707,6 +1705,8 @@ body:not(.home-page) header.scrolled nav a {
     display: inline-flex;
     align-items: center;
     gap: 5px;
+    text-decoration: none;
+    pointer-events: auto;
     transition: gap 200ms var(--ease-out);
 }
 
@@ -2145,7 +2145,7 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
 
 .reservar-page {
     background: var(--bg-light);
-    min-height: 100vh;
+    min-height: 100dvh;
     /* top padding clears the fixed header (~120px desktop, ~85px mobile) */
     padding: clamp(7rem, 12vw, 9rem) clamp(1rem, 4vw, 2rem) 5rem;
 }
@@ -2724,11 +2724,10 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
 }
 
 .marquee-inner span {
-    font-size: 0.78rem;
+    font-size: 0.9rem;
     font-weight: 400;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.2px;
+    color: rgba(255,255,255,0.8);
     padding: 0 2rem;
 }
 
@@ -2756,7 +2755,7 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
 .specialties-pinned {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    min-height: 100vh;
+    min-height: 100dvh;
     padding: 0 8%;
     gap: 8%;
     background: var(--bg-color);
@@ -2817,10 +2816,10 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     position: relative;
     overflow: hidden;
     cursor: default;
-    text-align: center;
+    text-align: left;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .specialty-card::before {
@@ -3509,7 +3508,7 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    font-size: 0.82rem;
+    font-size: 0.9rem;
     line-height: 1.5;
     color: #4a4a4a;
     cursor: pointer;
@@ -3558,21 +3557,19 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     border-radius: 4px;
     background: var(--primary-color);
     border: 1px solid var(--primary-color);
-    box-shadow: 0 4px 14px rgba(0,125,136,.22);
     color: var(--white);
-    transition: background 200ms var(--ease-out), transform 160ms var(--ease-out), box-shadow 200ms var(--ease-out);
+    transition: background 200ms var(--ease-out), transform 160ms var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
     .btn:hover {
         background: var(--primary-color-hover);
         border-color: var(--primary-color-hover);
-        box-shadow: 0 8px 22px rgba(0,125,136,.30);
         transform: translateY(-2px);
         color: var(--white);
     }
 }
-.btn:active { transform: translateY(1px); box-shadow: 0 2px 8px rgba(0,125,136,.20); }
+.btn:active { transform: translateY(1px); }
 
 /* Variante outline clara (sobre fondos oscuros) — debe redeclararse aquí
    para ganar al .btn sólido anterior en el orden de cascada */
@@ -3614,15 +3611,13 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     border-radius: 4px;
     background: var(--primary-color);
     border: 1px solid var(--primary-color);
-    box-shadow: 0 2px 10px rgba(0,125,136,.20);
     color: #fff;
-    transition: background 200ms var(--ease-out), transform 160ms var(--ease-out), box-shadow 200ms var(--ease-out);
+    transition: background 200ms var(--ease-out), transform 160ms var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
     .reserve-btn:hover {
         background: var(--primary-color-hover);
         border-color: var(--primary-color-hover);
-        box-shadow: 0 6px 18px rgba(0,125,136,.28);
         transform: translateY(-2px);
         color: #fff;
     }
@@ -3658,20 +3653,20 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
         var(--bg-color, transparent);
 }
 
-/* ---- Specialty cards -------------------------------- */
+/* ---- Specialty cards --------------------------------
+   DESIGN.md: solo divisor inferior, sin caja ni sombra. Alineado a la izquierda. */
 .specialty-card {
-    background: #fff;
-    border: 1px solid rgba(0,0,0,.06);
-    box-shadow: 0 4px 24px rgba(0,0,0,.06);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(0,0,0,.08);
+    box-shadow: none;
     position: relative;
     overflow: hidden;
-    transition: transform 240ms var(--ease-out), box-shadow 240ms var(--ease-out), border-color 240ms var(--ease-out);
+    transition: border-color 240ms var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
     .specialty-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 14px 40px rgba(0,125,136,.13);
-        border-color: rgba(0,125,136,.18);
+        border-bottom-color: rgba(0,125,136,.35);
     }
 }
 
@@ -3680,15 +3675,13 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     border-radius: 4px !important;
     background: var(--primary-color) !important;
     border: 1px solid var(--primary-color) !important;
-    box-shadow: 0 2px 10px rgba(0,125,136,.20);
     color: #fff !important;
-    transition: background 200ms var(--ease-out), transform 160ms var(--ease-out), box-shadow 200ms var(--ease-out) !important;
+    transition: background 200ms var(--ease-out), transform 160ms var(--ease-out) !important;
 }
 @media (hover: hover) and (pointer: fine) {
     .nav-reservar-btn:hover {
         background: var(--primary-color-hover) !important;
         border-color: var(--primary-color-hover) !important;
-        box-shadow: 0 6px 18px rgba(0,125,136,.28);
         transform: translateY(-2px) !important;
         color: #fff !important;
     }

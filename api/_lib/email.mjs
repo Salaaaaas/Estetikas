@@ -2,12 +2,20 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// TODO: cambiar a dominio verificado en Resend (citas@estetikas...).
+// onboarding@resend.dev solo entrega correos al dueño de la cuenta de Resend;
+// para enviar a clientes reales hay que verificar un dominio propio.
 const FROM = 'Esteti\'Kas <onboarding@resend.dev>';
 
 function formatFecha(fechaStr) {
   const [y, m, d] = fechaStr.split('-').map(Number);
-  const date = new Date(y, m - 1, d);
-  return date.toLocaleDateString('es-CR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  // Anclamos al mediodía UTC y formateamos en zona horaria de Costa Rica para
+  // que el día no se corra en servidores que corren en UTC.
+  const date = new Date(Date.UTC(y, m - 1, d, 12));
+  return date.toLocaleDateString('es-CR', {
+    timeZone: 'America/Costa_Rica',
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+  });
 }
 
 function formatHora(hora24) {

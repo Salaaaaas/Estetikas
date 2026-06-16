@@ -106,10 +106,10 @@ const ARROW_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" 
                 <p>{isFeatured ? t.data.about : t.data.cardDescription}</p>
               </div>
               <div class="t-card-actions">
-                <span class="t-card-link" aria-hidden="true">
+                <a href={`/tratamientos/${t.id}`} class="t-card-link">
                   Leer más
                   <Fragment set:html={ARROW_ICON} />
-                </span>
+                </a>
                 <button
                   class="reserve-btn"
                   data-id={t.id}
@@ -128,7 +128,7 @@ const ARROW_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" 
   ))}
 
   <section class="trat-cta">
-    <h2>¿Lista para tu transformación?</h2>
+    <h2>¿Lista para agendar tu cita?</h2>
     <p>
       Agrega los tratamientos que te interesan con el botón Reservar y envíanos tu
       solicitud en segundos. Te confirmamos por WhatsApp.

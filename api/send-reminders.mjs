@@ -3,9 +3,18 @@ import { decryptPII } from './_lib/crypto.mjs';
 import { sendReminderEmail } from './_lib/email.mjs';
 
 function getTomorrowStr() {
-  const d = new Date();
-  d.setDate(d.getDate() + 1);
-  return d.toISOString().split('T')[0];
+  // "Mañana" según la zona horaria de Costa Rica (UTC-6, sin horario de verano),
+  // no según UTC. Usar toISOString() haría que, después de las 18:00 hora local,
+  // el cron tratara el día siguiente como dos días adelante.
+  const fmt = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Costa_Rica',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+  });
+  // Fecha/hora actual en Costa Rica → sumamos 1 día sobre el calendario local.
+  const todayCR = fmt.format(new Date());              // "YYYY-MM-DD"
+  const [y, m, d] = todayCR.split('-').map(Number);
+  const tomorrow = new Date(Date.UTC(y, m - 1, d + 1));
+  return fmt.format(tomorrow);
 }
 
 export default async function handler(req, res) {

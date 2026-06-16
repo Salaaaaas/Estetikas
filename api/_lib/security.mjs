@@ -96,7 +96,6 @@ export function getClientIp(headers) {
 // Origin allowlist (anti-CSRF para endpoints públicos)
 // ---------------------------------------------------------------------
 const ALLOWED_ORIGINS = new Set([
-  'https://estetikas.netlify.app',
   'https://estetikas.vercel.app',
   'http://localhost:4321',
   'http://localhost:3000',
