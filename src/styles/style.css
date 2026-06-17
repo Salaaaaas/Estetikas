@@ -2776,7 +2776,7 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     font-size: clamp(4rem, 6vw, 6.5rem);
     font-weight: 400;
     color: var(--primary-color);
-    opacity: 0.12;
+    opacity: 1;
     letter-spacing: -3px;
     line-height: 0.85;
     margin-bottom: 1.5rem;
