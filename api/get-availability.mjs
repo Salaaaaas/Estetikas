@@ -1,9 +1,20 @@
 import { supabase } from './_lib/supabase.mjs';
+import { getBookedFromCalendar } from './_lib/calendar.mjs';
 
 function send(res, status, body) {
   res.setHeader('content-type', 'application/json; charset=utf-8');
   res.setHeader('cache-control', 'no-store');
   res.status(status).json(body);
+}
+
+function mergeGrouped(a, b) {
+  const result = { ...a };
+  for (const [date, hours] of Object.entries(b)) {
+    const existing = new Set(result[date] ?? []);
+    for (const h of hours) existing.add(h);
+    result[date] = [...existing];
+  }
+  return result;
 }
 
 export default async function handler(req, res) {
@@ -17,14 +28,19 @@ export default async function handler(req, res) {
   if (date) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return send(res, 400, { error: 'fecha_invalida' });
 
-    const { data, error } = await supabase
-      .from('citas')
-      .select('hora')
-      .eq('fecha', date)
-      .neq('estado', 'cancelada');
+    const [dbResult, calResult] = await Promise.allSettled([
+      supabase.from('citas').select('hora').eq('fecha', date).neq('estado', 'cancelada'),
+      getBookedFromCalendar(`${date}T00:00:00-06:00`, `${date}T23:59:59-06:00`),
+    ]);
 
-    if (error) return send(res, 500, { error: 'error_interno' });
-    return send(res, 200, { booked: data.map(r => r.hora) });
+    if (dbResult.status === 'rejected') return send(res, 500, { error: 'error_interno' });
+    if (dbResult.value.error)           return send(res, 500, { error: 'error_interno' });
+
+    const dbBooked  = dbResult.value.data.map(r => r.hora);
+    const calBooked = calResult.status === 'fulfilled' ? (calResult.value[date] ?? []) : [];
+    const booked    = [...new Set([...dbBooked, ...calBooked])];
+
+    return send(res, 200, { booked });
   }
 
   if (year && month) {
@@ -37,21 +53,22 @@ export default async function handler(req, res) {
     const startDate = `${y}-${String(m).padStart(2, '0')}-01`;
     const endDate   = `${y}-${String(m).padStart(2, '0')}-${lastDay}`;
 
-    const { data, error } = await supabase
-      .from('citas')
-      .select('fecha, hora')
-      .gte('fecha', startDate)
-      .lte('fecha', endDate)
-      .neq('estado', 'cancelada');
+    const [dbResult, calResult] = await Promise.allSettled([
+      supabase.from('citas').select('fecha, hora').gte('fecha', startDate).lte('fecha', endDate).neq('estado', 'cancelada'),
+      getBookedFromCalendar(`${startDate}T00:00:00-06:00`, `${endDate}T23:59:59-06:00`),
+    ]);
 
-    if (error) return send(res, 500, { error: 'error_interno' });
+    if (dbResult.status === 'rejected') return send(res, 500, { error: 'error_interno' });
+    if (dbResult.value.error)           return send(res, 500, { error: 'error_interno' });
 
-    const grouped = {};
-    for (const row of data) {
-      if (!grouped[row.fecha]) grouped[row.fecha] = [];
-      grouped[row.fecha].push(row.hora);
+    const dbGrouped = {};
+    for (const row of dbResult.value.data) {
+      if (!dbGrouped[row.fecha]) dbGrouped[row.fecha] = [];
+      dbGrouped[row.fecha].push(row.hora);
     }
-    return send(res, 200, grouped);
+
+    const calGrouped = calResult.status === 'fulfilled' ? calResult.value : {};
+    return send(res, 200, mergeGrouped(dbGrouped, calGrouped));
   }
 
   return send(res, 400, { error: 'parametros_requeridos' });

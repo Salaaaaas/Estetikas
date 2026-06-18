@@ -140,6 +140,56 @@ export async function getScheduleFromCalendar(timeMin, timeMax) {
   return schedule;
 }
 
+/**
+ * Returns booked hours from Calendar events that are NOT availability blocks.
+ * Availability blocks are identified by having a sede in their location field.
+ * Any other event (direct Katherine bookings, website bookings) counts as booked.
+ * Returns { "YYYY-MM-DD": ["HH:MM", ...] }
+ */
+export async function getBookedFromCalendar(timeMin, timeMax) {
+  const accessToken = await getAccessToken();
+  const calendarId  = encodeURIComponent(process.env.GOOGLE_CALENDAR_ID);
+
+  const params = new URLSearchParams({
+    timeMin,
+    timeMax,
+    singleEvents: 'true',
+    orderBy:      'startTime',
+    maxResults:   '500',
+  });
+
+  const res  = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?${params}`,
+    { headers: { authorization: `Bearer ${accessToken}` } }
+  );
+  const data = await res.json();
+  if (!res.ok) throw new Error('google_calendar_error: ' + JSON.stringify(data));
+
+  const grouped = {};
+  for (const event of data.items ?? []) {
+    if (event.status === 'cancelled') continue;
+    // Skip availability blocks (they have a sede in location)
+    if (sedeFromLocation(event.location)) continue;
+    // Skip all-day events (no dateTime)
+    const startDT = event.start?.dateTime;
+    if (!startDT) continue;
+
+    // Convert to Costa Rica time (UTC-6) to extract the local date and hour
+    const d = new Date(startDT);
+    const crOffset = -6 * 60;
+    const localMs  = d.getTime() + (crOffset - d.getTimezoneOffset()) * 60_000;
+    const local    = new Date(localMs);
+    const dateStr  = local.toISOString().slice(0, 10);
+    const hh       = String(local.getUTCHours()).padStart(2, '0');
+    const mm       = String(local.getUTCMinutes()).padStart(2, '0');
+
+    if (!grouped[dateStr]) grouped[dateStr] = [];
+    grouped[dateStr].push(`${hh}:${mm}`);
+  }
+
+  return grouped;
+}
+
 export async function getRecentlyChangedEvents(minutesBack = 120) {
   const accessToken = await getAccessToken();
   const calendarId  = encodeURIComponent(process.env.GOOGLE_CALENDAR_ID);
