@@ -234,7 +234,7 @@ function getApplicableSchedules(cartIds) {
     const hasMasaje       = cartIds.includes('masajes');
     const hasMedEstetica  = cartIds.some(id => id !== 'limpieza-facial' && id !== 'masajes');
     return SCHEDULE.filter(s => {
-        if (s.forIds.includes('*')) return hasMedEstetica;
+        if (s.forIds.includes('*')) return true;
         return s.forIds.some(id => cartIds.includes(id));
     });
 }
