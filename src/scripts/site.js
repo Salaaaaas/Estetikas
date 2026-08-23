@@ -187,7 +187,36 @@ const SCHEDULE_WEEKLY = [
     },
 ];
 
-let SCHEDULE = [...SCHEDULE_WEEKLY];
+// One-off dates when Dra. Karen is available (treatments requiring a doctor).
+//
+// CÓMO HABILITAR UN DÍA DE LA DRA. EN BATAAN (o Guápiles), SIN TOCAR CÓDIGO:
+// crear en el Google Calendar de la clínica un evento con horario (no de día
+// completo) cuyo campo "Ubicación" contenga "Bataan", "Guápiles" o
+// "Eco Clinic". /api/get-schedule lo publica automáticamente, el calendario
+// de reservas habilita esa fecha para todos los tratamientos y el formulario
+// fija la sede a la del evento. El backend revalida contra el mismo
+// calendario, así que no hay que hacer deploy. Las entradas de abajo son el
+// mecanismo alternativo hardcodeado.
+const SCHEDULE_DATES = [
+    {
+        id:     'dra-karen-2026-07-18',
+        type:   'date',
+        date:   '2026-07-18',
+        hours:  '8:00 AM – 5:00 PM',
+        label:  'Dra. Karen — Medicina Estética',
+        forIds: [
+            'botox', 'bioestimuladores-colageno', 'depilacion',
+            'dermaplaning-dermapen', 'eliminacion-lunares-verrugas',
+            'enzimas-doble-menton', 'exosomas-polinucleotidos',
+            'mesoterapia', 'peelings', 'reduccion',
+            'rejuvenecimiento-facial-integral', 'rellenos',
+            'sueroterapia', 'tratamiento-estrias',
+        ],
+        sede:   'Bataan (Clínica ODONTOBATAAN)',
+    },
+];
+
+let SCHEDULE = [...SCHEDULE_WEEKLY, ...SCHEDULE_DATES];
 
 const SLOT_DURATION_MIN = 60;
 
@@ -262,6 +291,98 @@ function getSessionsForDate(dateStr, schedules) {
     return schedules.filter(s =>
         s.type === 'date' ? s.date === dateStr : s.weekdays.includes(dow)
     );
+}
+
+// ---- REGLAS DE SEDE ----
+// Katherine (limpiezas faciales) atiende en una sola sede por día: la
+// primera reserva con limpieza fija la sede de limpiezas de esa fecha.
+// La Dra. Karen (medicina estética) atiende en la sede de su bloque del
+// día (Guápiles normalmente; Bataan solo en fechas especiales del
+// calendario). La sede del formulario se restringe según la fecha elegida.
+const LIMPIEZA_ID = 'limpieza-facial';
+let _sedeLockCache = {}; // dateStr → sede anclada de limpiezas (o null)
+
+function sedeLabel(value) {
+    const opt = [...(document.getElementById('b-sede')?.options ?? [])]
+        .find(o => o.value === value);
+    return opt ? opt.textContent.trim() : value;
+}
+
+function sessionCoversOtros(s, otros) {
+    return s.forIds.includes('*') || otros.some(id => s.forIds.includes(id));
+}
+
+function sessionsForSede(sessions) {
+    const sede = document.getElementById('b-sede')?.value || '';
+    if (!sede) return sessions;
+    return sessions.filter(s => !s.sede || s.sede === sede);
+}
+
+async function fetchLimpiezaSede(dateStr) {
+    if (dateStr in _sedeLockCache) return _sedeLockCache[dateStr];
+    try {
+        const res  = await fetch(`/api/sede-for-date?date=${dateStr}`);
+        const data = await res.json();
+        _sedeLockCache[dateStr] = data.sede ?? null;
+    } catch {
+        _sedeLockCache[dateStr] = null;
+    }
+    return _sedeLockCache[dateStr];
+}
+
+async function updateSedeForDate(dateStr, sessions) {
+    const sel  = document.getElementById('b-sede');
+    const hint = document.getElementById('b-sede-hint');
+    if (!sel) return;
+    const allSedes = [...sel.options].map(o => o.value).filter(Boolean);
+
+    const cartIds  = getCart().map(i => i.id);
+    const otros    = cartIds.filter(id => id !== LIMPIEZA_ID);
+    const hasLimpieza = cartIds.includes(LIMPIEZA_ID);
+
+    let allowed;
+    let hintText = '';
+
+    if (otros.length > 0) {
+        // Medicina estética: solo las sedes de los bloques del día que
+        // cubren esos tratamientos (los bloques de la Dra. traen sede).
+        allowed = new Set(
+            sessions.filter(s => s.sede && sessionCoversOtros(s, otros)).map(s => s.sede)
+        );
+        if (allowed.size === 1) {
+            hintText = `Este día los tratamientos se atienden en ${sedeLabel([...allowed][0])}.`;
+        }
+    } else {
+        // Solo limpiezas: sesiones con sede fija la imponen; las semanales
+        // (sin sede) dejan elegir cualquiera.
+        allowed = new Set();
+        sessions.forEach(s => { if (s.sede) allowed.add(s.sede); });
+        if (sessions.some(s => !s.sede)) allSedes.forEach(x => allowed.add(x));
+    }
+
+    // Candado de limpiezas: si ya hay una limpieza ese día, su sede manda.
+    if (hasLimpieza && allowed.size > 0) {
+        const locked = await fetchLimpiezaSede(dateStr);
+        if (locked) {
+            allowed = new Set(allowed.has(locked) ? [locked] : []);
+            if (allowed.size === 1) {
+                hintText = `Este día las limpiezas faciales se atienden en ${sedeLabel(locked)}.`;
+            }
+        }
+    }
+
+    if (allowed.size === 0) {
+        hintText = 'No hay sede disponible para tus tratamientos en esta fecha. Por favor elige otro día.';
+    }
+
+    [...sel.options].forEach(o => { if (o.value) o.disabled = !allowed.has(o.value); });
+    if (sel.value && !allowed.has(sel.value)) sel.value = '';
+    if (allowed.size === 1) sel.value = [...allowed][0];
+
+    if (hint) {
+        hint.textContent = hintText;
+        hint.hidden = !hintText;
+    }
 }
 
 let _calState = { year: null, month: null, selected: null, fullDays: new Set() };
@@ -348,11 +469,14 @@ function renderCalendar() {
     });
 
     wrapper.querySelectorAll('.cal-day[data-date]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            _calState.selected = btn.dataset.date;
-            document.getElementById('b-date').value = btn.dataset.date;
-            updateCalendarSelection(btn.dataset.date);
-            updateSessionSelect(getSessionsForDate(btn.dataset.date, schedules), btn.dataset.date);
+        btn.addEventListener('click', async () => {
+            const dateStr = btn.dataset.date;
+            _calState.selected = dateStr;
+            document.getElementById('b-date').value = dateStr;
+            updateCalendarSelection(dateStr);
+            const sessions = getSessionsForDate(dateStr, schedules);
+            await updateSedeForDate(dateStr, sessions);
+            updateSessionSelect(sessionsForSede(sessions), dateStr);
         });
     });
 
@@ -471,9 +595,19 @@ async function initReservarPage() {
     renderReservarItems();
     _calState = { year: null, month: null, selected: null, fullDays: new Set() };
     _availCache = {};
+    _sedeLockCache = {};
 
-    // Render immediately with weekly slots so the calendar isn't blank
-    SCHEDULE = [...SCHEDULE_WEEKLY];
+    // Al cambiar de sede se refrescan los horarios: los bloques con sede
+    // fija (días de la Dra.) solo aplican a su propia sede.
+    document.getElementById('b-sede')?.addEventListener('change', () => {
+        if (!_calState.selected) return;
+        const schedules = getApplicableSchedules(getCart().map(i => i.id));
+        const sessions  = getSessionsForDate(_calState.selected, schedules);
+        updateSessionSelect(sessionsForSede(sessions), _calState.selected);
+    });
+
+    // Render immediately with weekly + hardcoded date slots so the calendar isn't blank
+    SCHEDULE = [...SCHEDULE_WEEKLY, ...SCHEDULE_DATES];
     renderCalendar();
     renderTurnstile();
     document.getElementById('booking-form').addEventListener('submit', submitBooking);
@@ -483,7 +617,7 @@ async function initReservarPage() {
         const res  = await fetch('/api/get-schedule');
         const data = await res.json();
         if (Array.isArray(data.schedule) && data.schedule.length > 0) {
-            SCHEDULE = [...SCHEDULE_WEEKLY, ...data.schedule];
+            SCHEDULE = [...SCHEDULE_WEEKLY, ...SCHEDULE_DATES, ...data.schedule];
             _calState.fullDays = new Set();
             renderCalendar();
         }

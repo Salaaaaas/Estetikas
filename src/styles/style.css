@@ -2453,6 +2453,17 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     line-height: 1.45;
 }
 
+/* Aviso de sede restringida por la fecha elegida */
+.reservar-sede-hint {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--teal, #007D88);
+}
+.reservar-field select option:disabled {
+    color: #b0b0b0;
+}
+
 /* Success state */
 .reservar-success {
     display: flex;

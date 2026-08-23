@@ -1,5 +1,11 @@
 import { supabase } from './_lib/supabase.mjs';
 
+// Devuelve la sede donde quedaron ancladas las LIMPIEZAS FACIALES de una
+// fecha, o null si aún no hay ninguna. Katherine realiza las limpiezas y no
+// puede estar en dos localidades el mismo día: la primera reserva con
+// limpieza facial fija la sede de limpiezas de ese día. El resto de
+// tratamientos (Dra. Karen) no se ven afectados por este candado.
+
 function send(res, status, body) {
   res.setHeader('content-type', 'application/json; charset=utf-8');
   res.setHeader('cache-control', 'no-store');
@@ -21,6 +27,7 @@ export default async function handler(req, res) {
     .select('sede')
     .eq('fecha', date)
     .neq('estado', 'cancelada')
+    .contains('servicios', JSON.stringify([{ slug: 'limpieza-facial' }]))
     .limit(1);
 
   if (error) return send(res, 500, { error: 'error_interno' });
