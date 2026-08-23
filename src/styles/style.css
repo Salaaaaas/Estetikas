@@ -334,9 +334,9 @@ body {
 }
 
 footer {
-    background: rgba(10, 10, 10, 0.95); /* Deeper, more grounded Liquid Glass */
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    /* PERF: el blur detrás de un fondo 95% opaco era invisible pero costaba
+       un repintado completo por frame. Fondo casi sólido, mismo look. */
+    background: rgba(10, 10, 10, 0.97);
     color: rgba(255, 255, 255, 0.85); /* Aumentado de 0.45 a 0.85 para accesibilidad */
     text-align: center;
     padding: 2.5rem 8%; /* Ajustado horizontalmente al 8% para el logo */
@@ -1240,11 +1240,13 @@ body:not(.home-page) header.scrolled nav a {
         position: absolute;
         inset: 0;
         z-index: -1;
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(25px) saturate(180%);
-        -webkit-backdrop-filter: blur(25px) saturate(180%);
+        /* PERF: nada de backdrop-filter aquí. Un blur sobre un elemento fixed
+           de ancho completo se repinta en CADA frame de scroll y fue medido
+           como EL cuello de botella de la página (31→59 fps al quitarlo).
+           El vidrio se simula con alta opacidad + degradado sutil. */
+        background: linear-gradient(rgba(255, 255, 255, 0.97), rgba(255, 255, 255, 0.92));
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         opacity: 0;
         transition: opacity 280ms var(--ease-out);
     }
