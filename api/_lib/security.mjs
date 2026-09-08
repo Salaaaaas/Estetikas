@@ -35,6 +35,45 @@ export async function checkRateLimit(ip, endpoint, { maxPerWindow = 5, windowMin
 }
 
 // ---------------------------------------------------------------------
+// Rate limit por sujeto arbitrario (en la práctica: device_id de la app)
+//
+// El límite por IP funciona en web pero castiga al tráfico móvil: las
+// operadoras celulares meten miles de abonados detrás de un mismo NAT, así que
+// cinco intentos por IP y ventana pueden bloquear a una clienta legítima
+// porque otra persona de la misma red reservó antes. La ruta móvil limita por
+// dispositivo atestado, que es un sujeto mucho más preciso.
+// ---------------------------------------------------------------------
+export async function checkSubjectRateLimit(subject, endpoint, { maxPerWindow = 5, windowMinutes = 10 } = {}) {
+  // A diferencia del límite por IP, aquí NO se falla abierto ante un sujeto
+  // ausente: si no hay dispositivo, quien llama no debería haber llegado.
+  if (!subject) return { ok: false, reason: 'sin_sujeto' };
+
+  try {
+    const { data, error } = await supabase.rpc('bump_rate_limit_subject', {
+      p_subject: String(subject).slice(0, 200),
+      p_endpoint: endpoint,
+      p_window_minutes: windowMinutes
+    });
+
+    if (error) {
+      // Fail-open igual que el límite por IP: una caída de la BD no debe
+      // impedir reservar. El techo por IP sigue en pie por debajo.
+      console.error('rate_limit_subject_error', JSON.stringify(error));
+      return { ok: true, reason: 'rate_limit_db_error' };
+    }
+
+    if (data > maxPerWindow) {
+      return { ok: false, reason: 'rate_limit_exceeded', count: data };
+    }
+
+    return { ok: true, count: data };
+  } catch (err) {
+    console.error('rate_limit_subject_exception', err.message);
+    return { ok: true, reason: 'rate_limit_exception' };
+  }
+}
+
+// ---------------------------------------------------------------------
 // Verificación de Cloudflare Turnstile (CAPTCHA invisible)
 // https://developers.cloudflare.com/turnstile/get-started/server-side-validation/
 // ---------------------------------------------------------------------

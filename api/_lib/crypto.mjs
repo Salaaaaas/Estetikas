@@ -1,4 +1,4 @@
-import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'node:crypto';
+import { createCipheriv, createDecipheriv, createHmac, randomBytes, scryptSync } from 'node:crypto';
 
 // AES-256-GCM: cifrado autenticado, IV único por registro.
 // Formato almacenado (base64): [version:1][iv:12][authTag:16][ciphertext:N]
@@ -40,4 +40,27 @@ export function decryptPII(b64) {
   const decipher = createDecipheriv('aes-256-gcm', getKey(), iv);
   decipher.setAuthTag(tag);
   return Buffer.concat([decipher.update(ct), decipher.final()]).toString('utf8');
+}
+
+// ---------------------------------------------------------------------
+// Índice buscable del teléfono
+//
+// encryptPII usa un IV aleatorio por registro, así que el mismo número da un
+// ciphertext distinto cada vez y no se puede consultar por él. Para que la app
+// pueda listar "mis citas" hace falta un valor determinista: un HMAC-SHA256
+// del teléfono normalizado a E.164.
+//
+// El pepper es una variable de entorno propia, DISTINTA de PII_ENCRYPTION_KEY:
+// si algún día hubiera que compartir el índice con otro sistema, no se estaría
+// compartiendo material relacionado con la clave de cifrado. Sin el pepper, un
+// dump de la BD no permite probar números por fuerza bruta (el espacio de
+// teléfonos de Costa Rica son 8 dígitos: sin pepper se agota en segundos).
+// ---------------------------------------------------------------------
+export function hashPhone(e164) {
+  if (!e164) return null;
+  const pepper = process.env.PHONE_HASH_PEPPER;
+  if (!pepper || pepper.length < 32) {
+    throw new Error('PHONE_HASH_PEPPER ausente o demasiado corta (mínimo 32 chars).');
+  }
+  return createHmac('sha256', pepper).update(String(e164)).digest('hex');
 }
