@@ -141,12 +141,24 @@ export async function getScheduleFromCalendar(timeMin, timeMax) {
 }
 
 /**
- * Returns booked hours from Calendar events that are NOT availability blocks.
- * Availability blocks are identified by having a sede in their location field.
- * Any other event (direct Katherine bookings, website bookings) counts as booked.
- * Returns { "YYYY-MM-DD": ["HH:MM", ...] }
+ * Sede de una cita creada por el sitio, leída de la línea "📍 Sede: ..." que
+ * escribe createCalendarEvent en la descripción.
+ *
+ * No se usa `location` a propósito: un evento con sede en location es, por
+ * convención de este calendario, un bloque de disponibilidad, no una cita.
+ * Devuelve null para eventos creados a mano en Google Calendar, que no llevan
+ * la línea; esos bloquean la hora en TODAS las sedes, que es lo prudente.
  */
-export async function getBookedFromCalendar(timeMin, timeMax) {
+function sedeFromDescription(description) {
+  const match = /📍\s*Sede:\s*(.+)/.exec(description ?? '');
+  return match ? sedeFromLocation(match[1]) : null;
+}
+
+/**
+ * Igual que getBookedFromCalendar pero conservando la sede de cada cita.
+ * Returns { "YYYY-MM-DD": [{ hora: "HH:MM", sede: string|null }, ...] }
+ */
+export async function getBookedDetailedFromCalendar(timeMin, timeMax) {
   const accessToken = await getAccessToken();
   const calendarId  = encodeURIComponent(process.env.GOOGLE_CALENDAR_ID);
 
@@ -184,9 +196,23 @@ export async function getBookedFromCalendar(timeMin, timeMax) {
     const mm       = String(local.getUTCMinutes()).padStart(2, '0');
 
     if (!grouped[dateStr]) grouped[dateStr] = [];
-    grouped[dateStr].push(`${hh}:${mm}`);
+    grouped[dateStr].push({ hora: `${hh}:${mm}`, sede: sedeFromDescription(event.description) });
   }
 
+  return grouped;
+}
+
+/**
+ * Horas ocupadas sin distinguir sede: la unión de todas. Es lo que consume el
+ * sitio web, que no filtra por sede.
+ * Returns { "YYYY-MM-DD": ["HH:MM", ...] }
+ */
+export async function getBookedFromCalendar(timeMin, timeMax) {
+  const detailed = await getBookedDetailedFromCalendar(timeMin, timeMax);
+  const grouped = {};
+  for (const [date, entries] of Object.entries(detailed)) {
+    grouped[date] = [...new Set(entries.map(e => e.hora))];
+  }
   return grouped;
 }
 

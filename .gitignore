@@ -23,4 +23,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
-/scripts/
+# scripts/ queda fuera del repo salvo lo que sí debe versionarse.
+# Ojo: git no permite re-incluir un archivo si su carpeta padre está excluida,
+# por eso es "/scripts/*" y no "/scripts/".
+/scripts/*
+!/scripts/test-mobile-auth.mjs
+!/scripts/backfill-telefono-hash.mjs
