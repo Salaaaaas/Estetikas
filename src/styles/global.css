@@ -1,0 +1,28 @@
+/* Tailwind v4: tema + utilidades.
+   Preflight (reset de base) queda fuera mientras style.css siga activo:
+   activarlo ahora cambiaría márgenes, listas y botones de todo el sitio.
+   Se habilita en la fase final, cuando style.css se elimine. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* Tokens de DESIGN.md. Los mismos valores viven en :root de style.css
+   hasta que termine la migración. */
+@theme {
+  --color-primary: #007D88;
+  --color-primary-hover: #005E67;
+  --color-primary-on-dark: #4FB3BC;
+  --color-gold: #C9A84C;
+  --color-champagne: #F7E7CE;
+  --color-ink: #111111;
+  --color-body: #1A1A1A;
+  --color-muted: #4A4A4A;
+  --color-surface: #F7F9FA;
+
+  --font-heading: 'Bodoni Moda', serif;
+  --font-body: 'Jost', sans-serif;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
