@@ -31,7 +31,7 @@ anteriores a hoy no aparecerán en «Mis citas». Se hace contra el despliegue,
 no en local:
 
 ```bash
-BASE=https://estetikas.vercel.app
+BASE=https://estetikascr.com
 CRON=<el valor de CRON_SECRET>
 
 curl -X POST "$BASE/api/admin/backfill-telefono-hash?dry=1" -H "Authorization: Bearer $CRON"

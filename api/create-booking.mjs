@@ -29,7 +29,7 @@ function isOriginAllowed(origin) {
   if (!origin) return false;
   if (String(origin).endsWith('.vercel.app')) return true;
   const allowed = new Set([
-    'https://estetikas.vercel.app',
+    'https://estetikascr.com',
     'http://localhost:4321',
     'http://localhost:3000',
     'http://localhost:8888'

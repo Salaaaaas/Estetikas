@@ -43,7 +43,7 @@ La reconciliación es idempotente: solo toca filas que aún no están canceladas
 | Variable | Valor |
 | --- | --- |
 | `CALENDAR_WEBHOOK_TOKEN` | `openssl rand -base64 32`, tipo Secret |
-| `WEBHOOK_BASE_URL` | `https://estetikas.vercel.app` (respaldo; en producción Vercel ya expone `VERCEL_PROJECT_PRODUCTION_URL`) |
+| `WEBHOOK_BASE_URL` | `https://estetikascr.com` (respaldo; en producción Vercel ya expone `VERCEL_PROJECT_PRODUCTION_URL`) |
 
 `CRON_SECRET` también hace falta, y ya está.
 
@@ -51,7 +51,7 @@ La reconciliación es idempotente: solo toca filas que aún no están canceladas
 a partir de ahí:
 
 ```bash
-curl -X POST https://estetikas.vercel.app/api/register-calendar-watch \
+curl -X POST https://estetikascr.com/api/register-calendar-watch \
   -H "Authorization: Bearer $CALENDAR_WEBHOOK_TOKEN"
 ```
 
@@ -71,7 +71,7 @@ verificado **en el proyecto de Google Cloud** que emite las credenciales — no
 basta con tenerlo verificado en Search Console.
 
 Google Cloud Console → APIs & Services → **Domain verification** → Add domain →
-`estetikas.vercel.app`. El método de archivo HTML sirve: ya hay dos archivos de
+`estetikascr.com`. El método de archivo HTML sirve: ya hay dos archivos de
 verificación en `public/` de intentos anteriores, y `astro build` los publica en
 la raíz del sitio.
 

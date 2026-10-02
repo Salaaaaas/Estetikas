@@ -2,7 +2,7 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://estetikas.vercel.app',
+  site: 'https://estetikascr.com',
   publicDir: 'public',
   build: {
     assets: '_astro',

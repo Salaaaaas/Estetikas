@@ -135,7 +135,7 @@ export function getClientIp(headers) {
 // Origin allowlist (anti-CSRF para endpoints públicos)
 // ---------------------------------------------------------------------
 const ALLOWED_ORIGINS = new Set([
-  'https://estetikas.vercel.app',
+  'https://estetikascr.com',
   'http://localhost:4321',
   'http://localhost:3000',
   'http://localhost:8888'

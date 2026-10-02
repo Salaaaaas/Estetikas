@@ -1,5 +1,5 @@
 # ==============================================
-# robots.txt — Esteti'Kas (estetikas.vercel.app)
+# robots.txt — Esteti'Kas (estetikascr.com)
 # ==============================================
 
 User-agent: *
@@ -8,4 +8,4 @@ Allow: /
 # El API no aporta valor SEO
 Disallow: /api/
 
-Sitemap: https://estetikas.vercel.app/sitemap.xml
+Sitemap: https://estetikascr.com/sitemap.xml

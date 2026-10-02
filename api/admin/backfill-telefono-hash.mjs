@@ -8,7 +8,7 @@
 //
 // Uso (una sola vez tras aplicar supabase/schema_mobile.sql):
 //
-//   curl -X POST https://estetikas.vercel.app/api/admin/backfill-telefono-hash \
+//   curl -X POST https://estetikascr.com/api/admin/backfill-telefono-hash \
 //     -H "Authorization: Bearer $CRON_SECRET"
 //
 // Añadir ?dry=1 para ver el conteo sin escribir nada.
