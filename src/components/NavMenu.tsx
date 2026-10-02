@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { lockScroll, unlockScroll } from '../scripts/scroll-lock';
+import { lockScroll, unlockScroll } from '../lib/scroll-lock';
 
 interface NavMenuProps {
   isHome: boolean;
