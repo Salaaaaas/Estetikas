@@ -849,9 +849,12 @@ const initSite = () => {
     // Reveal animations — content is visible by default (no CSS opacity:0), so
     // nothing ships hidden if JS fails. GSAP hides right before animating.
     const revealTargets = ".service-card, .faq-item, .before-after-container, .testimonial-featured, .testimonial-card-compact, .contact-info, .contact-form-wrapper, .treatment-detail-block, .trust-item, .t-card";
-    if (!reduceMotion && document.querySelector(revealTargets)) {
-        gsap.set(revealTargets, { opacity: 0, y: 30, willChange: 'transform, opacity' });
-        ScrollTrigger.batch(revealTargets, {
+    // Solo se oculta lo que está bajo el pliegue: lo visible al cargar no parpadea
+    const belowFold = gsap.utils.toArray(revealTargets)
+        .filter(el => el.getBoundingClientRect().top > window.innerHeight);
+    if (!reduceMotion && belowFold.length) {
+        gsap.set(belowFold, { opacity: 0, y: 30, willChange: 'transform, opacity' });
+        ScrollTrigger.batch(belowFold, {
             start: "top 88%",
             onEnter: batch => gsap.to(batch, {
                 opacity: 1, y: 0, stagger: 0.08, duration: 0.65, ease: "power3.out", overwrite: true,
@@ -893,20 +896,13 @@ const initSite = () => {
         }
     });
 
-    // Profile images: scale up on enter, darken on exit (ImageScaleFade paradigm)
+    // Profile images: entrada única (sin oscurecer al salir del viewport)
     if (!reduceMotion) gsap.utils.toArray('.profile-image-side img').forEach(img => {
         gsap.fromTo(img,
-            { scale: 0.88, opacity: 0 },
-            { scale: 1, opacity: 1, duration: 1.1, ease: "power3.out",
-              scrollTrigger: { trigger: img, start: "top 85%", toggleActions: "play none none reverse" } }
+            { scale: 0.94, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 1.1, ease: "power3.out", clearProps: 'transform,opacity',
+              scrollTrigger: { trigger: img, start: "top 85%", once: true } }
         );
-        ScrollTrigger.create({
-            trigger: img,
-            start: "bottom 20%",
-            end: "bottom top",
-            onEnter: () => gsap.to(img, { opacity: 0.3, scale: 1.04, duration: 0.8, ease: "power2.inOut" }),
-            onLeaveBack: () => gsap.to(img, { opacity: 1, scale: 1, duration: 0.6, ease: "power2.out" })
-        });
     });
 
     // Specialties heading: entrance
@@ -917,8 +913,7 @@ const initSite = () => {
         const tl = gsap.timeline({
             scrollTrigger: { trigger: specHeading, start: 'top 80%', once: true }
         });
-        tl.fromTo('.specialties-count',   fromVars(16), { ...toVars(0, 0.6) })
-          .fromTo('.specialties-heading', fromVars(20), { ...toVars(0, 0.7) }, '-=0.35')
+        tl.fromTo('.specialties-heading', fromVars(20), { ...toVars(0, 0.7) })
           .fromTo('.specialties-sub',     fromVars(14), { ...toVars(0, 0.6) }, '-=0.3')
           .fromTo('.specialties-cta',     fromVars(10), { ...toVars(0, 0.5) }, '-=0.25');
     }
@@ -973,6 +968,24 @@ const initSite = () => {
         });
     });
 
+    // Respaldo de los reveals: si un elemento sigue invisible 2 s después de
+    // entrar al viewport (scroll muy rápido, resize, render headless), se muestra.
+    if (!reduceMotion && 'IntersectionObserver' in window) {
+        const guarded = revealTargets + ", .profile-content-side, .profile-image-side img, .specialty-card, .staff-intro-heading, .staff-intro-copy p, .specialties-heading, .specialties-sub, .specialties-cta";
+        const guard = new IntersectionObserver((entries) => {
+            entries.forEach(({ isIntersecting, target }) => {
+                if (!isIntersecting) return;
+                guard.unobserve(target);
+                setTimeout(() => {
+                    if (parseFloat(getComputedStyle(target).opacity) < 1) {
+                        gsap.to(target, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.4, overwrite: true, clearProps: 'transform,opacity' });
+                    }
+                }, 2000);
+            });
+        });
+        document.querySelectorAll(guarded).forEach(el => guard.observe(el));
+    }
+
     // FAQ Accordion (pure CSS grid-template-rows, no layout reflow)
     document.querySelectorAll('.faq-question').forEach(question => {
         question.setAttribute('aria-expanded', question.classList.contains('active') ? 'true' : 'false');
@@ -1008,24 +1021,6 @@ const initSite = () => {
         baSlider.addEventListener('touchmove', (e) => { moveSlider(e); e.preventDefault(); }, { passive: false });
     }
 
-    // Magnetic Buttons — getBoundingClientRect only on mouseenter (once per hover),
-    // not on every mousemove to avoid forced synchronous layout per pixel.
-    if (!isTouch && !reduceMotion) {
-        document.querySelectorAll('.btn, .social-icon-btn, .logo img').forEach(btn => {
-            const xTo = gsap.quickTo(btn, 'x', { duration: 0.3, ease: 'power2.out' });
-            const yTo = gsap.quickTo(btn, 'y', { duration: 0.3, ease: 'power2.out' });
-            let r = { left: 0, top: 0, width: 0, height: 0 };
-            btn.addEventListener('mouseenter', () => { r = btn.getBoundingClientRect(); });
-            btn.addEventListener('mousemove', (e) => {
-                xTo((e.clientX - r.left - r.width / 2) * 0.28);
-                yTo((e.clientY - r.top - r.height / 2) * 0.28);
-            });
-            btn.addEventListener('mouseleave', () => {
-                gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.3)' });
-            });
-        });
-    }
-
     // Contact Form (WhatsApp)
     const contactForm = document.getElementById('premium-contact-form');
     if (contactForm) {
@@ -1045,8 +1040,8 @@ const initSite = () => {
             setTimeout(() => {
                 window.open(`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(text)}`, '_blank');
                 btn.innerText = '¡Solicitud Abierta!';
-                btn.style.backgroundColor = '#28a745';
-                btn.style.borderColor = '#28a745';
+                btn.style.backgroundColor = '#1E7B34';
+                btn.style.borderColor = '#1E7B34';
                 contactForm.reset();
                 setTimeout(() => {
                     btn.innerText = originalText;
@@ -1070,25 +1065,15 @@ const initSite = () => {
     const careSlides = document.querySelectorAll('.care-slide');
     const careDots = document.querySelectorAll('.care-dot');
     if (careSlides.length > 0) {
-        let current = 0;
         function showSlide(index) {
             careSlides.forEach(s => s.classList.remove('active'));
             careDots.forEach(d => { d.classList.remove('active'); d.setAttribute('aria-pressed', 'false'); });
             careSlides[index].classList.add('active');
             if (careDots[index]) { careDots[index].classList.add('active'); careDots[index].setAttribute('aria-pressed', 'true'); }
-            current = index;
         }
-        const startTimer = () => setInterval(() => {
-            if (!document.hidden) showSlide((current + 1) % careSlides.length);
-        }, 10000);
-        // No autoplay when the user prefers reduced motion
-        let timer = reduceMotion ? null : startTimer();
+        // Sin autoplay: son instrucciones médicas, la paciente elige qué leer
         careDots.forEach((dot, i) => {
-            dot.addEventListener('click', () => {
-                if (timer) clearInterval(timer);
-                showSlide(i);
-                if (!reduceMotion) timer = startTimer();
-            });
+            dot.addEventListener('click', () => showSlide(i));
         });
     }
 

@@ -2,6 +2,8 @@
 :root {
     --primary-color: #007D88;
     --primary-color-hover: #005E67;
+    /* Teal claro solo para texto/foco sobre fondos oscuros (#111): 7.6:1 */
+    --primary-on-dark: #4FB3BC;
     --accent-gold: #C9A84C;
     --accent-champagne: #F7E7CE;
     --secondary-color: #111111;
@@ -24,7 +26,12 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: var(--font-body);
+}
+
+/* La fuente se hereda desde body: así <em>/<span> dentro de un titular
+   conservan la Bodoni del titular en vez de volver a Jost. */
+button, input, select, textarea {
+    font-family: inherit;
 }
 
 html {
@@ -33,6 +40,7 @@ html {
 }
 
 body {
+    font-family: var(--font-body);
     background-color: var(--bg-color);
     color: var(--text-color);
     line-height: 1.6;
@@ -76,11 +84,11 @@ body {
 /* Display heading: 3 stacked lines, guaranteed ≤8 chars each */
 .hero-display {
     font-family: var(--font-heading);
-    font-size: clamp(4rem, 8vw, 8.5rem);
+    font-size: clamp(3rem, 6.4vw, 6rem);
     font-weight: 700;
     color: var(--secondary-color);
-    line-height: 0.88;
-    letter-spacing: -3px;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
     margin-bottom: 3rem;
 }
 
@@ -145,33 +153,6 @@ body {
     align-items: center;
 }
 
-.btn-outline-dark {
-    display: inline-block;
-    background: transparent;
-    color: var(--secondary-color);
-    border: 1px solid rgba(0,0,0,0.2);
-    padding: 0.9rem 2.5rem;
-    border-radius: 2px;
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 400;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    transition: border-color 220ms var(--ease-out), color 220ms var(--ease-out), transform 160ms var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-    .btn-outline-dark:hover {
-        border-color: var(--secondary-color);
-        color: var(--secondary-color);
-    }
-}
-
-.btn-outline-dark:active {
-    transform: scale(0.97);
-    transition-duration: 100ms;
-}
-
 .hero-image-wrap {
     width: 100%;
     align-self: center;
@@ -196,19 +177,18 @@ body {
     }
 }
 
-/* Botones */
+/* Botones: única definición de .btn (DESIGN.md §4) */
 .btn {
     display: inline-block;
     background-color: var(--primary-color);
     color: var(--white);
-    padding: 0.9rem 2.5rem;
-    border-radius: 2px;
+    padding: 0.9rem 2.25rem;
+    border-radius: 4px;
     text-decoration: none;
-    font-weight: 400;
-    font-size: 0.85rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    transition: transform 160ms var(--ease-out), background-color 220ms var(--ease-out), border-color 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
+    font-weight: 500;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+    transition: transform 160ms var(--ease-out), background-color 200ms var(--ease-out), border-color 200ms var(--ease-out);
     border: 1px solid var(--primary-color);
 }
 
@@ -216,12 +196,41 @@ body {
     .btn:hover {
         background-color: var(--primary-color-hover);
         border-color: var(--primary-color-hover);
+        color: var(--white);
+        transform: translateY(-2px);
     }
 }
 
 .btn:active {
-    transform: scale(0.97);
-    transition-duration: 100ms;
+    transform: translateY(1px);
+}
+
+/* Debe ir después de .btn: se usa como .btn.btn-outline-dark */
+.btn-outline-dark {
+    display: inline-block;
+    background: transparent;
+    color: var(--secondary-color);
+    border: 1px solid rgba(17,17,17,.22);
+    padding: 0.9rem 2.25rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: background 200ms var(--ease-out), border-color 200ms var(--ease-out), transform 160ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .btn-outline-dark:hover {
+        background: rgba(17,17,17,.04);
+        border-color: var(--secondary-color);
+        color: var(--secondary-color);
+        transform: translateY(-2px);
+    }
+}
+
+.btn-outline-dark:active {
+    transform: translateY(1px);
 }
 
 .btn-outline {
@@ -475,8 +484,8 @@ footer .footer-logo img:hover {
     }
 
     .hero-display {
-        font-size: clamp(3.5rem, 10vw, 6rem);
-        letter-spacing: -2px;
+        font-size: clamp(3rem, 11vw, 4.75rem);
+        letter-spacing: -0.02em;
         text-align: center;
     }
 
@@ -529,7 +538,6 @@ footer .footer-logo img:hover {
     
     .care-section h2 {
         font-size: 1.8rem !important;
-        margin-bottom: 2rem !important;
     }
 
     .service-card {
@@ -615,7 +623,8 @@ footer .footer-logo img:hover {
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
-    outline: none;
+    outline: 2px solid var(--primary-on-dark);
+    outline-offset: 2px;
     border-color: rgba(255, 255, 255, 0.7);
     background: rgba(255, 255, 255, 0.14);
 }
@@ -869,6 +878,7 @@ footer .footer-logo img:hover {
     flex: 1;
     min-width: 50%;
     height: 700px;
+    padding: 3rem 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -888,9 +898,12 @@ footer .footer-logo img:hover {
 }
 
 .profile-image-side img {
-    width: 100%;
+    width: auto;
     height: 100%;
-    object-fit: contain;
+    max-width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: 50% 35%;
     display: block;
     transition: transform 0.8s var(--ease-out);
 }
@@ -968,11 +981,17 @@ footer .footer-logo img:hover {
 
 @media (max-width: 991px) {
     .profile-block, .profile-block.reverse {
-        flex-direction: column-reverse;
+        flex-direction: column;
     }
     .profile-image-side {
-        height: 440px;
+        height: auto;
         min-width: 100%;
+        padding: 2.5rem 8% 0;
+    }
+    .profile-image-side img {
+        width: 100%;
+        max-width: 420px;
+        height: auto;
     }
     .profile-content-side {
         padding: 4rem 8%;
@@ -1046,54 +1065,53 @@ body:not(.home-page) header.scrolled nav a {
 }
 
 .care-section-header {
-    max-width: 1200px;
-    margin: 0 auto 4rem;
-    text-align: center;
+    max-width: 1000px;
+    margin: 0 auto 2.5rem;
+    text-align: left;
 }
 
 .care-section-header h2 {
     font-family: var(--font-heading);
-    font-size: clamp(1.8rem, 3vw, 2.4rem);
-    color: var(--secondary-color);
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    color: var(--white);
     font-weight: 400;
     margin-bottom: 0.75rem;
     letter-spacing: -0.5px;
 }
 
 .care-section-header p {
-    color: var(--text-light);
-    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.05rem;
     font-weight: 300;
 }
 
 /* Post-Treatment Care Slider */
 .care-section {
-    padding: 8rem 5%;
-    background: linear-gradient(135deg, rgba(235, 248, 249, 1) 0%, rgba(255, 255, 255, 1) 100%);
+    padding: clamp(5rem, 8vw, 8rem) 5%;
+    background: var(--primary-color-hover);
+    color: var(--white);
     overflow: hidden;
     position: relative;
-    border-top: 1px solid rgba(0, 166, 178, 0.05);
+}
+
+/* Sobre teal profundo el anillo de foco teal desaparece: usar blanco */
+.care-section :focus-visible {
+    outline-color: var(--white);
 }
 
 .care-slider-container {
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
-    position: relative;
-    height: 480px;
+    display: grid;
 }
 
 .care-slide {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    grid-area: 1 / 1;
     opacity: 0;
     visibility: hidden;
     transition: opacity 550ms var(--ease-out), visibility 550ms var(--ease-out);
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: stretch;
 }
 
 .care-slide.active {
@@ -1102,16 +1120,11 @@ body:not(.home-page) header.scrolled nav a {
 }
 
 .care-card {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    border-radius: 28px;
-    padding: 3.5rem;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
-    display: grid;
-    grid-template-columns: 1fr 1.5fr;
-    gap: 4rem;
-    align-items: center;
-    max-width: 1000px;
+    background: var(--white);
+    color: var(--text-color);
+    border-radius: 4px;
+    padding: clamp(2rem, 4vw, 3.5rem);
+    width: 100%;
     transform: translateY(20px);
     transition: transform 550ms var(--ease-out), opacity 550ms var(--ease-out);
 }
@@ -1122,17 +1135,19 @@ body:not(.home-page) header.scrolled nav a {
 
 .care-info h3 {
     font-family: var(--font-heading);
-    font-size: 2.2rem;
-    color: var(--primary-color);
-    margin-bottom: 1.5rem;
+    font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+    font-weight: 400;
+    color: var(--secondary-color);
+    margin-bottom: 1.75rem;
+    text-wrap: balance;
 }
 
 .care-category {
     font-size: 0.85rem;
-    color: var(--text-light);
+    color: var(--primary-color);
     margin-bottom: 0.5rem;
     display: block;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .care-list {
@@ -1141,7 +1156,7 @@ body:not(.home-page) header.scrolled nav a {
 }
 
 .care-list li {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
     display: flex;
     align-items: flex-start;
     gap: 1.2rem;
@@ -1158,42 +1173,48 @@ body:not(.home-page) header.scrolled nav a {
 
 .care-dots {
     display: flex;
-    justify-content: center;
-    gap: 1.2rem;
-    margin-top: 1rem;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    max-width: 1000px;
+    margin: 0 auto 1.25rem;
 }
 
+/* Pestañas: zona táctil ≥44px, estado activo sin depender solo del color */
 .care-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: rgba(0, 166, 178, 0.15);
+    min-height: 44px;
+    padding: 0.6rem 1.15rem;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 2rem;
+    background: transparent;
+    color: var(--white);
+    font-size: 0.92rem;
+    font-weight: 400;
+    line-height: 1.3;
+    text-align: left;
     cursor: pointer;
-    transition: transform 200ms var(--ease-out), background-color 200ms var(--ease-out);
+    transition: background-color 200ms var(--ease-out), color 200ms var(--ease-out), border-color 200ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .care-dot:hover {
+        border-color: var(--white);
+    }
+}
+
+.care-dot:active {
+    transform: translateY(1px);
 }
 
 .care-dot.active {
-    background: var(--primary-color);
-    transform: scale(1.4);
-    box-shadow: 0 0 15px rgba(0, 166, 178, 0.3);
+    background: var(--white);
+    border-color: var(--white);
+    color: var(--primary-color-hover);
+    font-weight: 500;
 }
 
 @media (max-width: 768px) {
-    .care-card {
-        grid-template-columns: 1fr;
-        padding: 2.5rem 1.5rem;
-        text-align: center;
-        gap: 2rem;
-    }
-    .care-slider-container {
-        height: 650px;
-    }
-    .care-visual svg {
-        width: 80px;
-        height: 80px;
-    }
     .care-list li {
-        text-align: left;
+        font-size: 1rem;
     }
 }
 @media (max-width: 768px) {
@@ -1204,7 +1225,7 @@ body:not(.home-page) header.scrolled nav a {
 }
 
 .phone-link {
-    color: var(--primary-color) !important;
+    color: var(--primary-on-dark) !important;
     text-decoration: none !important;
     font-size: 1.4rem;
     font-weight: 600;
@@ -1214,8 +1235,7 @@ body:not(.home-page) header.scrolled nav a {
 }
 
 .phone-link:hover {
-    color: var(--secondary-color) !important;
-    transform: translateX(5px);
+    color: var(--white) !important;
 }
 
 /* --- Layout Styles --- */
@@ -1291,10 +1311,9 @@ body:not(.home-page) header.scrolled nav a {
         text-decoration: none;
         color: var(--secondary-color);
         font-weight: 400;
-        font-size: 0.82rem;
+        font-size: 0.95rem;
         transition: color 220ms var(--ease-out);
-        text-transform: uppercase;
-        letter-spacing: 2px;
+        letter-spacing: 0.01em;
         position: relative;
     }
 
@@ -1318,7 +1337,7 @@ body:not(.home-page) header.scrolled nav a {
     @media (max-width: 1100px) {
         header { padding: 1.2rem 5%; }
         nav ul { gap: 1.5rem; }
-        nav a { font-size: 0.8rem; letter-spacing: 1px; }
+        nav a { font-size: 0.9rem; }
     }
 
     /* Mobile Styles */
@@ -1666,6 +1685,8 @@ body:not(.home-page) header.scrolled nav a {
 .t-card-title-link {
     text-decoration: none;
     color: inherit;
+    /* Conserva Jost en todas las tarjetas, incluidas las destacadas */
+    font-family: var(--font-body);
 }
 
 /* Stretched link: toda la tarjeta navega al detalle */
@@ -1914,6 +1935,14 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     text-shadow: none !important;
 }
 
+/* El botón teal del nav siempre lleva texto blanco (la regla anterior lo
+   dejaba en #111 sobre teal en subpáginas: 3.86:1) */
+nav a.nav-reservar-btn,
+body:not(.home-page) nav a.nav-reservar-btn,
+body:not(.home-page) header.scrolled nav a.nav-reservar-btn {
+    color: var(--white) !important;
+}
+
 /* Páginas con hero oscuro: links blancos mientras el header está transparente
    (en móvil el header siempre tiene fondo blanco sólido, no aplica) */
 @media (min-width: 900px) {
@@ -1933,8 +1962,8 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     flex-direction: column;
     justify-content: center;
     gap: 5px;
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
     background: none;
     border: none;
     cursor: pointer;
@@ -2017,8 +2046,9 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     background: var(--primary-color);
     color: white !important;
     padding: 0.5rem 1.25rem;
-    border-radius: 2px;
-    letter-spacing: 2px !important;
+    border-radius: 4px;
+    font-weight: 500 !important;
+    letter-spacing: 0.01em !important;
     transition: background 220ms var(--ease-out) !important, transform 160ms var(--ease-out) !important;
 }
 @media (hover: hover) and (pointer: fine) {
@@ -2784,17 +2814,6 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     padding: 7rem 0 4rem;
 }
 
-.specialties-count {
-    font-family: var(--font-heading);
-    font-size: clamp(4rem, 6vw, 6.5rem);
-    font-weight: 400;
-    color: var(--primary-color);
-    opacity: 1;
-    letter-spacing: -3px;
-    line-height: 0.85;
-    margin-bottom: 1.5rem;
-}
-
 .specialties-heading {
     font-family: var(--font-heading);
     font-size: clamp(2.5rem, 4vw, 4.2rem);
@@ -2918,7 +2937,8 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     font-size: 0.84rem;
     font-weight: 400;
     text-decoration: none;
-    margin-top: 1.5rem;
+    margin-top: 0.75rem;
+    min-height: 44px;
     opacity: 0;
     transform: translateY(6px);
     transition: opacity 250ms var(--ease-out), transform 250ms var(--ease-out), gap 200ms var(--ease-out);
@@ -2932,6 +2952,12 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     .specialty-link:hover {
         gap: 0.8rem;
     }
+}
+
+/* Visible al navegar con teclado (antes quedaba invisible con foco) */
+.specialty-card:focus-within .specialty-link {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Always visible on touch devices */
@@ -2957,7 +2983,6 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     .specialties-right {
         padding: 0 0 4rem;
     }
-    .specialties-count { font-size: 3.5rem; }
 }
 
 /* =====================================================
@@ -3008,7 +3033,8 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
 
 /* Words get this class for GSAP scrub */
 .philosophy-scrubbable .word {
-    opacity: 0.15;
+    /* Legible desde el inicio (≥4.5:1 sobre #111); el scrub solo completa el énfasis */
+    opacity: 0.6;
     display: inline;
     transition: opacity 0.1s;
 }
@@ -3061,10 +3087,10 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: rgba(255,255,255,0.65);
-    font-size: 0.82rem;
-    font-weight: 300;
-    letter-spacing: 0.3px;
+    color: rgba(255,255,255,0.75);
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 0;
     padding: 1.75rem 1.5rem;
     border-right: 1px solid rgba(255,255,255,0.07);
     transition: color 220ms var(--ease-out);
@@ -3096,8 +3122,8 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
    TESTIMONIALS SECTION
    ===================================================== */
 .testimonials-section {
-    padding: 7rem 5%;
-    background: var(--bg-light);
+    padding: clamp(5rem, 8vw, 7rem) 5%;
+    background: var(--bg-color);
     content-visibility: auto;
     contain-intrinsic-size: 0 600px;
 }
@@ -3132,6 +3158,38 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     max-width: 500px;
     margin: 0 auto;
     font-weight: 300;
+}
+
+.testimonials-section .section-header,
+.faq-homepage .section-header {
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 3rem;
+}
+
+.testimonials-section .section-header { max-width: 1100px; }
+.faq-homepage .section-header { max-width: 750px; }
+
+/* C1: enlace bajo los testimonios (antes con estilos inline) */
+.testimonials-more {
+    max-width: 1100px;
+    margin: 3rem auto 0;
+}
+
+.testimonials-more a {
+    display: inline-block;
+    padding: 0.6rem 0 2px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--primary-color);
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    transition: color 200ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .testimonials-more a:hover { color: var(--primary-color-hover); }
 }
 
 .testimonials-layout {
@@ -3266,8 +3324,8 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
    FAQ SECTION (enhanced)
    ===================================================== */
 .faq-homepage {
-    padding: 7rem 5%;
-    background: white;
+    padding: clamp(5rem, 8vw, 7rem) 5%;
+    background: var(--bg-light);
     content-visibility: auto;
     contain-intrinsic-size: 0 500px;
 }
@@ -3278,7 +3336,7 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
 }
 
 .faq-homepage .faq-item {
-    border-bottom: 1px solid #EAEAEA;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
@@ -3397,7 +3455,6 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     align-items: center;
     gap: 5px;
     transition: background-color 200ms var(--ease-out), transform 200ms var(--ease-out), color 200ms var(--ease-out);
-    text-transform: uppercase;
     flex-shrink: 0;
 }
 
@@ -3416,7 +3473,7 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     text-align: left;
 }
 
-.footer-col h4 {
+.footer-col h3 {
     font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -3427,7 +3484,7 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
 .footer-col ul { list-style: none; padding: 0; }
 .footer-col ul li { margin-bottom: 0.65rem; }
 .footer-col ul li a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem; font-weight: 300; transition: color 0.2s; }
-.footer-col ul li a:hover { color: var(--primary-color); }
+.footer-col ul li a:hover { color: var(--primary-on-dark); }
 .footer-col p { color: rgba(255,255,255,0.55); font-size: 0.88rem; font-weight: 300; line-height: 1.7; }
 .footer-col .footer-logo-img { height: 55px; width: auto; opacity: 0.85; margin-bottom: 1rem; display: block; filter: brightness(1.2); }
 
@@ -3443,11 +3500,11 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     margin: 0 auto;
 }
 
-.footer-bottom p { font-size: 0.82rem; color: rgba(255,255,255,0.4); font-weight: 300; }
+.footer-bottom p { font-size: 0.82rem; color: rgba(255,255,255,0.6); font-weight: 300; }
 
 .footer-social { display: flex; gap: 1rem; }
 .footer-social a { color: rgba(255,255,255,0.45); transition: color 0.2s; }
-.footer-social a:hover { color: var(--primary-color); }
+.footer-social a:hover { color: var(--primary-on-dark); }
 
 @media (max-width: 768px) {
     .footer-columns { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
@@ -3459,7 +3516,7 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
    METHOD ITEMS (contact section)
    ===================================================== */
 .contact-methods { margin: 2rem 0; display: flex; flex-direction: column; gap: 1.5rem; }
-.method-item h4 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.45); margin-bottom: 0.4rem; }
+.method-item h3 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.45); margin-bottom: 0.4rem; }
 
 /* =====================================================
    MOBILE RESPONSIVE FIXES
@@ -3499,7 +3556,6 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
     .profile-content-side,
     .staff-intro-heading,
     .staff-intro-copy p,
-    .specialties-count,
     .specialties-heading,
     .specialties-sub,
     .specialties-cta,
@@ -3557,33 +3613,7 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
    obligaba a repintar la capa completa en GPU)
    ===================================================== */
 
-/* Mesh sutil en secciones con cards */
-.specialties-pinned {
-    background:
-        radial-gradient(ellipse 80% 60% at 20% 50%, rgba(0,125,136,.06) 0%, transparent 100%),
-        radial-gradient(ellipse 60% 50% at 80% 30%, rgba(201,168,76,.04) 0%, transparent 100%),
-        var(--bg-light);
-}
-
-/* ---- Botones ---------------------------------------- */
-.btn {
-    border-radius: 4px;
-    background: var(--primary-color);
-    border: 1px solid var(--primary-color);
-    color: var(--white);
-    transition: background 200ms var(--ease-out), transform 160ms var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-    .btn:hover {
-        background: var(--primary-color-hover);
-        border-color: var(--primary-color-hover);
-        transform: translateY(-2px);
-        color: var(--white);
-    }
-}
-.btn:active { transform: translateY(1px); }
-
+/* ---- Botones: .btn y .btn-outline-dark se definen una sola vez arriba ---- */
 /* Variante outline clara (sobre fondos oscuros) — debe redeclararse aquí
    para ganar al .btn sólido anterior en el orden de cascada */
 .btn.btn-outline {
@@ -3600,24 +3630,6 @@ nav a, body:not(.home-page) nav a, body:not(.home-page) header.scrolled nav a {
         box-shadow: none;
     }
 }
-
-.btn-outline-dark {
-    border-radius: 4px;
-    background: transparent;
-    border: 1px solid rgba(17,17,17,.22);
-    box-shadow: none;
-    color: var(--secondary-color);
-    transition: background 200ms var(--ease-out), border-color 200ms var(--ease-out), transform 160ms var(--ease-out);
-}
-@media (hover: hover) and (pointer: fine) {
-    .btn-outline-dark:hover {
-        background: rgba(17,17,17,.04);
-        border-color: var(--secondary-color);
-        transform: translateY(-2px);
-        color: var(--secondary-color);
-    }
-}
-.btn-outline-dark:active { transform: translateY(1px); }
 
 /* ---- Botón Reservar (tarjetas de tratamientos) ------ */
 .reserve-btn {
