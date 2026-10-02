@@ -1,81 +1,58 @@
-/* Tailwind v4: tema + utilidades.
-   Preflight (reset de base) queda fuera mientras style.css siga activo:
-   activarlo ahora cambiaría márgenes, listas y botones de todo el sitio.
-   Se habilita en la fase final, cuando style.css se elimine. */
-/* components va antes que legacy: las clases específicas heredadas
-   (.reservar-submit-btn, .add-to-list-btn…) deben poder ajustar a .btn. */
-@layer theme, base, components, legacy, utilities;
+/* Tailwind v4: tema + utilidades. Sin Preflight: el reset propio de
+   @layer base (más abajo) es el que el diseño asume desde el inicio. */
+@layer theme, base, components, utilities;
 @import "tailwindcss/theme.css" layer(theme);
-/* CSS heredado: va en su propia capa, por debajo de las utilidades, para
-   que Tailwind gane sin !important mientras se migra sección por sección.
-   (Sin capa, su `* { margin: 0; padding: 0 }` anulaba cualquier p-/m-.) */
-@import "./style.css" layer(legacy);
 @import "tailwindcss/utilities.css" layer(utilities);
 
-/* Base: variables heredadas, reset y estilos de documento (debajo de todo) */
+/* Base: reset y estilos de documento (debajo de todo). Los tokens viven en @theme. */
 @layer base {
-  /* Variables y Configuración Básica - Estilo Premium / Clínica Estética */
-  :root {
-      --primary-color: #007D88;
-      --primary-color-hover: #005E67;
-      /* Teal claro solo para texto/foco sobre fondos oscuros (#111): 7.6:1 */
-      --primary-on-dark: #4FB3BC;
-      --accent-gold: #C9A84C;
-      --accent-champagne: #F7E7CE;
-      --secondary-color: #111111;
-      --text-color: #1A1A1A;
-      --text-light: #4A4A4A;
-      --bg-color: #FFFFFF;
-      --bg-light: #F7F9FA;
-      --white: #ffffff;
-      --font-heading: 'Bodoni Moda', serif;
-      --font-body: 'Jost', sans-serif;
-
-      /* Easing curves */
-      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-      --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-      --ease-snappy: cubic-bezier(0.4, 0, 0.2, 1);
-      --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
-  }
-
   * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 
   /* La fuente se hereda desde body: así <em>/<span> dentro de un titular
-     conservan la Bodoni del titular en vez de volver a Jost. */
+     conservan la fuente del titular salvo que se indique otra. */
   button, input, select, textarea {
-      font-family: inherit;
+    font-family: inherit;
   }
 
   html {
-      scroll-behavior: auto;
-      overscroll-behavior: none;
+    scroll-behavior: auto;
+    overscroll-behavior: none;
   }
 
   body {
-      font-family: var(--font-body);
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
+    font-family: var(--font-body);
+    background-color: #fff;
+    color: var(--color-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* Anchored sections clear the fixed header on native scroll */
+  /* Las anclas dejan espacio para el header fijo */
   [id] {
-      scroll-margin-top: 90px;
+    scroll-margin-top: 90px;
+  }
+
+  /* Movimiento reducido: sin animaciones ni transiciones perceptibles.
+     !important en la capa base gana incluso a las utilidades. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 
   *:focus-visible {
-      outline: 2px solid var(--primary-color);
-      outline-offset: 4px;
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
   }
 }
 
-/* Tokens de DESIGN.md. Los mismos valores viven en :root de style.css
-   hasta que termine la migración. */
+/* Tokens de DESIGN.md */
 @theme {
   --color-primary: #007D88;
   --color-primary-hover: #005E67;
@@ -94,7 +71,7 @@
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 
-  /* Breakpoints alineados con los @media (max-width) de style.css:
+  /* Breakpoints (variantes max-* inclusivas):
      max-md = ≤768px, max-nav = ≤899px, max-xl = ≤1100px, max-xs = ≤480px */
   --breakpoint-*: initial;
   --breakpoint-xs: 30.0625rem;

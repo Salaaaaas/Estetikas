@@ -6,10 +6,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   title="Política de Privacidad | Esteti'Kas"
   description="Política de tratamiento de datos personales de Esteti'Kas conforme a la Ley 8968 de Costa Rica."
 >
-  <section class="legal-section">
-    <div class="container legal-container">
+  <section class="bg-[linear-gradient(180deg,#fafafa_0%,#fff_100%)] pt-[120px] pb-20">
+    <div class="w-full max-w-[780px] mx-auto px-6 text-[#2a2a2a] leading-[1.7] [&_h1]:font-heading [&_h1]:font-bold [&_h1]:text-[clamp(2rem,4vw,2.8rem)] [&_h1]:text-primary [&_h1]:mb-2 [&_h2]:font-heading [&_h2]:font-bold [&_h2]:text-[1.4rem] [&_h2]:text-body [&_h2]:mt-9 [&_h2]:mb-3 [&_p]:text-[0.97rem] [&_li]:text-[0.97rem] [&_li]:mb-1.5 [&_ul]:pl-[22px] [&_ul]:mb-3.5">
       <h1>Política de Tratamiento de Datos Personales</h1>
-      <p class="legal-meta">Última actualización: junio de 2026 — Ley 8968, Protección de la Persona frente al Tratamiento de sus Datos Personales (Costa Rica)</p>
+      <p class="text-muted mb-10">Última actualización: junio de 2026 — Ley 8968, Protección de la Persona frente al Tratamiento de sus Datos Personales (Costa Rica)</p>
 
       <h2>1. Responsable del tratamiento</h2>
       <p>
@@ -82,43 +82,4 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 
-  <style>
-    .legal-section {
-      padding: 120px 0 80px;
-      background: linear-gradient(180deg, #fafafa 0%, #fff 100%);
-    }
-    .legal-container {
-      max-width: 780px;
-      margin: 0 auto;
-      padding: 0 24px;
-      color: #2a2a2a;
-      line-height: 1.7;
-    }
-    .legal-container h1 {
-      font-family: var(--font-heading);
-      font-size: clamp(2rem, 4vw, 2.8rem);
-      margin-bottom: 8px;
-      color: var(--primary-color);
-    }
-    .legal-meta {
-      color: #888;
-      font-size: 0.85rem;
-      margin-bottom: 40px;
-    }
-    .legal-container h2 {
-      font-family: var(--font-heading);
-      font-size: 1.4rem;
-      margin-top: 36px;
-      margin-bottom: 12px;
-      color: #1a1a1a;
-    }
-    .legal-container p, .legal-container li {
-      font-size: 0.97rem;
-    }
-    .legal-container ul {
-      padding-left: 22px;
-      margin-bottom: 14px;
-    }
-    .legal-container li { margin-bottom: 6px; }
-  </style>
 </BaseLayout>
