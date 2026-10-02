@@ -24,10 +24,12 @@ const initSite = () => {
     // táctil y dejaban el scroll nativo a saltos. En móvil, scroll nativo.
     const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
     if (!coarsePointer && !reduceMotion) {
+        // Duración fija con curva exponencial: por fuerte que se gire la rueda,
+        // el recorrido siempre tarda lo mismo y frena suave (con lerp, un giro
+        // fuerte arrancaba disparado). Más duración = más lento.
         _lenis = new Lenis({
-            lerp: 0.085,          // inercia: más bajo = más suave
-            wheelMultiplier: 0.9,
-            smoothWheel: true,
+            duration: 1.1,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         });
         _lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((time) => { _lenis.raf(time * 1000); });
@@ -43,11 +45,7 @@ const initSite = () => {
             if (!target) return;
             e.preventDefault();
             if (_lenis) {
-                _lenis.scrollTo(target, {
-                    offset: -80,
-                    duration: 1.4,
-                    easing: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
-                });
+                _lenis.scrollTo(target, { offset: -80, duration: 1.5 });
             } else {
                 const top = target.getBoundingClientRect().top + window.scrollY - 80;
                 window.scrollTo({ top, behavior: reduceMotion ? 'auto' : 'smooth' });
