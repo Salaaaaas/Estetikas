@@ -129,6 +129,8 @@
   --breakpoint-sm: 43.8125rem;
   --breakpoint-tab: 56.3125rem;
   --breakpoint-desk: 64.0625rem;
+  /* max-ph = ≤600px (/reservar) */
+  --breakpoint-ph: 37.5625rem;
 
   --animate-marquee: marquee-scroll 32s linear infinite;
 
