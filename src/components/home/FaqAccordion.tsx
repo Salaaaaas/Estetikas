@@ -17,8 +17,9 @@ export default function FaqAccordion({ items }: FaqAccordionProps) {
         const isOpen = open === i;
         const answerId = `${baseId}-answer-${i}`;
         return (
-          // faq-item: gancho del reveal de site.js
-          <div key={item.q} className="faq-item mb-4 border-b border-[#EAEAEA] overflow-hidden">
+          // faq-item: gancho del reveal de site.js. GSAP le pone estilos en línea
+          // antes de hidratar; suppressHydrationWarning evita el aviso por esa diferencia.
+          <div key={item.q} suppressHydrationWarning className="faq-item mb-4 border-b border-[#EAEAEA] overflow-hidden">
             <button
               type="button"
               aria-expanded={isOpen}
