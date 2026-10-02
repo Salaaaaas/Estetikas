@@ -4,7 +4,7 @@ import SectionHeader from './SectionHeader.astro';
 import { FAQ } from '../../data/home';
 ---
 
-<section id="faq" class="bg-white px-[5%] py-28 [content-visibility:auto] [contain-intrinsic-size:0_500px]">
+<section id="faq" class="bg-white px-[5%] py-28">
   <SectionHeader title="Preguntas Frecuentes" />
   <FaqAccordion client:visible items={FAQ} />
 </section>

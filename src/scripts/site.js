@@ -1,6 +1,7 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,12 +19,15 @@ const initSite = () => {
         document.body.classList.add('is-touch');
     }
 
-    // Smooth Scroll (Lenis) — desktop only. On touch devices native scroll is
-    // faster and avoids fighting the browser's own momentum scrolling.
-    if (!isTouch && !reduceMotion) {
+    // Scroll suave (Lenis) con mouse/trackpad. Se decide por el puntero
+    // principal, no por maxTouchPoints: muchos portátiles reportan pantalla
+    // táctil y dejaban el scroll nativo a saltos. En móvil, scroll nativo.
+    const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
+    if (!coarsePointer && !reduceMotion) {
         _lenis = new Lenis({
-            duration: 1.1,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            lerp: 0.085,          // inercia: más bajo = más suave
+            wheelMultiplier: 0.9,
+            smoothWheel: true,
         });
         _lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((time) => { _lenis.raf(time * 1000); });
@@ -39,7 +43,11 @@ const initSite = () => {
             if (!target) return;
             e.preventDefault();
             if (_lenis) {
-                _lenis.scrollTo(target, { offset: -80, duration: 1.5 });
+                _lenis.scrollTo(target, {
+                    offset: -80,
+                    duration: 1.4,
+                    easing: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
+                });
             } else {
                 const top = target.getBoundingClientRect().top + window.scrollY - 80;
                 window.scrollTo({ top, behavior: reduceMotion ? 'auto' : 'smooth' });
