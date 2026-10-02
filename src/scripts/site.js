@@ -1,7 +1,7 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
-import { WA_PHONE } from '../data/clinic';
+import { getCart, removeFromCart, clearCart, showToast } from '../lib/cart';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -9,86 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 // =====================================================
 // CART / BOOKING SYSTEM
 // =====================================================
-const CART_KEY = 'estetikas_cart_v1';
-
-const getCart = () => { try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch { return []; } };
-const saveCart = (cart) => localStorage.setItem(CART_KEY, JSON.stringify(cart));
-
-function addToCart(id, name) {
-    const cart = getCart();
-    if (!cart.find(i => i.id === id)) { cart.push({ id, name }); saveCart(cart); }
-    updateCartBadges();
-    showToast(`"${name}" agregado a tu lista`);
-}
-
-function removeFromCart(id) {
-    saveCart(getCart().filter(i => i.id !== id));
-    updateCartBadges();
-    renderReservarItems();
-}
-
-function clearCart() { saveCart([]); updateCartBadges(); }
-
-function updateCartBadges() {
-    const count = getCart().length;
-    document.querySelectorAll('.cart-badge').forEach(el => {
-        el.textContent = count;
-        el.style.display = count > 0 ? 'flex' : 'none';
-    });
-    const btn = document.getElementById('cart-float-btn');
-    if (btn) btn.setAttribute('data-count', count);
-}
-
-function showToast(msg) {
-    let toast = document.getElementById('ek-toast');
-    if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'ek-toast';
-        toast.setAttribute('role', 'status');
-        toast.setAttribute('aria-live', 'polite');
-        document.body.appendChild(toast);
-    }
-    toast.textContent = msg;
-    toast.classList.add('visible');
-    clearTimeout(toast._t);
-    toast._t = setTimeout(() => toast.classList.remove('visible'), 3000);
-}
-
-function injectCartUI() {
-    if (document.getElementById('cart-float-btn')) { updateCartBadges(); return; }
-
-    // Cart float button
-    const cartBtn = document.createElement('button');
-    cartBtn.id = 'cart-float-btn';
-    cartBtn.setAttribute('aria-label', 'Ver lista de citas');
-    cartBtn.innerHTML = `
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <path d="M16 10a4 4 0 01-8 0"/>
-        </svg>
-        <span class="cart-float-label">Mis Citas</span>
-        <span class="cart-badge" style="display:none">0</span>
-    `;
-    document.body.appendChild(cartBtn);
-    cartBtn.addEventListener('click', () => { window.location.href = '/reservar'; });
-
-    // WA float button
-    const waBtn = document.createElement('a');
-    waBtn.id = 'wa-float-btn';
-    waBtn.href = `https://wa.me/${WA_PHONE}`;
-    waBtn.target = '_blank';
-    waBtn.rel = 'noopener noreferrer';
-    waBtn.setAttribute('aria-label', 'Escríbenos por WhatsApp');
-    waBtn.innerHTML = `
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-        </svg>
-    `;
-    document.body.appendChild(waBtn);
-
-    updateCartBadges();
-}
+// Carrito y aviso: src/lib/cart.ts; botones flotantes: FloatingActions.tsx
 
 // Renderiza el widget de Cloudflare Turnstile cuando el script esté cargado
 let turnstileWidgetId = null;
@@ -150,7 +71,7 @@ function renderReservarItems() {
     `;
 
     section.querySelectorAll('.reservar-item-del').forEach(btn => {
-        btn.addEventListener('click', () => removeFromCart(btn.dataset.id));
+        btn.addEventListener('click', () => { removeFromCart(btn.dataset.id); renderReservarItems(); });
     });
 }
 
@@ -710,45 +631,12 @@ function formatDateES(iso) {
     return `${parseInt(d)} de ${months[parseInt(m) - 1]} de ${y}`;
 }
 
-// Inject "Agregar a Mi Lista" on treatment detail pages
-function injectTreatmentCartBtn() {
-    const cta = document.querySelector('.whatsapp-cta-container');
-    const h1 = document.querySelector('.treatment-detail-hero h1');
-    if (!cta || !h1 || cta.querySelector('.add-to-list-btn')) return;
-
-    // Fuente única del nombre en el carrito: cartName (mismo valor que usan las
-    // tarjetas en /tratamientos). Fallback al título solo si faltara el dato.
-    const name = (cta.dataset.cartName || h1.textContent).trim();
-    // filter(Boolean) handles trailing-slash URLs (/tratamientos/peelings/)
-    const id = (window.location.pathname.split('/').filter(Boolean).pop() || 'tratamiento').replace('.html', '');
-
-    const cartBtn = document.createElement('button');
-    cartBtn.className = 'btn add-to-list-btn';
-    cartBtn.innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px;vertical-align:middle"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Agregar a Mi Lista de Citas
-    `;
-    cartBtn.addEventListener('click', () => {
-        addToCart(id, name);
-        cartBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="margin-right:8px;vertical-align:middle"><polyline points="20 6 9 17 4 12"/></svg>Agregado a tu lista`;
-        cartBtn.style.background = '#218838';
-        cartBtn.style.borderColor = '#218838';
-    });
-    cta.appendChild(cartBtn);
-}
-
 // =====================================================
 // MAIN SITE INIT
 // =====================================================
 const initSite = () => {
     const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // Cart UI (inject on all pages)
-    injectCartUI();
-
-    // Treatment detail cart button
-    injectTreatmentCartBtn();
 
     // /reservar page: render cart items, calendar, captcha, bind submit
     initReservarPage();
@@ -960,18 +848,6 @@ const initSite = () => {
         });
     }
 
-    // Reserve buttons on tratamientos page
-    document.querySelectorAll('.reserve-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const id = btn.dataset.id;
-            const name = btn.dataset.name;
-            addToCart(id, name);
-            btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Agregado`;
-            btn.classList.add('reserved');
-        });
-    });
 };
 
 initSite();

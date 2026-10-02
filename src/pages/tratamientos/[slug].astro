@@ -4,7 +4,7 @@ import TreatmentLayout from '../../layouts/TreatmentLayout.astro';
 
 export async function getStaticPaths() {
   const treatments = await getCollection('tratamientos');
-  return treatments.map(t => ({
+  return treatments.map((t) => ({
     params: { slug: t.id },
     props: { treatment: t },
   }));
@@ -12,11 +12,10 @@ export async function getStaticPaths() {
 
 const { treatment } = Astro.props;
 const { title, description, heroImage, heroAlt, subtitle, about, benefits, prices, cartName } = treatment.data;
-
-const CHECK_ICON = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
 ---
 
 <TreatmentLayout
+  id={treatment.id}
   title={title}
   description={description}
   heroImage={heroImage}
@@ -25,17 +24,17 @@ const CHECK_ICON = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" 
   heroSubtitle={subtitle}
   cartName={cartName}
 >
-  <div class="text-block trigger-reveal">
-    <h2>Acerca de este tratamiento</h2>
-    <p>{about}</p>
+  <div class="mb-16">
+    <h2 class="text-[2rem] font-bold text-ink mb-6">Acerca de este tratamiento</h2>
+    <p class="text-[1.1rem] leading-[1.8] text-muted">{about}</p>
   </div>
 
-  <div class="benefits-block trigger-reveal">
-    <h2>Beneficios y Resultados</h2>
-    <ul class="included-list">
-      {benefits.map(b => (
-        <li>
-          <Fragment set:html={CHECK_ICON} />
+  <div class="mb-16 p-12 bg-surface rounded-[20px] max-md:p-8">
+    <h2 class="text-[1.8rem] font-bold mb-8">Beneficios y Resultados</h2>
+    <ul class="list-none p-0">
+      {benefits.map((b) => (
+        <li class="flex items-start gap-4 mb-[1.2rem] text-[1.05rem] leading-[1.4] text-ink">
+          <svg class="shrink-0 mt-[3px]" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
           <span>{b}</span>
         </li>
       ))}
@@ -43,14 +42,14 @@ const CHECK_ICON = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" 
   </div>
 
   {prices && prices.length > 0 && (
-    <div class="prices-block trigger-reveal">
-      <h2>Precios</h2>
-      <ul class="prices-list">
-        {prices.map(p => (
-          <li class="price-item">
-            <span class="price-label">{p.label}</span>
-            <span class="price-value">{p.price}</span>
-            {p.note && <span class="price-note">{p.note}</span>}
+    <div class="mb-16">
+      <h2 class="text-[1.8rem] font-bold text-ink mb-8">Precios</h2>
+      <ul class="list-none p-0">
+        {prices.map((p) => (
+          <li class="flex flex-wrap items-baseline gap-4 py-4 border-b border-black/7 last:border-b-0">
+            <span class="flex-1 text-[1rem] font-normal text-ink">{p.label}</span>
+            <span class="text-[1.1rem] font-semibold text-primary whitespace-nowrap">{p.price}</span>
+            {p.note && <span class="w-full text-[0.85rem] text-muted mt-[0.2rem]">{p.note}</span>}
           </li>
         ))}
       </ul>

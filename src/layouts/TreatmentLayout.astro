@@ -1,7 +1,10 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import { WA_URL } from '../data/clinic';
 
 interface Props {
+  /** id del tratamiento (slug), clave en el carrito */
+  id: string;
   title: string;
   description: string;
   heroImage: string;
@@ -11,7 +14,8 @@ interface Props {
   cartName: string;
 }
 
-const { title, description, heroImage, heroAlt, heroTitle, heroSubtitle, cartName } = Astro.props;
+const { id, title, description, heroImage, heroAlt, heroTitle, heroSubtitle, cartName } = Astro.props;
+const waHref = `${WA_URL}?text=${encodeURIComponent(`Hola, me gustaría solicitar información sobre el tratamiento de ${heroTitle}.`)}`;
 ---
 
 <BaseLayout
@@ -21,30 +25,44 @@ const { title, description, heroImage, heroAlt, heroTitle, heroSubtitle, cartNam
   bodyClass="dark-hero"
   ogImage={`/img/${heroImage}`}
 >
-  <section class="treatment-detail-hero">
-    <img class="hero-bg-image" src={`/img/${heroImage}`} alt={heroAlt} loading="eager" fetchpriority="high" />
-    <div class="wrapper">
-      <h1>{heroTitle}</h1>
-      <p>{heroSubtitle}</p>
+  <section
+    class="relative flex h-[50vh] items-center overflow-hidden px-[8%] pt-[15vh] text-center text-white before:content-[''] before:absolute before:inset-0 before:z-2 before:bg-[linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.3))]"
+  >
+    <img class="absolute inset-0 z-1 size-full object-cover" src={`/img/${heroImage}`} alt={heroAlt} loading="eager" fetchpriority="high" />
+    <div class="relative z-3 max-w-[800px] mx-auto">
+      <h1 class="font-heading font-bold text-[3.5rem] mb-4 max-md:text-[2.5rem]">{heroTitle}</h1>
+      <p class="text-[1.25rem] font-light opacity-90">{heroSubtitle}</p>
     </div>
   </section>
 
-  <section class="treatment-detail-content">
-    <div class="content-wrapper">
+  <section class="bg-white px-[8%] py-24 max-md:px-[5%] max-md:py-16">
+    <div class="max-w-[900px] mx-auto">
       <slot />
 
-      <div class="whatsapp-cta-container trigger-reveal" data-cart-name={cartName}>
-        <h3>¿Te interesa este tratamiento?</h3>
-        <p>Haz clic en el botón debajo para consultarnos directamente por WhatsApp sobre disponibilidad, precios, o cualquier duda que tengas.</p>
-        <a
-          href={`https://wa.me/50684320647?text=${encodeURIComponent(`Hola, me gustaría solicitar información sobre el tratamiento de ${heroTitle}.`)}`}
-          class="btn"
-          target="_blank"
-          rel="noopener noreferrer"
+      <div class="text-center p-16 bg-primary/5 rounded-[30px] border border-dashed border-primary">
+        <h3 class="text-[2rem] font-bold text-primary mb-4">¿Te interesa este tratamiento?</h3>
+        <p class="text-muted mb-8">Haz clic en el botón debajo para consultarnos directamente por WhatsApp sobre disponibilidad, precios, o cualquier duda que tengas.</p>
+        <a href={waHref} class="btn" target="_blank" rel="noopener noreferrer">Preguntar por WhatsApp</a> <button
+          type="button"
+          data-add-to-cart
+          data-cart-id={id}
+          data-cart-name={cartName}
+          class="btn group mt-4 border-2! border-primary bg-transparent text-primary transition-[translate,background-color,color] duration-200 ease-out hover:bg-primary hover:text-white data-added:bg-[#1E7B34]! data-added:border-[#1E7B34]! data-added:text-white"
         >
-          Preguntar por WhatsApp
-        </a>
+          <span class="contents group-data-added:hidden">
+            <svg class="mr-2 align-middle" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
+            Agregar a Mi Lista de Citas
+          </span>
+          <span class="hidden group-data-added:contents">
+            <svg class="mr-2 align-middle" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
+            Agregado a tu lista
+          </span>
+        </button>
       </div>
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  import '../scripts/cart-buttons';
+</script>

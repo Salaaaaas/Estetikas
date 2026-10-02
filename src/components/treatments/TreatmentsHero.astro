@@ -1,0 +1,39 @@
+---
+import ArrowIcon from '../icons/ArrowIcon.astro';
+
+interface Props {
+  totalCount: number;
+  categories: { name: string; slug: string; count: number }[];
+}
+
+const { totalCount, categories } = Astro.props;
+---
+
+<section class="bg-ink bg-[radial-gradient(ellipse_70%_80%_at_85%_10%,rgba(0,125,136,.14)_0%,transparent_70%)] text-white px-[8%] pt-[clamp(9rem,16vh,12rem)] pb-[clamp(4rem,7vw,6rem)] max-tab:pt-32">
+  <div class="max-w-[1200px] mx-auto grid grid-cols-[1.15fr_1fr] gap-[clamp(3rem,7vw,7rem)] items-center max-tab:grid-cols-1 max-tab:gap-12">
+    <div>
+      <h1 class="font-heading font-normal text-[clamp(3rem,6vw,5.5rem)] leading-[0.98] tracking-[-2px] mb-7 text-balance">Nuestros<br><em class="italic text-gold">Tratamientos</em></h1>
+      <p class="text-[1.05rem] leading-[1.75] font-light text-white/82 max-w-[46ch] mb-9">
+        {totalCount} procedimientos médico-estéticos para rostro, cuerpo y bienestar celular.
+        Cada uno comienza con una valoración para diseñar tu plan a la medida.
+      </p>
+      <div class="flex flex-wrap gap-x-7 gap-y-2 text-[0.85rem] font-light text-white/75">
+        {['Profesionales en salud certificados', 'Bataan · Guápiles'].map((item) => (
+          <span class="inline-flex items-center gap-[0.55rem] before:content-[''] before:size-1 before:rounded-full before:bg-gold before:shrink-0">{item}</span>
+        ))}
+      </div>
+    </div>
+    <div class="flex flex-col" role="navigation" aria-label="Categorías de tratamientos">
+      {categories.map(({ name, slug, count }) => (
+        <a
+          href={`#${slug}`}
+          class="group flex items-baseline gap-4 px-1 py-6 border-t border-white/12 last:border-b last:border-b-white/12 text-white no-underline transition-[padding-left,background-color] duration-240 ease-out hover-fine:pl-[0.9rem]"
+        >
+          <span class="flex-1 font-heading font-normal text-[clamp(1.25rem,2vw,1.6rem)] tracking-[-0.01em] text-white">{name}</span>
+          <span class="text-[0.8rem] font-medium text-gold">{count} tratamientos</span>
+          <ArrowIcon class="shrink-0 self-center text-white/50 transition-[translate,color] duration-240 ease-out group-hover:translate-x-1 group-hover:text-gold" />
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

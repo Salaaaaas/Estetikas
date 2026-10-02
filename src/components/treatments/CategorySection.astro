@@ -1,0 +1,35 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import TreatmentCard from './TreatmentCard.astro';
+
+interface Props {
+  name: string;
+  slug: string;
+  desc: string;
+  items: CollectionEntry<'tratamientos'>[];
+  /** Fondo gris alterno */
+  alt?: boolean;
+}
+
+const { name, slug, desc, items, alt = false } = Astro.props;
+---
+
+<section
+  id={slug}
+  class:list={[
+    'px-[8%] py-[clamp(4rem,7vw,6rem)] max-md:[content-visibility:auto] max-md:[contain-intrinsic-size:0_500px]',
+    'bg-[radial-gradient(ellipse_70%_50%_at_15%_60%,rgba(0,125,136,.04)_0%,transparent_100%),radial-gradient(ellipse_55%_45%_at_85%_25%,rgba(201,168,76,.03)_0%,transparent_100%)]',
+    alt ? 'bg-surface' : 'bg-white',
+  ]}
+>
+  <div class="max-w-[1200px] mx-auto mb-12 flex flex-wrap items-baseline justify-between gap-6">
+    <div>
+      <h2 class="font-heading font-normal text-ink text-[clamp(1.9rem,3.2vw,2.6rem)] tracking-[-0.5px] mb-[0.6rem] text-balance">{name}</h2>
+      <p class="text-muted text-[1rem] font-light leading-[1.65] max-w-[58ch]">{desc}</p>
+    </div>
+    <span class="text-[0.85rem] font-normal text-muted whitespace-nowrap">{items.length} tratamientos</span>
+  </div>
+  <div class="max-w-[1200px] mx-auto grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-8">
+    {items.map((t, j) => <TreatmentCard treatment={t} featured={j === 0 && items.length >= 4} />)}
+  </div>
+</section>

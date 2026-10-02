@@ -1,0 +1,15 @@
+---
+import { WA_URL } from '../../data/clinic';
+---
+
+<section class="bg-ink px-[8%] py-[clamp(4.5rem,8vw,6.5rem)] text-center">
+  <h2 class="font-heading font-normal text-white text-[clamp(2rem,3.5vw,2.8rem)] tracking-[-0.5px] mb-4 text-balance">¿Lista para agendar tu cita?</h2>
+  <p class="text-white/72 text-[1.05rem] font-light leading-[1.7] max-w-[52ch] mx-auto mb-10">
+    Agrega los tratamientos que te interesan con el botón Reservar y envíanos tu
+    solicitud en segundos. Te confirmamos por WhatsApp.
+  </p>
+  <div class="flex flex-wrap items-center justify-center gap-4">
+    <a href="/reservar" class="btn">Ver mi lista de citas</a>
+    <a href={WA_URL} class="btn btn-outline" target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+  </div>
+</section>

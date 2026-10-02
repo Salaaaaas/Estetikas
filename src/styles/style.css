@@ -186,12 +186,6 @@
 /* Sobre teal profundo el anillo de foco teal desaparece: usar blanco */
 
 /* Pestañas: zona táctil ≥44px, estado activo sin depender solo del color */
-@media (max-width: 768px) {
-    .treatment-category-section {
-        content-visibility: auto;
-        contain-intrinsic-size: 0 500px;
-    }
-}
 
 /* --- Layout Styles --- */
 
@@ -204,435 +198,24 @@
 /* =====================================================
    /tratamientos — HERO EDITORIAL
    ===================================================== */
-.trat-hero {
-    background:
-        radial-gradient(ellipse 70% 80% at 85% 10%, rgba(0,125,136,.14) 0%, transparent 70%),
-        var(--secondary-color);
-    color: var(--white);
-    padding: clamp(9rem, 16vh, 12rem) 8% clamp(4rem, 7vw, 6rem);
-}
-
-.trat-hero-grid {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1.15fr 1fr;
-    gap: clamp(3rem, 7vw, 7rem);
-    align-items: center;
-}
-
-.trat-hero-title {
-    font-family: var(--font-heading);
-    font-size: clamp(3rem, 6vw, 5.5rem);
-    font-weight: 400;
-    line-height: 0.98;
-    letter-spacing: -2px;
-    margin-bottom: 1.75rem;
-    text-wrap: balance;
-}
-
-.trat-hero-title em {
-    font-style: italic;
-    color: var(--accent-gold);
-}
-
-.trat-hero-sub {
-    font-size: 1.05rem;
-    line-height: 1.75;
-    font-weight: 300;
-    color: rgba(255,255,255,0.82);
-    max-width: 46ch;
-    margin-bottom: 2.25rem;
-}
-
-.trat-hero-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1.75rem;
-    font-size: 0.85rem;
-    font-weight: 300;
-    color: rgba(255,255,255,0.75);
-}
-
-.trat-hero-meta span {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-}
-
-.trat-hero-meta span::before {
-    content: '';
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--accent-gold);
-    flex-shrink: 0;
-}
 
 /* Índice de categorías (navegación por anclas) */
-.trat-hero-index {
-    display: flex;
-    flex-direction: column;
-}
-
-.trat-index-row {
-    display: flex;
-    align-items: baseline;
-    gap: 1rem;
-    padding: 1.5rem 0.25rem;
-    border-top: 1px solid rgba(255,255,255,0.12);
-    text-decoration: none;
-    color: var(--white);
-    transition: padding-left 240ms var(--ease-out), background-color 240ms var(--ease-out);
-}
-
-.trat-index-row:last-child {
-    border-bottom: 1px solid rgba(255,255,255,0.12);
-}
-
-.trat-index-name {
-    font-family: var(--font-heading);
-    font-size: clamp(1.25rem, 2vw, 1.6rem);
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    color: var(--white);
-    flex: 1;
-}
-
-.trat-index-count {
-    font-size: 0.8rem;
-    color: var(--accent-gold);
-    font-weight: 500;
-}
-
-.trat-index-row svg {
-    color: rgba(255,255,255,0.5);
-    flex-shrink: 0;
-    align-self: center;
-    transition: transform 240ms var(--ease-out), color 240ms var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-    .trat-index-row:hover {
-        padding-left: 0.9rem;
-    }
-    .trat-index-row:hover svg {
-        transform: translateX(4px);
-        color: var(--accent-gold);
-    }
-}
-
-@media (max-width: 900px) {
-    .trat-hero-grid {
-        grid-template-columns: 1fr;
-        gap: 3rem;
-    }
-    .trat-hero {
-        padding-top: 8rem;
-    }
-}
 
 /* =====================================================
    /tratamientos — CATEGORÍAS Y TARJETAS
    ===================================================== */
-.treatment-category-section { padding: clamp(4rem, 7vw, 6rem) 8%; }
-
-.category-header {
-    max-width: 1200px;
-    margin: 0 auto 3rem;
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-}
-
-.category-title {
-    font-family: var(--font-heading);
-    font-size: clamp(1.9rem, 3.2vw, 2.6rem);
-    font-weight: 400;
-    color: var(--secondary-color);
-    letter-spacing: -0.5px;
-    margin-bottom: 0.6rem;
-    text-wrap: balance;
-}
-
-.category-desc {
-    color: var(--text-light);
-    font-size: 1rem;
-    font-weight: 300;
-    line-height: 1.65;
-    max-width: 58ch;
-}
-
-.category-count {
-    font-size: 0.85rem;
-    color: var(--text-light);
-    font-weight: 400;
-    white-space: nowrap;
-}
-
-.treatment-cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.t-card {
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-}
-
-.t-card-media {
-    overflow: hidden;
-}
-
-.t-card-image {
-    width: 100%;
-    height: 230px;
-    object-fit: cover;
-    display: block;
-    transition: transform 450ms var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-    .t-card:hover .t-card-image { transform: scale(1.05); }
-}
-
-.t-card-info {
-    padding: 1.75rem 1.75rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    flex: 1;
-    justify-content: space-between;
-}
-
-.t-card-info h3 {
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: var(--secondary-color);
-    margin-bottom: 0.6rem;
-    line-height: 1.3;
-}
-
-.t-card-title-link {
-    text-decoration: none;
-    color: inherit;
-    /* Conserva Jost en todas las tarjetas, incluidas las destacadas */
-    font-family: var(--font-body);
-}
 
 /* Stretched link: toda la tarjeta navega al detalle */
-.t-card-title-link::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-}
-
-.t-card:has(.t-card-title-link:focus-visible) {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 3px;
-}
-
-.t-card-info p {
-    font-size: 0.95rem;
-    color: var(--text-light);
-    line-height: 1.6;
-    font-weight: 300;
-}
-
-.t-card-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    position: relative;
-    z-index: 2;
-    pointer-events: none;
-}
-
-.t-card-actions .reserve-btn { pointer-events: auto; }
-
-.t-card-link {
-    color: var(--primary-color);
-    font-weight: 500;
-    font-size: 0.9rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    text-decoration: none;
-    pointer-events: auto;
-    transition: gap 200ms var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-    .t-card:hover .t-card-link { gap: 9px; }
-}
 
 /* Tarjeta destacada: primera de cada categoría, a lo ancho */
-.t-card--featured {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: 1.15fr 1fr;
-}
 
 /* La imagen se posiciona absoluta para seguir la altura del contenido,
    no su altura intrínseca (las fotos son verticales) */
-.t-card--featured .t-card-media {
-    position: relative;
-    min-height: 340px;
-}
-
-.t-card--featured .t-card-image {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.t-card--featured .t-card-info {
-    padding: clamp(2rem, 4vw, 3.25rem);
-    justify-content: center;
-    gap: 1.75rem;
-}
-
-.t-card--featured h3 {
-    font-family: var(--font-heading);
-    font-size: clamp(1.7rem, 2.6vw, 2.2rem);
-    font-weight: 400;
-    letter-spacing: -0.5px;
-    margin-bottom: 0.9rem;
-}
-
-.t-card--featured .t-card-info p {
-    font-size: 1.02rem;
-    line-height: 1.7;
-    max-width: 48ch;
-}
-
-@media (max-width: 768px) {
-    .t-card--featured {
-        grid-template-columns: 1fr;
-    }
-    .t-card--featured .t-card-media {
-        position: static;
-        min-height: 0;
-    }
-    .t-card--featured .t-card-image {
-        position: static;
-        height: 230px;
-    }
-}
 
 /* CTA final de /tratamientos */
-.trat-cta {
-    background: var(--secondary-color);
-    padding: clamp(4.5rem, 8vw, 6.5rem) 8%;
-    text-align: center;
-}
-
-.trat-cta h2 {
-    font-family: var(--font-heading);
-    font-size: clamp(2rem, 3.5vw, 2.8rem);
-    font-weight: 400;
-    color: var(--white);
-    letter-spacing: -0.5px;
-    margin-bottom: 1rem;
-    text-wrap: balance;
-}
-
-.trat-cta p {
-    color: rgba(255,255,255,0.72);
-    font-size: 1.05rem;
-    font-weight: 300;
-    max-width: 52ch;
-    margin: 0 auto 2.5rem;
-    line-height: 1.7;
-}
-
-.trat-cta-actions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
 
 
 /* --- Treatment Detail Styles --- */
-
-	.treatment-detail-hero {
-		height: 50vh;
-		display: flex;
-		align-items: center;
-		padding: 0 8%;
-		color: white;
-		position: relative;
-		text-align: center;
-		overflow: hidden;
-	}
-	.hero-bg-image {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		z-index: 1;
-	}
-	.treatment-detail-hero::before {
-		content: '';
-		position: absolute;
-		top: 0; left: 0; right: 0; bottom: 0;
-		background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.3));
-		z-index: 2;
-	}
-	.treatment-detail-hero .wrapper { position: relative; z-index: 3; max-width: 800px; margin: 0 auto; }
-	.treatment-detail-hero h1 { font-family: var(--font-heading); font-size: 3.5rem; margin-bottom: 1rem; }
-	.treatment-detail-hero p { font-size: 1.25rem; font-weight: 300; opacity: 0.9; }
-
-	.treatment-detail-content { padding: 6rem 8%; background-color: var(--bg-color); }
-	.content-wrapper { max-width: 900px; margin: 0 auto; }
-	
-	.text-block { margin-bottom: 4rem; }
-	.text-block h2 { font-size: 2rem; margin-bottom: 1.5rem; color: var(--secondary-color); }
-	.text-block p { font-size: 1.1rem; line-height: 1.8; color: var(--text-light); }
-
-	.benefits-block { margin-bottom: 4rem; padding: 3rem; background: var(--bg-light); border-radius: 20px; }
-	.benefits-block h2 { font-size: 1.8rem; margin-bottom: 2rem; }
-	.included-list { list-style: none; padding: 0; }
-	.included-list li { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.2rem; font-size: 1.05rem; line-height: 1.4; color: var(--secondary-color); }
-	.included-list svg { flex-shrink: 0; margin-top: 3px; }
-
-	.prices-block { margin-bottom: 4rem; }
-	.prices-block h2 { font-size: 1.8rem; margin-bottom: 2rem; color: var(--secondary-color); }
-	.prices-list { list-style: none; padding: 0; }
-	.price-item { display: flex; align-items: baseline; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid rgba(0,0,0,0.07); flex-wrap: wrap; }
-	.price-item:last-child { border-bottom: none; }
-	.price-label { flex: 1; font-size: 1rem; color: var(--secondary-color); font-weight: 400; }
-	.price-value { font-size: 1.1rem; font-weight: 600; color: var(--primary-color); white-space: nowrap; }
-	.price-note { width: 100%; font-size: 0.85rem; color: var(--text-light); margin-top: 0.2rem; }
-
-	.whatsapp-cta-container {
-		text-align: center;
-		padding: 4rem;
-		background: rgba(0, 125, 136, 0.05);
-		border-radius: 30px;
-		border: 1px dashed var(--primary-color);
-	}
-	.whatsapp-cta-container h3 { font-size: 2rem; margin-bottom: 1rem; color: var(--primary-color); }
-	.whatsapp-cta-container p { margin-bottom: 2rem; color: var(--text-light); }
-
-	@media (max-width: 768px) {
-		.treatment-detail-hero h1 { font-size: 2.5rem; }
-		.treatment-detail-content { padding: 4rem 5%; }
-		.benefits-block { padding: 2rem; }
-	}
 
 /* =========================================
    UNIVERSAL HERO EXPANSION
@@ -640,116 +223,18 @@
 
 /* Los heroes inician desde el tope absoluto y empujan su texto hacia abajo */
 
-.treatment-detail-hero {
-    margin-top: 0 !important;
-    padding-top: 15vh !important;
-}
-
 /* =====================================================
    FLOATING BUTTONS (Cart + WhatsApp)
    ===================================================== */
-#cart-float-btn {
-    position: fixed;
-    bottom: 5rem;
-    right: 1.5rem;
-    z-index: 900;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--secondary-color);
-    color: white;
-    border: none;
-    border-radius: 50px;
-    padding: 0.75rem 1.2rem;
-    cursor: pointer;
-    font-size: 0.82rem;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-    transition: transform 220ms var(--ease-out), background-color 220ms var(--ease-out), box-shadow 220ms var(--ease-out);
-    font-family: var(--font-body);
-}
-
-#cart-float-btn:hover {
-    background: var(--primary-color);
-    transform: translateY(-3px);
-    box-shadow: 0 12px 35px rgba(0,125,136,0.3);
-}
-
-.cart-float-label { font-size: 0.82rem; }
-
-.cart-badge {
-    background: #e74c3c;
-    color: white;
-    border-radius: 50px;
-    min-width: 20px;
-    height: 20px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 5px;
-    animation: badge-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
 
 @keyframes badge-pop {
     from { transform: scale(0); }
     to { transform: scale(1); }
 }
 
-#wa-float-btn {
-    position: fixed;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    z-index: 900;
-    width: 54px;
-    height: 54px;
-    background: #25D366;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4);
-    transition: transform 220ms var(--ease-out), background-color 220ms var(--ease-out);
-    text-decoration: none;
-}
-
-#wa-float-btn:hover {
-    background: #20b858;
-    transform: scale(1.1);
-    box-shadow: 0 12px 35px rgba(37, 211, 102, 0.5);
-}
-
 /* =====================================================
    TOAST NOTIFICATION
    ===================================================== */
-#ek-toast {
-    position: fixed;
-    bottom: 9rem;
-    right: 1.5rem;
-    z-index: 1100;
-    background: var(--secondary-color);
-    color: white;
-    padding: 0.85rem 1.4rem;
-    border-radius: 10px;
-    font-size: 0.88rem;
-    font-weight: 400;
-    max-width: 280px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out);
-    pointer-events: none;
-    font-family: var(--font-body);
-}
-
-#ek-toast.visible {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 280ms var(--ease-out), transform 280ms var(--ease-out);
-}
 
 /* =====================================================
    BOOKING MODAL
@@ -761,7 +246,6 @@
    ===================================================== */
 
 .reservar-body { padding-top: 0 !important; }
-.reservar-body #cart-float-btn { display: none !important; }
 
 .reservar-page {
     background: var(--bg-light);
@@ -1373,57 +857,10 @@
 /* =====================================================
    ADD TO LIST BUTTON (treatment detail pages)
    ===================================================== */
-.add-to-list-btn {
-    background: transparent;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
-    margin-top: 1rem;
-    transition: transform 200ms var(--ease-out), background-color 200ms var(--ease-out), color 200ms var(--ease-out);
-}
-
-.add-to-list-btn:hover {
-    background: var(--primary-color) !important;
-    color: white;
-    border-color: var(--primary-color) !important;
-}
-
-.add-to-list-btn:disabled {
-    background: #218838 !important;
-    border-color: #218838 !important;
-    color: white !important;
-}
 
 /* =====================================================
    RESERVE BUTTONS ON TREATMENT CARDS
    ===================================================== */
-.t-card-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    margin-top: auto;
-}
-
-.reserve-btn {
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 0.55rem 1rem;
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    font-family: var(--font-body);
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    transition: background-color 200ms var(--ease-out), transform 200ms var(--ease-out), color 200ms var(--ease-out);
-    flex-shrink: 0;
-}
-
-.reserve-btn:hover { background: var(--primary-color-hover); transform: translateY(-1px); }
-.reserve-btn.reserved { background: #218838; pointer-events: none; }
 
 /* =====================================================
    METHOD ITEMS (contact section)
@@ -1432,11 +869,6 @@
 /* =====================================================
    MOBILE RESPONSIVE FIXES
    ===================================================== */
-@media (max-width: 480px) {
-    #cart-float-btn { padding: 0.7rem 1rem; }
-    .cart-float-label { display: none; }
-    #ek-toast { right: 1rem; left: 1rem; max-width: none; bottom: 8rem; }
-}
 
 /* =====================================================
    REDUCED MOTION
@@ -1505,56 +937,11 @@
 /* Botones: viven en global.css (@layer components) */
 
 /* ---- Botón Reservar (tarjetas de tratamientos) ------ */
-.reserve-btn {
-    border-radius: 4px;
-    background: var(--primary-color);
-    border: 1px solid var(--primary-color);
-    color: #fff;
-    transition: background 200ms var(--ease-out), transform 160ms var(--ease-out);
-}
-@media (hover: hover) and (pointer: fine) {
-    .reserve-btn:hover {
-        background: var(--primary-color-hover);
-        border-color: var(--primary-color-hover);
-        transform: translateY(-2px);
-        color: #fff;
-    }
-}
-.reserve-btn:active { transform: translateY(1px); }
-.reserve-btn.reserved {
-    background: #218838;
-    border-color: #218838;
-}
 
 /* ---- Tarjetas de tratamientos (página /tratamientos) - */
-.t-card {
-    background: #fff;
-    border: 1px solid rgba(0,0,0,.06);
-    box-shadow: 0 4px 24px rgba(0,0,0,.06);
-    position: relative;
-    overflow: hidden;
-    transition: transform 240ms var(--ease-out), box-shadow 240ms var(--ease-out), border-color 240ms var(--ease-out);
-}
-@media (hover: hover) and (pointer: fine) {
-    .t-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 14px 40px rgba(0,125,136,.12);
-        border-color: rgba(0,125,136,.18);
-    }
-}
 
 /* Mesh sutil en secciones alternas de tratamientos */
-.treatment-category-section {
-    background:
-        radial-gradient(ellipse 70% 50% at 15% 60%, rgba(0,125,136,.04) 0%, transparent 100%),
-        radial-gradient(ellipse 55% 45% at 85% 25%, rgba(201,168,76,.03) 0%, transparent 100%),
-        var(--bg-color, transparent);
-}
 
 /* ---- Specialty cards --------------------------------
    DESIGN.md: solo divisor inferior, sin caja ni sombra. Alineado a la izquierda. */
-
-@media (prefers-reduced-motion: reduce) {
-    .reserve-btn, .t-card { transition: none !important; }
-}
 

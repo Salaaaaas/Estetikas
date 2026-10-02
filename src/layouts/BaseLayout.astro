@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import FloatingActions from '../components/FloatingActions';
 import '../styles/global.css';
 
 interface Props {
@@ -11,6 +12,8 @@ interface Props {
   footerVariant?: 'full' | 'simple';
   needsTurnstile?: boolean;
   ogImage?: string;
+  /** Oculta el botón flotante "Mis Citas" (en /reservar sobra) */
+  hideCartButton?: boolean;
 }
 
 const {
@@ -21,6 +24,7 @@ const {
   footerVariant = 'full',
   needsTurnstile = false,
   ogImage = '/img/facial.webp',
+  hideCartButton = false,
 } = Astro.props;
 
 const turnstileSitekey = import.meta.env.PUBLIC_TURNSTILE_SITEKEY ?? '';
@@ -81,6 +85,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   </main>
 
   <Footer variant={footerVariant} />
+
+  <FloatingActions client:load hideCartButton={hideCartButton} />
 
   <script>
     import '../scripts/site.js';

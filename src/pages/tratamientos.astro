@@ -1,41 +1,21 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import TreatmentsHero from '../components/treatments/TreatmentsHero.astro';
+import CategorySection from '../components/treatments/CategorySection.astro';
+import TreatmentsCta from '../components/treatments/TreatmentsCta.astro';
+import { TREATMENT_CATEGORIES } from '../data/treatments';
 
 const all = await getCollection('tratamientos');
 
-const CATEGORIES = [
-  {
-    name: 'Facial & Regeneración',
-    slug: 'facial-regeneracion',
-    desc: 'Limpieza, textura y luminosidad: protocolos faciales que devuelven la salud de tu piel con respaldo médico.',
-    featured: 'limpieza-facial',
-  },
-  {
-    name: 'Bioestimulación & Contorno',
-    slug: 'bioestimulacion-contorno',
-    desc: 'Activa tu propio colágeno y recupera la estructura natural del rostro, sin resultados artificiales.',
-    featured: 'bioestimuladores-colageno',
-  },
-  {
-    name: 'Cuidado Corporal',
-    slug: 'cuidado-corporal',
-    desc: 'Silueta, recuperación y bienestar desde adentro: terapias corporales diseñadas para tu cuerpo.',
-    featured: 'sueroterapia',
-  },
-];
-
-const byCategory = CATEGORIES.map(cat => {
-  const items = all.filter(t => t.data.category === cat.name);
+const byCategory = TREATMENT_CATEGORIES.map((cat) => {
+  const items = all.filter((t) => t.data.category === cat.name);
   // La destacada va primero; el resto conserva su orden
   items.sort((a, b) => (a.id === cat.featured ? -1 : b.id === cat.featured ? 1 : 0));
   return { ...cat, items };
 });
 
 const totalCount = all.length;
-
-const RESERVE_ICON = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
-const ARROW_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
 ---
 
 <BaseLayout
@@ -43,99 +23,14 @@ const ARROW_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" 
   description={`${totalCount} tratamientos de medicina estética para rostro, cuerpo y bienestar en Bataan y Guápiles, Costa Rica.`}
   bodyClass="dark-hero"
 >
-  <section class="trat-hero">
-    <div class="trat-hero-grid">
-      <div class="trat-hero-main">
-        <h1 class="trat-hero-title">Nuestros<br><em>Tratamientos</em></h1>
-        <p class="trat-hero-sub">
-          {totalCount} procedimientos médico-estéticos para rostro, cuerpo y bienestar celular.
-          Cada uno comienza con una valoración para diseñar tu plan a la medida.
-        </p>
-        <div class="trat-hero-meta">
-          <span>Profesionales en salud certificados</span>
-          <span>Bataan · Guápiles</span>
-        </div>
-      </div>
-      <!-- div con role: el selector global `nav a` (header) re-estiliza cualquier <nav> -->
-      <div class="trat-hero-index" role="navigation" aria-label="Categorías de tratamientos">
-        {byCategory.map(({ name, slug, items }) => (
-          <a href={`#${slug}`} class="trat-index-row">
-            <span class="trat-index-name">{name}</span>
-            <span class="trat-index-count">{items.length} tratamientos</span>
-            <Fragment set:html={ARROW_ICON} />
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
+  <TreatmentsHero
+    totalCount={totalCount}
+    categories={byCategory.map(({ name, slug, items }) => ({ name, slug, count: items.length }))}
+  />
 
   {byCategory.map(({ name, slug, desc, items }, i) => (
-    <section
-      class="treatment-category-section"
-      id={slug}
-      style={i % 2 === 1 ? 'background-color: var(--bg-light);' : ''}
-    >
-      <div class="category-header">
-        <div>
-          <h2 class="category-title">{name}</h2>
-          <p class="category-desc">{desc}</p>
-        </div>
-        <span class="category-count">{items.length} tratamientos</span>
-      </div>
-      <div class="treatment-cards-grid">
-        {items.map((t, j) => {
-          const isFeatured = j === 0 && items.length >= 4;
-          return (
-          <article class={`t-card${isFeatured ? ' t-card--featured' : ''}`}>
-            <div class="t-card-media">
-              <img
-                src={`/img/${t.data.cardImage}`}
-                alt={t.data.cardImageAlt}
-                class="t-card-image"
-                width="400"
-                height="250"
-                loading={t.data.cardLoading}
-                decoding="async"
-              />
-            </div>
-            <div class="t-card-info">
-              <div class="t-card-text">
-                <h3>
-                  <a href={`/tratamientos/${t.id}`} class="t-card-title-link">{t.data.cardTitle}</a>
-                </h3>
-                <p>{isFeatured ? t.data.about : t.data.cardDescription}</p>
-              </div>
-              <div class="t-card-actions">
-                <a href={`/tratamientos/${t.id}`} class="t-card-link">
-                  Leer más
-                  <Fragment set:html={ARROW_ICON} />
-                </a>
-                <button
-                  class="reserve-btn"
-                  data-id={t.id}
-                  data-name={t.data.cartName}
-                >
-                  <Fragment set:html={RESERVE_ICON} />
-                  Reservar
-                </button>
-              </div>
-            </div>
-          </article>
-          );
-        })}
-      </div>
-    </section>
+    <CategorySection name={name} slug={slug} desc={desc} items={items} alt={i % 2 === 1} />
   ))}
 
-  <section class="trat-cta">
-    <h2>¿Lista para agendar tu cita?</h2>
-    <p>
-      Agrega los tratamientos que te interesan con el botón Reservar y envíanos tu
-      solicitud en segundos. Te confirmamos por WhatsApp.
-    </p>
-    <div class="trat-cta-actions">
-      <a href="/reservar" class="btn">Ver mi lista de citas</a>
-      <a href="https://wa.me/50684320647" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
-    </div>
-  </section>
+  <TreatmentsCta />
 </BaseLayout>

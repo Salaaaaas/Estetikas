@@ -219,3 +219,12 @@
     .btn, .btn-outline-dark { transition: none; }
   }
 }
+
+@theme {
+  --animate-badge-pop: badge-pop 0.3s var(--ease-out);
+
+  @keyframes badge-pop {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+  }
+}
