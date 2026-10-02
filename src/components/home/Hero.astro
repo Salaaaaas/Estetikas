@@ -1,0 +1,41 @@
+---
+// Hero editorial dividido. Las clases hero-* son ganchos de animación (site.js).
+---
+
+<section
+  id="inicio"
+  class="hero grid grid-cols-2 min-h-[92vh] px-[8%] pt-[15vh] pb-0 overflow-hidden max-desk:grid-cols-1 max-desk:min-h-0 max-desk:pb-20 max-desk:text-center"
+>
+  <div class="hero-content flex flex-col justify-center pt-32 pr-[6%] pb-24 pl-0 max-desk:p-0 max-desk:items-center max-desk:order-1">
+    <div class="hero-eyemark w-9 h-0.5 bg-gold mb-8 max-desk:mx-auto max-desk:mb-6" aria-hidden="true"></div>
+    <h1
+      class="hero-display font-heading font-bold text-ink text-[clamp(3rem,6.4vw,6rem)] leading-[0.95] tracking-[-0.02em] mb-12 max-desk:text-[clamp(3rem,11vw,4.75rem)] max-desk:text-center"
+    >
+      <em class="block italic font-normal text-primary">Medicina</em>
+      <span class="block">Estética</span>
+      <span class="block">Avanzada</span>
+    </h1>
+    <div class="hero-bottom flex flex-col gap-8 max-desk:items-center">
+      <p class="text-[1.1rem] leading-[1.7] font-light text-muted max-w-[500px] mb-10 max-desk:text-center">
+        Procedimientos con respaldo médico especializado.<br>Resultados armónicos — Bataan y Guápiles, CR.
+      </p>
+      <div class="flex flex-wrap items-center gap-4 max-desk:justify-center">
+        <a href="#contacto" class="btn">Agendar Valoración</a>
+        <a href="/tratamientos" class="btn btn-outline-dark">Ver Tratamientos</a>
+      </div>
+    </div>
+  </div>
+  <div
+    class="hero-image-wrap group w-full self-center rounded overflow-hidden shadow-[0_24px_60px_rgba(0,0,0,0.1)] h-[min(640px,70vh)] max-desk:order-2 max-desk:h-[50vh] max-desk:mt-12 max-md:h-[40vh] max-xs:h-[300px] max-xs:rounded-[2px]"
+  >
+    <img
+      class="hero-image block w-full h-full object-cover object-top transition-transform duration-[600ms] ease-out motion-safe:group-hover:scale-[1.03]"
+      src="/img/facial.webp"
+      alt="Tratamiento facial en Esteti'Kas"
+      loading="eager"
+      fetchpriority="high"
+      width="600"
+      height="750"
+    />
+  </div>
+</section>

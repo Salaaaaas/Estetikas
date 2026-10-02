@@ -1,0 +1,21 @@
+---
+import { MARQUEE_TREATMENTS } from '../../data/home';
+
+// Dos copias idénticas: cada una se desplaza su ancho completo y el loop no salta.
+const copies = [0, 1];
+---
+
+<div class="group overflow-hidden bg-ink border-y border-white/5 py-[1.1rem] select-none" aria-hidden="true">
+  <div class="flex w-max">
+    {copies.map(() => (
+      <div class="flex items-center whitespace-nowrap animate-marquee group-hover:[animation-play-state:paused]">
+        {MARQUEE_TREATMENTS.map((name) => (
+          <>
+            <span class="px-8 text-[0.9rem] font-normal tracking-[0.2px] text-white/80">{name}</span>
+            <span class="px-2 text-[0.7rem] font-normal tracking-[0.2px] text-gold opacity-70">·</span>
+          </>
+        ))}
+      </div>
+    ))}
+  </div>
+</div>

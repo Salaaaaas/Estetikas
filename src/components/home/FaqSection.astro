@@ -1,0 +1,10 @@
+---
+import FaqAccordion from './FaqAccordion';
+import SectionHeader from './SectionHeader.astro';
+import { FAQ } from '../../data/home';
+---
+
+<section id="faq" class="bg-surface px-[5%] py-[clamp(5rem,8vw,7rem)] [content-visibility:auto] [contain-intrinsic-size:0_500px]">
+  <SectionHeader title="Preguntas Frecuentes" maxWidth="max-w-[750px]" />
+  <FaqAccordion client:visible items={FAQ} />
+</section>

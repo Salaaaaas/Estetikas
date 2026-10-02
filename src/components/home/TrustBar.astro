@@ -1,0 +1,30 @@
+---
+import { TRUST_ITEMS, type TrustIcon } from '../../data/home';
+
+const ICONS: Record<TrustIcon, string> = {
+  pin: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+  user: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  smile: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>',
+};
+
+// En ≤768px se reparte en 2 columnas con divisores; en ≤480px, una columna.
+const itemClass = [
+  'trust-item flex flex-1 items-center gap-3 text-white/75 text-[0.9rem] font-normal tracking-normal',
+  'px-6 py-7 border-r border-white/7 last:border-r-0 transition-colors duration-[220ms] ease-out',
+  'max-md:basis-[48%] max-md:grow max-md:shrink max-md:px-4 max-md:py-5',
+  'max-md:border-r-0 max-md:border-b max-md:border-white/6 max-md:odd:border-r',
+  'max-md:last:border-b-0 max-md:[&:nth-last-child(2):nth-child(odd)]:border-b-0',
+  'max-xs:basis-full max-xs:border-r-0!',
+].join(' ');
+---
+
+<section class="bg-ink px-[5%] border-b border-white/4" aria-label="Por qué Esteti'Kas">
+  <div class="max-w-[1000px] mx-auto flex items-stretch max-md:flex-wrap">
+    {TRUST_ITEMS.map((item) => (
+      <div class={itemClass}>
+        <svg class="shrink-0 text-gold opacity-85" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ICONS[item.icon]} />
+        <span>{item.label}</span>
+      </div>
+    ))}
+  </div>
+</section>

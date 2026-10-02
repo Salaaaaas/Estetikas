@@ -1,0 +1,45 @@
+---
+import { TEAM } from '../../data/home';
+// Las clases staff-*/profile-* son ganchos de animación de site.js.
+---
+
+<section id="nosotras" class="bg-white [content-visibility:auto] [contain-intrinsic-size:0_2400px] max-md:[contain-intrinsic-size:0_500px]">
+  <div class="staff-intro grid grid-cols-2 gap-x-[8%] items-end px-[8%] pt-24 pb-16 border-b border-black/6 max-sm:grid-cols-1 max-sm:gap-y-8 max-sm:gap-x-0 max-sm:pt-20 max-sm:pb-14">
+    <h2 class="staff-intro-heading font-heading font-normal text-ink text-[clamp(2.4rem,4vw,4.2rem)] leading-[1.05] tracking-[-1.5px] text-balance max-sm:text-[2.2rem]">
+      El equipo detrás<br>de tus resultados
+    </h2>
+    <div class="staff-intro-copy">
+      <p class="text-[1.05rem] leading-[1.75] text-muted max-w-[48ch]">Médicos y especialistas certificados en estética avanzada, con formación continua y un enfoque centrado en tu bienestar.</p>
+    </div>
+  </div>
+
+  {TEAM.map((member, i) => (
+    <div class:list={[
+      'profile-block group flex flex-wrap items-center min-h-[500px] overflow-hidden max-lg:flex-col!',
+      i % 2 === 1 && 'reverse flex-row-reverse',
+    ]}>
+      <div class="profile-image-side flex flex-1 items-center justify-center min-w-1/2 h-[700px] py-12 bg-surface overflow-hidden max-lg:h-auto max-lg:min-w-full max-lg:px-[8%] max-lg:pt-10 max-lg:pb-0">
+        <img
+          src={member.photo}
+          alt={member.alt}
+          width="400"
+          height="500"
+          loading="lazy"
+          class="block w-auto h-full max-w-full aspect-[4/5] object-cover object-[50%_35%] transition-transform duration-800 ease-out motion-safe:group-hover:scale-[1.04] max-lg:w-full max-lg:max-w-[420px] max-lg:h-auto"
+        />
+      </div>
+      <div class="profile-content-side flex-1 min-w-1/2 bg-white px-[7%] py-20 max-lg:min-w-full max-lg:px-[8%] max-lg:py-16">
+        <span class="inline-block mb-7 px-[0.9rem] py-[0.3rem] border border-primary rounded-[2rem] text-primary text-[0.8rem] font-normal tracking-[0.02em]">{member.role}</span>
+        <h2 class="font-heading font-bold text-ink text-[clamp(2.2rem,3.5vw,3.5rem)] leading-[1.05] tracking-[-0.5px] mb-8 max-lg:text-[2.4rem]">
+          {member.nameLines[0]}<br>{member.nameLines[1]}
+        </h2>
+        <div class="text-[1.05rem] leading-[1.82] text-[#555] mb-10 [&_p]:mb-5 [&_strong]:text-ink [&_strong]:font-medium">
+          {member.bio.map((paragraph) => <p set:html={paragraph} />)}
+        </div>
+        <a href="#contacto" class="inline-flex items-center gap-[0.55rem] pb-[0.2rem] border-b border-primary text-ink text-[0.88rem] font-medium no-underline transition-[color,gap] duration-250 ease-out hover-fine:text-primary hover-fine:gap-4">
+          {member.cta} <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  ))}
+</section>

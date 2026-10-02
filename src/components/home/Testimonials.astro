@@ -1,0 +1,45 @@
+---
+import { TESTIMONIAL_FEATURED, TESTIMONIALS_COMPACT } from '../../data/home';
+import SectionHeader from './SectionHeader.astro';
+// testimonial-featured / testimonial-card-compact: ganchos de reveal en site.js.
+
+const featured = TESTIMONIAL_FEATURED;
+// La comilla decorativa sale de data-quote (evita escapar comillas en la clase)
+const quoteMark = 'before:content-[attr(data-quote)] before:leading-[0] before:text-primary';
+---
+
+<section id="testimonios" class="bg-white px-[5%] py-[clamp(5rem,8vw,7rem)] [content-visibility:auto] [contain-intrinsic-size:0_600px]">
+  <SectionHeader tag="Experiencias Reales" title="Lo Que Dicen Nuestras Pacientes" maxWidth="max-w-[1100px]" />
+
+  <div class="grid grid-cols-2 gap-8 items-start max-w-[1100px] mx-auto max-tab:grid-cols-1 max-tab:max-w-[560px]">
+    <div class="testimonial-featured relative bg-ink rounded px-12 pt-12 pb-10">
+      <blockquote data-quote='"' class:list={['font-heading font-normal italic text-[1.5rem] leading-[1.55] text-white/92 mb-8 max-tab:text-[1.25rem]', quoteMark, 'before:text-[5rem] before:align-[-1.8rem] before:opacity-50 before:mr-1 before:not-italic']}>{featured.quote}</blockquote>
+      <div class="flex items-center gap-3">
+        <div class="flex items-center justify-center shrink-0 size-10 rounded-full bg-white/15 border border-white/20 text-white font-semibold text-[0.95rem]">{featured.initial}</div>
+        <div>
+          <strong class="block text-[0.92rem] font-semibold text-white/90">{featured.name}</strong>
+          <span class="text-[0.8rem] text-white/50">{featured.detail}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-6">
+      {TESTIMONIALS_COMPACT.map((t) => (
+        <div class="testimonial-card-compact bg-white rounded px-8 pt-8 pb-7 border border-black/5 shadow-[0_4px_20px_rgba(0,0,0,0.04)] transition-[translate,box-shadow] duration-[220ms] ease-out hover:shadow-[0_12px_32px_rgba(0,0,0,0.08)] motion-safe:hover:-translate-y-1">
+          <blockquote data-quote='"' class:list={['italic font-light text-[#444] text-[0.98rem] leading-[1.7] mb-5', quoteMark, 'before:font-heading before:text-[3rem] before:align-[-1rem] before:opacity-15 before:mr-[3px]']}>{t.quote}</blockquote>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center shrink-0 size-10 rounded-full bg-primary text-white font-semibold text-[0.95rem]">{t.initial}</div>
+            <div>
+              <strong class="block text-[0.92rem] font-semibold text-ink">{t.name}</strong>
+              <span class="text-[0.8rem] text-muted">{t.detail}</span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="max-w-[1100px] mx-auto mt-12">
+    <a href="/tratamientos" class="inline-block pt-[0.6rem] pb-[2px] border-b border-current text-primary text-[0.95rem] font-medium no-underline transition-colors duration-200 ease-out hover-fine:text-primary-hover">Ver resultados de tratamientos →</a>
+  </div>
+</section>

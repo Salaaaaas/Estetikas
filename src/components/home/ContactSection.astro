@@ -1,0 +1,43 @@
+---
+import ContactForm from './ContactForm';
+import { CONTACT_TREATMENTS } from '../../data/home';
+import { INSTAGRAM_URL, PHONE_DISPLAY, SEDES, WA_URL } from '../../data/clinic';
+// contact-info / contact-form-wrapper: ganchos del reveal de site.js.
+
+const bodyText = 'text-[1.1rem] font-light text-[#ccc] mb-10';
+const methodTitle = 'text-[0.78rem] font-bold uppercase tracking-[2px] text-white/45 mb-[0.4rem]';
+const socialBtn =
+  'group flex items-center justify-center size-[60px] rounded-full bg-white/5 border border-white/10 transition-[translate,background-color] duration-[180ms] ease-out hover:bg-primary motion-safe:hover:-translate-y-[5px]';
+const socialImg = 'block size-10 object-contain transition-[scale] duration-[180ms] ease-out motion-safe:group-hover:scale-110';
+---
+
+<section
+  id="contacto"
+  class="bg-ink text-white text-center px-[5%] py-24 max-md:py-16 max-md:[content-visibility:auto] max-md:[contain-intrinsic-size:0_500px]"
+>
+  <div class="max-w-[1200px] mx-auto flex flex-wrap gap-16 text-left">
+    <div class="contact-info flex-1 min-w-[300px]">
+      <h2 class="text-[2.5rem] font-light text-white mb-6 max-md:text-[2rem]">Agenda tu cita hoy</h2>
+      <p class={bodyText}>Inicia tu camino hacia una piel radiante. Nuestro equipo te espera.</p>
+      <div class="flex flex-col gap-6 my-8">
+        <div>
+          <h3 class={methodTitle}>WhatsApp</h3>
+          <a href={WA_URL} class="inline-block mt-2 text-primary-on-dark text-[1.4rem] font-medium no-underline transition-[color,translate] duration-[180ms] ease-out hover:text-white hover:translate-x-[5px]">{PHONE_DISPLAY}</a>
+        </div>
+        <div>
+          <h3 class={methodTitle}>Ubicaciones</h3>
+          {SEDES.map((sede) => (
+            <p class={bodyText}><strong>{sede.city}:</strong> {sede.fullName}</p>
+          ))}
+        </div>
+      </div>
+      <div class="flex gap-4 mt-12">
+        <a href={WA_URL} class={socialBtn} aria-label="WhatsApp"><img src="/img/logo_whatsapp.webp" alt="WhatsApp" width="40" height="40" class={socialImg} /></a>
+        <a href={INSTAGRAM_URL} class={socialBtn} aria-label="Instagram"><img src="/img/logo_instagram.webp" alt="Instagram" width="40" height="40" class={socialImg} /></a>
+      </div>
+    </div>
+    <div class="contact-form-wrapper flex-1 min-w-[300px] bg-white/5 p-12 rounded-[20px]">
+      <ContactForm client:visible treatments={CONTACT_TREATMENTS} />
+    </div>
+  </div>
+</section>

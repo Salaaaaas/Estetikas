@@ -2,13 +2,77 @@
    Preflight (reset de base) queda fuera mientras style.css siga activo:
    activarlo ahora cambiaría márgenes, listas y botones de todo el sitio.
    Se habilita en la fase final, cuando style.css se elimine. */
-@layer theme, base, legacy, components, utilities;
+/* components va antes que legacy: las clases específicas heredadas
+   (.reservar-submit-btn, .add-to-list-btn…) deben poder ajustar a .btn. */
+@layer theme, base, components, legacy, utilities;
 @import "tailwindcss/theme.css" layer(theme);
 /* CSS heredado: va en su propia capa, por debajo de las utilidades, para
    que Tailwind gane sin !important mientras se migra sección por sección.
    (Sin capa, su `* { margin: 0; padding: 0 }` anulaba cualquier p-/m-.) */
 @import "./style.css" layer(legacy);
 @import "tailwindcss/utilities.css" layer(utilities);
+
+/* Base: variables heredadas, reset y estilos de documento (debajo de todo) */
+@layer base {
+  /* Variables y Configuración Básica - Estilo Premium / Clínica Estética */
+  :root {
+      --primary-color: #007D88;
+      --primary-color-hover: #005E67;
+      /* Teal claro solo para texto/foco sobre fondos oscuros (#111): 7.6:1 */
+      --primary-on-dark: #4FB3BC;
+      --accent-gold: #C9A84C;
+      --accent-champagne: #F7E7CE;
+      --secondary-color: #111111;
+      --text-color: #1A1A1A;
+      --text-light: #4A4A4A;
+      --bg-color: #FFFFFF;
+      --bg-light: #F7F9FA;
+      --white: #ffffff;
+      --font-heading: 'Bodoni Moda', serif;
+      --font-body: 'Jost', sans-serif;
+
+      /* Easing curves */
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+      --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+      --ease-snappy: cubic-bezier(0.4, 0, 0.2, 1);
+      --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+  }
+
+  /* La fuente se hereda desde body: así <em>/<span> dentro de un titular
+     conservan la Bodoni del titular en vez de volver a Jost. */
+  button, input, select, textarea {
+      font-family: inherit;
+  }
+
+  html {
+      scroll-behavior: auto;
+      overscroll-behavior: none;
+  }
+
+  body {
+      font-family: var(--font-body);
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+  }
+
+  /* Anchored sections clear the fixed header on native scroll */
+  [id] {
+      scroll-margin-top: 90px;
+  }
+
+  *:focus-visible {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 4px;
+  }
+}
 
 /* Tokens de DESIGN.md. Los mismos valores viven en :root de style.css
    hasta que termine la migración. */
@@ -57,5 +121,101 @@
     &:hover {
       @slot;
     }
+  }
+}
+
+@theme {
+  /* Breakpoints adicionales: max-sm = ≤700px, max-tab = ≤900px, max-desk = ≤1024px */
+  --breakpoint-sm: 43.8125rem;
+  --breakpoint-tab: 56.3125rem;
+  --breakpoint-desk: 64.0625rem;
+
+  --animate-marquee: marquee-scroll 32s linear infinite;
+
+  /* Cada copia se desplaza su ancho completo: la segunda termina donde empezó
+     la primera, así el reinicio del loop es invisible. */
+  @keyframes marquee-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+}
+
+/* Botones compartidos por todas las páginas (DESIGN.md §4) */
+@layer components {
+  .btn {
+    display: inline-block;
+    background-color: var(--color-primary);
+    color: #fff;
+    padding: 0.9rem 2.25rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+    border: 1px solid var(--color-primary);
+    transition: transform 160ms var(--ease-out), background-color 200ms var(--ease-out), border-color 200ms var(--ease-out);
+  }
+  .btn:active { transform: translateY(1px); }
+
+  /* Se usa junto a .btn: .btn.btn-outline-dark */
+  .btn-outline-dark {
+    display: inline-block;
+    background: transparent;
+    color: var(--color-ink);
+    border: 1px solid rgb(17 17 17 / 0.22);
+    padding: 0.9rem 2.25rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: background 200ms var(--ease-out), border-color 200ms var(--ease-out), transform 160ms var(--ease-out);
+  }
+  .btn-outline-dark:active { transform: translateY(1px); }
+
+  .btn-outline {
+    background-color: transparent;
+    color: #fff;
+    border: 1px solid #fff;
+  }
+  .btn-outline:hover {
+    background-color: #fff;
+    color: var(--color-ink);
+  }
+  /* Variante outline clara sobre fondos oscuros */
+  .btn.btn-outline {
+    background: transparent;
+    border-color: rgb(255 255 255 / 0.55);
+    box-shadow: none;
+    color: #fff;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover {
+      background-color: var(--color-primary-hover);
+      border-color: var(--color-primary-hover);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    .btn-outline-dark:hover {
+      background: rgb(17 17 17 / 0.04);
+      border-color: var(--color-ink);
+      color: var(--color-ink);
+      transform: translateY(-2px);
+    }
+    .btn.btn-outline:hover {
+      background: #fff;
+      border-color: #fff;
+      color: var(--color-ink);
+      box-shadow: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .btn, .btn-outline-dark { padding: 0.8rem 1.8rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn, .btn-outline-dark { transition: none; }
   }
 }

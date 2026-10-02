@@ -1,0 +1,15 @@
+---
+import CareTabs from './CareTabs';
+import { CARE_PROTOCOLS } from '../../data/home';
+---
+
+<section
+  id="cuidados"
+  class="relative overflow-hidden bg-primary-hover text-white px-[5%] py-[clamp(5rem,8vw,8rem)] [&_:focus-visible]:outline-white max-md:[content-visibility:auto] max-md:[contain-intrinsic-size:0_500px]"
+>
+  <div class="max-w-[1000px] mx-auto mb-10 text-left">
+    <h2 class="font-heading font-normal text-white text-[clamp(2rem,3.5vw,2.8rem)] tracking-[-0.5px] mb-3 max-md:text-[1.8rem]">Cuidados Post-Tratamiento</h2>
+    <p class="text-white/85 text-[1.05rem] font-light">Tu compromiso en casa es el 50% de tus resultados finales</p>
+  </div>
+  <CareTabs client:visible protocols={CARE_PROTOCOLS} />
+</section>

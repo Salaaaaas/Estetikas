@@ -1,6 +1,7 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
+import { WA_PHONE } from '../data/clinic';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -9,7 +10,6 @@ gsap.registerPlugin(ScrollTrigger);
 // CART / BOOKING SYSTEM
 // =====================================================
 const CART_KEY = 'estetikas_cart_v1';
-const WA_PHONE = '50684320647';
 
 const getCart = () => { try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); } catch { return []; } };
 const saveCart = (cart) => localStorage.setItem(CART_KEY, JSON.stringify(cart));
@@ -933,22 +933,6 @@ const initSite = () => {
         document.querySelectorAll(guarded).forEach(el => guard.observe(el));
     }
 
-    // FAQ Accordion (pure CSS grid-template-rows, no layout reflow)
-    document.querySelectorAll('.faq-question').forEach(question => {
-        question.setAttribute('aria-expanded', question.classList.contains('active') ? 'true' : 'false');
-        question.addEventListener('click', () => {
-            const isOpen = question.classList.contains('active');
-            document.querySelectorAll('.faq-question.active').forEach(q => {
-                q.classList.remove('active');
-                q.setAttribute('aria-expanded', 'false');
-            });
-            if (!isOpen) {
-                question.classList.add('active');
-                question.setAttribute('aria-expanded', 'true');
-            }
-        });
-    });
-
     // Before/After Slider
     const baSlider = document.querySelector('.ba-slider');
     if (baSlider) {
@@ -968,59 +952,11 @@ const initSite = () => {
         baSlider.addEventListener('touchmove', (e) => { moveSlider(e); e.preventDefault(); }, { passive: false });
     }
 
-    // Contact Form (WhatsApp)
-    const contactForm = document.getElementById('premium-contact-form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('contact-name').value;
-            const treatmentSelect = document.getElementById('contact-treatment');
-            const treatment = treatmentSelect.selectedOptions[0]?.textContent.trim() || 'Consulta general';
-            const message = document.getElementById('contact-message').value;
-            const btn = contactForm.querySelector('button');
-            const originalText = btn.innerText;
-            btn.innerText = 'Redirigiendo a WhatsApp...';
-            btn.disabled = true;
-            let text = `Hola *Esteti'Kas*, mi nombre es *${name}*.\n\nMe interesa el tratamiento: *${treatment}*.`;
-            if (message) text += `\n\nMensaje adicional: ${message}`;
-            text += `\n\n_Enviado desde el sitio web._`;
-            setTimeout(() => {
-                window.open(`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(text)}`, '_blank');
-                btn.innerText = '¡Solicitud Abierta!';
-                btn.style.backgroundColor = '#1E7B34';
-                btn.style.borderColor = '#1E7B34';
-                contactForm.reset();
-                setTimeout(() => {
-                    btn.innerText = originalText;
-                    btn.disabled = false;
-                    btn.style.backgroundColor = '';
-                    btn.style.borderColor = '';
-                }, 3000);
-            }, 800);
-        });
-    }
-
     // Parallax hero image
     if (!reduceMotion && document.querySelector('.hero-image-wrap')) {
         gsap.to(".hero-image", {
             scrollTrigger: { trigger: ".hero", start: "top top", scrub: true },
             y: 60, ease: "none"
-        });
-    }
-
-    // Care Slider
-    const careSlides = document.querySelectorAll('.care-slide');
-    const careDots = document.querySelectorAll('.care-dot');
-    if (careSlides.length > 0) {
-        function showSlide(index) {
-            careSlides.forEach(s => s.classList.remove('active'));
-            careDots.forEach(d => { d.classList.remove('active'); d.setAttribute('aria-pressed', 'false'); });
-            careSlides[index].classList.add('active');
-            if (careDots[index]) { careDots[index].classList.add('active'); careDots[index].setAttribute('aria-pressed', 'true'); }
-        }
-        // Sin autoplay: son instrucciones médicas, la paciente elige qué leer
-        careDots.forEach((dot, i) => {
-            dot.addEventListener('click', () => showSlide(i));
         });
     }
 
