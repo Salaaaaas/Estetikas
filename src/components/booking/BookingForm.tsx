@@ -31,7 +31,7 @@ const gridClass = 'grid grid-cols-2 gap-4 max-ph:grid-cols-1';
 const fieldClass = 'flex flex-col gap-[0.4rem]';
 const labelClass = 'text-[0.82rem] font-medium text-body';
 const controlClass =
-  'w-full px-4 py-[0.85rem] border-[1.5px] border-black/12 rounded-lg bg-white font-body text-[0.95rem] text-ink outline-none appearance-none transition-[border-color,box-shadow] duration-200 ease-out focus:border-primary focus:shadow-[0_0_0_3px_rgba(0,125,136,0.1)]';
+  'w-full px-4 py-[0.85rem] border-[1.5px] border-black/12 rounded-2xl bg-white/70 font-body text-[0.95rem] text-ink outline-none appearance-none transition-[border-color,box-shadow] duration-200 ease-out focus:border-primary focus:shadow-[0_0_0_3px_rgba(0,125,136,0.1)]';
 const selectWrap =
   "relative after:content-[''] after:pointer-events-none after:absolute after:right-4 after:top-1/2 after:-translate-y-1/2 after:size-0 after:border-x-[4.5px] after:border-x-transparent after:border-t-[5.5px] after:border-t-primary";
 const selectClass = `${controlClass} pr-10 [&_option:disabled]:text-[#b0b0b0]`;
@@ -227,7 +227,7 @@ export default function BookingForm() {
             </h2>
             <ul className="flex flex-col gap-[0.4rem] list-none p-0 m-0">
               {cart.map((item) => (
-                <li key={item.id} className="flex items-center gap-3 py-[0.6rem] pr-3 pl-[0.9rem] bg-surface border border-black/5 rounded-[10px]">
+                <li key={item.id} className="glass flex items-center gap-3 py-[0.6rem] pr-3 pl-[0.9rem] rounded-2xl">
                   <span className="flex items-center justify-center shrink-0 size-[22px] rounded-full bg-primary/10 text-primary" aria-hidden="true">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12" /></svg>
                   </span>
@@ -349,7 +349,7 @@ export default function BookingForm() {
             type="submit"
             id="reservar-submit-btn"
             disabled={submitting}
-            className="btn group w-full flex items-center justify-center gap-[0.65rem] px-6 py-[1.05rem] rounded-[10px] text-[1rem] font-semibold transition-[background-color,transform] duration-100 ease-out disabled:opacity-70 disabled:cursor-wait active:[transform:translateY(1px)] max-ph:px-5 max-ph:py-4"
+            className="btn group w-full flex items-center justify-center gap-[0.65rem] px-6 py-[1.05rem] rounded-full text-[1rem] font-semibold transition-[background-color,transform] duration-100 ease-out disabled:opacity-70 disabled:cursor-wait active:[transform:translateY(1px)] max-ph:px-5 max-ph:py-4"
           >
             {submitting ? 'Enviando...' : (
               <>

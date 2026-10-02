@@ -9,7 +9,7 @@ interface ContactFormProps {
 type Status = 'idle' | 'sending' | 'sent';
 
 const fieldClass = [
-  'w-full px-[1.2rem] py-4 rounded-[14px] text-[1rem] leading-[normal] text-white font-body',
+  'w-full px-[1.2rem] py-4 rounded-2xl text-[1rem] leading-[normal] text-white font-body',
   'bg-white/8 border border-white/25 shadow-[0_4px_15px_rgba(0,0,0,0.05)]',
   'placeholder:text-white/68 placeholder:opacity-100',
   'transition-[background-color,border-color,box-shadow] duration-[220ms] ease-out',

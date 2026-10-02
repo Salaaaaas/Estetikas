@@ -35,11 +35,11 @@ const waHref = `${WA_URL}?text=${encodeURIComponent(`Hola, me gustaría solicita
     </div>
   </section>
 
-  <section class="bg-white px-[8%] py-24 max-md:px-[5%] max-md:py-16">
+  <section class="bg-surface bg-[radial-gradient(ellipse_60%_40%_at_90%_10%,rgba(0,125,136,.08)_0%,transparent_70%),radial-gradient(ellipse_50%_40%_at_5%_90%,rgba(201,168,76,.07)_0%,transparent_70%)] px-[8%] py-24 max-md:px-[5%] max-md:py-16">
     <div class="max-w-[900px] mx-auto">
       <slot />
 
-      <div class="text-center p-16 bg-primary/5 rounded-[30px] border border-dashed border-primary">
+      <div class="glass text-center p-16 rounded-[32px] bg-[radial-gradient(ellipse_70%_80%_at_50%_0%,rgba(0,125,136,.10)_0%,transparent_70%)] max-md:p-8">
         <h3 class="text-[2rem] font-bold text-primary mb-4">¿Te interesa este tratamiento?</h3>
         <p class="text-muted mb-8">Haz clic en el botón debajo para consultarnos directamente por WhatsApp sobre disponibilidad, precios, o cualquier duda que tengas.</p>
         <a href={waHref} class="btn" target="_blank" rel="noopener noreferrer">Preguntar por WhatsApp</a> <button

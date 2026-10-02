@@ -60,6 +60,20 @@ The palette is warm-teal-dominant with a single gold accent. The brand is aspira
 
 ---
 
+## 3.5 Liquid Glass (dirección visual vigente)
+
+Estética de vidrio translúcido estilo Apple sobre la paleta teal/dorado. Utilidades en `src/styles/global.css`:
+
+- **`glass`**: blanco 58 %, `blur(18px) saturate(180%)`, borde blanco 65 %, brillo especular `inset 0 1px 0` y sombra teal suave. Tarjetas de especialidades, testimonios, tratamientos, panel FAQ, beneficios, calendario.
+- **`glass-strong`**: blanco 84 %. Navbar con scroll, menú móvil, tarjeta de cuidados, tarjeta de /reservar.
+- **`glass-dark`**: blanco 7 % sobre fondos oscuros. Navbar sobre hero oscuro, formulario de contacto, chips de filosofía, redes.
+- **`glass-sheen`**: reflejo superior sobre superficies sólidas (botón Reservar del nav y de tarjetas).
+- **Navbar**: cápsula flotante (`rounded-full`) separada 16px de los bordes; el vidrio va en `.glass-layer`, capa hermana, porque `backdrop-filter` en un ancestro rompe el menú móvil fijo.
+- **Botones**: cápsula (`999px`). Primario teal sólido con reflejo y halo; contorno claro = vidrio claro; contorno sobre oscuro = vidrio oscuro.
+- **Fondos**: el vidrio necesita algo que difuminar. Las secciones claras llevan brillos radiales teal (`rgba(0,125,136,.08–.16)`) y dorado (`rgba(201,168,76,.06–.12)`).
+- **Radios**: tarjetas 24–32px, chips y botones en cápsula.
+- **Accesibilidad**: `@supports not (backdrop-filter)` y `prefers-reduced-transparency` vuelven las superficies opacas.
+
 ## 4. Component Stylings
 
 **Buttons (`.btn`):**
@@ -171,7 +185,7 @@ The palette is warm-teal-dominant with a single gold accent. The brand is aspira
 - No pure black (`#000000`) — use `#111111` (Charcoal Heading) for darkest elements
 - No neon glows or outer box-shadow effects on buttons
 - No gradient text (`background-clip: text`) — single solid colors only
-- No glassmorphism as decoration — the booking modal uses it purposefully, nowhere else
+- No glass sobre fondos planos sin brillos detrás (se ve como blanco sucio) ni `backdrop-filter` en contenedores con hijos `position: fixed`
 - No 3-equal-column card grids — use asymmetric or alternating layouts
 - No centered hero section — the split editorial layout is non-negotiable
 - No emojis in the UI (they exist in CSS as Unicode but not in content)

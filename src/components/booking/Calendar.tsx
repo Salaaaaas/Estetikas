@@ -72,7 +72,7 @@ export default function Calendar({ year, month, selected, available, full, noSes
   const cells = buildCells(year, month, available, full);
 
   return (
-    <div className="bg-surface border border-black/7 rounded-[14px] p-[0.9rem]" role="group" aria-label="Seleccionar fecha de cita">
+    <div className="glass rounded-[20px] p-[0.9rem]" role="group" aria-label="Seleccionar fecha de cita">
       <div className="flex items-center justify-between mb-3">
         <button type="button" className={navBtn} aria-label="Mes anterior" disabled={isCurrentMonth} onClick={onPrev}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><polyline points="15 18 9 12 15 6" /></svg>

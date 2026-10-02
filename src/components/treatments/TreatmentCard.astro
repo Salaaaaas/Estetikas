@@ -15,9 +15,9 @@ const href = `/tratamientos/${t.id}`;
 <!-- t-card: gancho del reveal de site.js; t-card-title-link: enlace estirado a toda la tarjeta -->
 <article
   class:list={[
-    't-card group relative flex flex-col overflow-hidden rounded-xl bg-white border border-black/6 shadow-[0_4px_24px_rgba(0,0,0,.06)]',
+    't-card glass group relative flex flex-col overflow-hidden rounded-[24px]',
     'transition-[translate,box-shadow,border-color] duration-240 ease-out motion-reduce:transition-none',
-    'hover-fine:-translate-y-1 hover-fine:shadow-[0_14px_40px_rgba(0,125,136,.12)] hover-fine:border-primary/18',
+    'hover-fine:-translate-y-1 hover-fine:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_20px_44px_-12px_rgba(0,96,104,0.22)]',
     'has-[.t-card-title-link:focus-visible]:outline-2 has-[.t-card-title-link:focus-visible]:outline-primary has-[.t-card-title-link:focus-visible]:outline-offset-3',
     featured && 'col-span-full grid grid-cols-[1.15fr_1fr] max-md:grid-cols-1',
   ]}
@@ -60,7 +60,7 @@ const href = `/tratamientos/${t.id}`;
         data-add-to-cart
         data-cart-id={t.id}
         data-cart-name={t.data.cartName}
-        class="group/btn reserve-btn flex shrink-0 items-center gap-[5px] rounded border border-primary bg-primary px-4 py-[0.55rem] font-body text-[0.78rem] font-medium tracking-[0.5px] text-white cursor-pointer pointer-events-auto transition-[background-color,translate] duration-200 ease-out motion-reduce:transition-none hover:bg-primary-hover hover:border-primary-hover hover-fine:-translate-y-0.5 active:translate-y-px data-added:pointer-events-none data-added:border-[#1E7B34] data-added:bg-[#1E7B34]"
+        class="group/btn reserve-btn glass-sheen flex shrink-0 items-center gap-[5px] rounded-full border border-primary bg-primary px-4 py-[0.55rem] font-body text-[0.78rem] font-medium tracking-[0.5px] text-white cursor-pointer pointer-events-auto transition-[background-color,translate] duration-200 ease-out motion-reduce:transition-none hover:bg-primary-hover hover:border-primary-hover hover-fine:-translate-y-0.5 active:translate-y-px data-added:pointer-events-none data-added:border-[#1E7B34] data-added:bg-[#1E7B34]"
       >
         <span class="contents group-data-added/btn:hidden">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>

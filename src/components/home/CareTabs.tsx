@@ -56,7 +56,7 @@ export default function CareTabs({ protocols }: CareTabsProps) {
             >
               <div
                 className={[
-                  'grid grid-cols-[1fr_1.5fr] items-center gap-16 max-w-[1000px] p-14 rounded-[28px] bg-white/90 border border-white/90 shadow-[0_20px_60px_rgba(0,0,0,0.08)]',
+                  'glass-strong grid grid-cols-[1fr_1.5fr] items-center gap-16 max-w-[1000px] p-14 rounded-[32px]',
                   'transition-[translate,opacity] duration-[550ms] ease-out',
                   'max-md:grid-cols-1 max-md:gap-8 max-md:px-6 max-md:py-10 max-md:text-center',
                   isActive ? 'translate-y-0' : 'translate-y-5',

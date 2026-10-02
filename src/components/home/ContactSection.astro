@@ -7,7 +7,7 @@ import { INSTAGRAM_URL, PHONE_DISPLAY, SEDES, WA_URL } from '../../data/clinic';
 const bodyText = 'text-[1.1rem] font-light text-[#ccc] mb-10';
 const methodTitle = 'text-[0.78rem] font-bold uppercase tracking-[2px] text-white/45 mb-[0.4rem]';
 const socialBtn =
-  'group flex items-center justify-center size-[60px] rounded-full bg-white/5 border border-white/10 transition-[translate,background-color] duration-[180ms] ease-out hover:bg-primary motion-safe:hover:-translate-y-[5px]';
+  'glass-dark group flex items-center justify-center size-[60px] rounded-full transition-[translate,background-color] duration-[180ms] ease-out hover:bg-primary/40 motion-safe:hover:-translate-y-[5px]';
 const socialImg = 'block size-10 object-contain transition-[scale] duration-[180ms] ease-out motion-safe:group-hover:scale-110';
 ---
 
@@ -36,7 +36,7 @@ const socialImg = 'block size-10 object-contain transition-[scale] duration-[180
         <a href={INSTAGRAM_URL} class={socialBtn} aria-label="Instagram"><img src="/img/logo_instagram.webp" alt="Instagram" width="40" height="40" class={socialImg} /></a>
       </div>
     </div>
-    <div class="contact-form-wrapper flex-1 min-w-[300px] bg-white/5 p-12 rounded-[20px]">
+    <div class="contact-form-wrapper glass-dark flex-1 min-w-[300px] p-12 rounded-[32px] max-md:p-7">
       <ContactForm client:visible treatments={CONTACT_TREATMENTS} />
     </div>
   </div>

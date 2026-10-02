@@ -8,22 +8,16 @@ interface Props {
 const { isHome = false } = Astro.props;
 ---
 
-<header
-  class:list={[
-    'fixed inset-x-0 top-0 w-full z-[1000] flex justify-between items-center',
-    'px-[8%] py-6 max-xl:px-[5%] max-xl:py-[1.2rem] md:scrolled:px-[8%]! md:scrolled:py-[0.6rem]!',
-    'max-nav:z-[9001] max-nav:bg-white/96 max-nav:shadow-[0_2px_20px_rgba(0,0,0,0.08)]',
-    'max-md:px-[5%] max-md:py-[0.8rem] max-md:text-center',
-    'transition-[padding] duration-300 ease-out',
-    // Fondo "vidrio" que aparece al hacer scroll (sin backdrop-filter: era el cuello de botella de FPS)
-    "before:content-[''] before:absolute before:inset-0 before:-z-1",
-    'before:bg-[linear-gradient(rgba(255,255,255,0.97),rgba(255,255,255,0.92))]',
-    'before:shadow-[0_10px_40px_rgba(0,0,0,0.05)] before:border-b before:border-black/5',
-    'before:opacity-0 before:transition-opacity before:duration-[280ms] before:ease-out scrolled:before:opacity-100',
-  ]}
->
-  <div class="flex items-center">
-    <a href="/" aria-label="Volver al inicio" class="block">
+<!-- Navbar flotante de vidrio (liquid glass). El header solo posiciona; la
+     cápsula es la que recibe eventos. El vidrio vive en .glass-layer (capa
+     hermana) porque backdrop-filter en un ancestro rompería el menú móvil fijo. -->
+<header class="pointer-events-none fixed inset-x-0 top-0 z-[1000] px-4 pt-4 transition-[padding] duration-300 ease-out md:px-6 scrolled:pt-3">
+  <div class="pointer-events-auto relative isolate mx-auto flex max-w-[1240px] items-center justify-between rounded-full py-2 pr-2 pl-5 max-md:pl-4">
+    <span
+      aria-hidden="true"
+      class="glass-layer glass absolute inset-0 -z-1 rounded-full transition-[background-color,border-color,box-shadow] duration-300 ease-out scrolled:glass-strong on-dark-hero:glass-dark"
+    ></span>
+    <a href="/" aria-label="Volver al inicio" class="block rounded-full">
       <img
         src="/img/logo_nav.webp"
         alt="Logotipo de Esteti'Kas"
@@ -31,15 +25,15 @@ const { isHome = false } = Astro.props;
         height="200"
         loading="eager"
         fetchpriority="high"
-        class="block h-[100px] w-auto object-contain origin-left transition-transform duration-300 ease-out scrolled:scale-70 max-md:h-[85px]"
+        class="block h-14 w-auto origin-left object-contain transition-transform duration-300 ease-out scrolled:scale-90 max-md:h-12"
       />
     </a>
+    <NavMenu client:load isHome={isHome} />
   </div>
-  <NavMenu client:load isHome={isHome} />
 </header>
 
 <script>
-  // Estado "scrolled": activa el fondo del header y reduce el logo
+  // Estado "scrolled": vidrio más opaco y cápsula más compacta
   const header = document.querySelector('header');
   if (header) {
     const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 15);
