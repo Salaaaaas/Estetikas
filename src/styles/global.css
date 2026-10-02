@@ -148,12 +148,13 @@
     display: inline-block;
     background-color: var(--color-primary);
     color: #fff;
-    padding: 0.9rem 2.25rem;
+    padding: 0.9rem 2.5rem;
     border-radius: 4px;
     text-decoration: none;
-    font-weight: 500;
-    font-size: 0.95rem;
-    letter-spacing: 0.01em;
+    font-weight: 400;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
     border: 1px solid var(--color-primary);
     transition: transform 160ms var(--ease-out), background-color 200ms var(--ease-out), border-color 200ms var(--ease-out);
   }
@@ -165,12 +166,13 @@
     background: transparent;
     color: var(--color-ink);
     border: 1px solid rgb(17 17 17 / 0.22);
-    padding: 0.9rem 2.25rem;
+    padding: 0.9rem 2.5rem;
     border-radius: 4px;
     text-decoration: none;
-    font-size: 0.95rem;
-    font-weight: 500;
-    letter-spacing: 0.01em;
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
     transition: background 200ms var(--ease-out), border-color 200ms var(--ease-out), transform 160ms var(--ease-out);
   }
   .btn-outline-dark:active { transform: translateY(1px); }

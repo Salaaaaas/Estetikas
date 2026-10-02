@@ -11,17 +11,17 @@ interface NavLink {
 }
 
 const linkClass = [
-  'relative no-underline text-ink font-normal text-[0.95rem] tracking-[0.01em]',
+  'relative no-underline text-ink font-normal uppercase text-[0.82rem] tracking-[2px]',
   'transition-colors duration-[220ms] ease-out',
-  'max-xl:text-[0.9rem] max-md:text-[1.4rem] max-md:tracking-[3px]',
+  'max-xl:text-[0.8rem] max-xl:tracking-[1px] max-md:text-[1.4rem] max-md:tracking-[3px]',
   'nav:on-dark-hero:text-white',
   "after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-px after:w-0 after:bg-primary",
   'after:transition-[width] after:duration-[280ms] after:ease-out hover-fine:after:w-full',
 ].join(' ');
 
 const reservarClass = [
-  'relative no-underline bg-primary text-white border border-primary rounded font-medium tracking-[0.01em]',
-  'px-5 py-2 text-[0.95rem] max-xl:text-[0.9rem]',
+  'relative no-underline bg-primary text-white border border-primary rounded font-normal uppercase tracking-[2px]',
+  'px-5 py-2 text-[0.82rem] max-xl:text-[0.8rem]',
   'max-md:text-[1rem] max-md:px-8 max-md:py-[0.8rem]',
   'transition-[background-color,border-color,transform] duration-200 ease-out motion-reduce:transition-none',
   'hover-fine:bg-primary-hover hover-fine:border-primary-hover active:scale-[0.97]',
@@ -83,7 +83,7 @@ export default function NavMenu({ isHome }: NavMenuProps) {
       </nav>
       <button
         type="button"
-        className="hidden max-md:flex flex-col justify-center gap-[5px] size-11 p-1 bg-transparent border-0 rounded-lg cursor-pointer relative z-[9002] transition-colors duration-200 hover:bg-primary/8"
+        className="hidden max-md:flex flex-col justify-center gap-[5px] size-11 p-[7px] bg-transparent border-0 rounded-lg cursor-pointer relative z-[9002] transition-colors duration-200 hover:bg-primary/8"
         aria-label="Abrir menú de navegación"
         aria-expanded={open}
         aria-controls="site-nav"

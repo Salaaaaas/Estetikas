@@ -18,7 +18,7 @@ export default function FaqAccordion({ items }: FaqAccordionProps) {
         const answerId = `${baseId}-answer-${i}`;
         return (
           // faq-item: gancho del reveal de site.js
-          <div key={item.q} className="faq-item mb-4 border-b border-black/10 overflow-hidden">
+          <div key={item.q} className="faq-item mb-4 border-b border-[#EAEAEA] overflow-hidden">
             <button
               type="button"
               aria-expanded={isOpen}

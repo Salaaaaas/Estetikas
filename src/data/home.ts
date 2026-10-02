@@ -97,6 +97,10 @@ export const SPECIALTIES: Specialty[] = [
 export interface CareProtocol {
   category: string;
   title: string;
+  /** Icono decorativo grande de la tarjeta */
+  icon: 'clock' | 'heart' | 'layers';
+  /** Nombre del punto de navegación para lectores de pantalla */
+  dotLabel: string;
   steps: string[];
 }
 
@@ -104,6 +108,8 @@ export const CARE_PROTOCOLS: CareProtocol[] = [
   {
     category: 'Protocolo Esencial',
     title: 'Faciales & Limpiezas',
+    icon: 'clock',
+    dotLabel: 'Cuidados faciales',
     steps: [
       'No tocar ni lavar el rostro durante las primeras 8-12 horas.',
       'Uso estricto de bloqueador solar cada 4 horas.',
@@ -113,6 +119,8 @@ export const CARE_PROTOCOLS: CareProtocol[] = [
   {
     category: 'Post-Procedimiento',
     title: 'Inyectables (Botox & Rellenos)',
+    icon: 'heart',
+    dotLabel: 'Cuidados de inyectables',
     steps: [
       'No tocar ni masajear la zona tratada por 4 horas.',
       'Evitar ejercicio intenso y calor (sauna, sol) por 24 horas.',
@@ -122,6 +130,8 @@ export const CARE_PROTOCOLS: CareProtocol[] = [
   {
     category: 'Recuperación Corporal',
     title: 'Tratamientos Corporales',
+    icon: 'layers',
+    dotLabel: 'Cuidados corporales',
     steps: [
       'Hidratación abundante: mínimo 2 litros de agua al día.',
       'Evitar piscinas, mar o tina por las primeras 24 horas.',

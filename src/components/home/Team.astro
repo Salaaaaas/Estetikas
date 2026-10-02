@@ -15,17 +15,17 @@ import { TEAM } from '../../data/home';
 
   {TEAM.map((member, i) => (
     <div class:list={[
-      'profile-block group flex flex-wrap items-center min-h-[500px] overflow-hidden max-lg:flex-col!',
+      'profile-block group flex flex-wrap items-center min-h-[500px] overflow-hidden max-lg:flex-col-reverse!',
       i % 2 === 1 && 'reverse flex-row-reverse',
     ]}>
-      <div class="profile-image-side flex flex-1 items-center justify-center min-w-1/2 h-[700px] py-12 bg-surface overflow-hidden max-lg:h-auto max-lg:min-w-full max-lg:px-[8%] max-lg:pt-10 max-lg:pb-0">
+      <div class="profile-image-side flex flex-1 items-center justify-center min-w-1/2 h-[700px] bg-surface overflow-hidden max-lg:h-[440px] max-lg:min-w-full">
         <img
           src={member.photo}
           alt={member.alt}
           width="400"
           height="500"
           loading="lazy"
-          class="block w-auto h-full max-w-full aspect-[4/5] object-cover object-[50%_35%] transition-transform duration-800 ease-out motion-safe:group-hover:scale-[1.04] max-lg:w-full max-lg:max-w-[420px] max-lg:h-auto"
+          class="block size-full object-contain transition-transform duration-800 ease-out motion-safe:group-hover:scale-[1.04]"
         />
       </div>
       <div class="profile-content-side flex-1 min-w-1/2 bg-white px-[7%] py-20 max-lg:min-w-full max-lg:px-[8%] max-lg:py-16">

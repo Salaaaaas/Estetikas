@@ -114,7 +114,8 @@ const initSite = () => {
         const tl = gsap.timeline({
             scrollTrigger: { trigger: specHeading, start: 'top 80%', once: true }
         });
-        tl.fromTo('.specialties-heading', fromVars(20), { ...toVars(0, 0.7) })
+        tl.fromTo('.specialties-count',   fromVars(16), { ...toVars(0, 0.6) })
+          .fromTo('.specialties-heading', fromVars(20), { ...toVars(0, 0.7) }, '-=0.35')
           .fromTo('.specialties-sub',     fromVars(14), { ...toVars(0, 0.6) }, '-=0.3')
           .fromTo('.specialties-cta',     fromVars(10), { ...toVars(0, 0.5) }, '-=0.25');
     }

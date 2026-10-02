@@ -5,10 +5,11 @@ import { SPECIALTIES } from '../../data/home';
 
 <section
   id="especialidades"
-  class="grid grid-cols-2 gap-[8%] min-h-dvh px-[8%] bg-white max-tab:grid-cols-1 max-tab:min-h-0 max-tab:gap-0 max-tab:py-20"
+  class="grid grid-cols-2 gap-[8%] min-h-dvh px-[8%] bg-surface bg-[radial-gradient(ellipse_80%_60%_at_20%_50%,rgba(0,125,136,.06)_0%,transparent_100%),radial-gradient(ellipse_60%_50%_at_80%_30%,rgba(201,168,76,.04)_0%,transparent_100%)] max-tab:grid-cols-1 max-tab:min-h-0 max-tab:gap-0 max-tab:py-20"
 >
   <div class="relative">
     <div class="sticky top-[28vh] pt-28 pb-16 max-tab:relative max-tab:top-auto max-tab:pt-0 max-tab:pb-12">
+      <div class="specialties-count font-heading font-normal text-primary text-[clamp(4rem,6vw,6.5rem)] tracking-[-3px] leading-[0.85] mb-6 max-tab:text-[3.5rem]" aria-hidden="true">3</div>
       <h2 class="specialties-heading font-heading font-normal text-ink text-[clamp(2.5rem,4vw,4.2rem)] leading-none tracking-[-1.5px] mb-5">
         Nuestras<br>Especialidades
       </h2>
@@ -38,7 +39,7 @@ import { SPECIALTIES } from '../../data/home';
         </ul>
         <a
           href="/tratamientos"
-          class="specialty-link inline-flex items-center gap-[0.45rem] mt-3 min-h-11 text-primary text-[0.84rem] font-normal no-underline opacity-0 translate-y-[6px] transition-[opacity,translate,gap] duration-250 ease-out group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0 hover-fine:gap-[0.8rem] [@media(hover:none)]:opacity-100 [@media(hover:none)]:translate-y-0"
+          class="specialty-link inline-flex items-center gap-[0.45rem] mt-6 text-primary text-[0.84rem] font-normal no-underline opacity-0 translate-y-[6px] transition-[opacity,translate,gap] duration-250 ease-out group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0 hover-fine:gap-[0.8rem] [@media(hover:none)]:opacity-100 [@media(hover:none)]:translate-y-0"
         >Explorar tratamientos <span aria-hidden="true">→</span></a>
       </div>
     ))}
