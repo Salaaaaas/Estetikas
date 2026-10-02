@@ -1,22 +1,49 @@
 ---
+import NavMenu from './NavMenu';
+
+interface Props {
+  isHome?: boolean;
+}
+
 const { isHome = false } = Astro.props;
 ---
 
-<header>
-  <div class="logo">
-    <a href="/" aria-label="Volver al inicio">
-      <img src="/img/logo_nav.webp" alt="Logotipo de Esteti'Kas" width="152" height="200" loading="eager" fetchpriority="high" />
+<header
+  class:list={[
+    'fixed inset-x-0 top-0 w-full z-[1000] flex justify-between items-center',
+    'px-[8%] py-6 max-xl:px-[5%] max-xl:py-[1.2rem] md:scrolled:px-[8%]! md:scrolled:py-[0.6rem]!',
+    'max-nav:z-[9001] max-nav:bg-white/96 max-nav:shadow-[0_2px_20px_rgba(0,0,0,0.08)]',
+    'max-md:px-[5%] max-md:py-[0.8rem] max-md:text-center',
+    'transition-[padding] duration-300 ease-out',
+    // Fondo "vidrio" que aparece al hacer scroll (sin backdrop-filter: era el cuello de botella de FPS)
+    "before:content-[''] before:absolute before:inset-0 before:-z-1",
+    'before:bg-[linear-gradient(rgba(255,255,255,0.97),rgba(255,255,255,0.92))]',
+    'before:shadow-[0_10px_40px_rgba(0,0,0,0.05)] before:border-b before:border-black/5',
+    'before:opacity-0 before:transition-opacity before:duration-[280ms] before:ease-out scrolled:before:opacity-100',
+  ]}
+>
+  <div class="flex items-center">
+    <a href="/" aria-label="Volver al inicio" class="block">
+      <img
+        src="/img/logo_nav.webp"
+        alt="Logotipo de Esteti'Kas"
+        width="152"
+        height="200"
+        loading="eager"
+        fetchpriority="high"
+        class="block h-[100px] w-auto object-contain origin-left transition-transform duration-300 ease-out scrolled:scale-70 max-md:h-[85px]"
+      />
     </a>
   </div>
-  <nav>
-    <ul>
-      <li><a href={isHome ? '#inicio' : '/#inicio'}>Inicio</a></li>
-      <li><a href={isHome ? '#nosotras' : '/#nosotras'}>Sobre Nosotras</a></li>
-      <li><a href="/tratamientos">Tratamientos</a></li>
-      <li><a href={isHome ? '#contacto' : '/#contacto'}>Contacto</a></li>
-      <li>
-        <a href="/reservar" class="nav-reservar-btn">Reservar Cita</a>
-      </li>
-    </ul>
-  </nav>
+  <NavMenu client:load isHome={isHome} />
 </header>
+
+<script>
+  // Estado "scrolled": activa el fondo del header y reduce el logo
+  const header = document.querySelector('header');
+  if (header) {
+    const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 15);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+</script>

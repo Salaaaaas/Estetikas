@@ -2,8 +2,12 @@
    Preflight (reset de base) queda fuera mientras style.css siga activo:
    activarlo ahora cambiaría márgenes, listas y botones de todo el sitio.
    Se habilita en la fase final, cuando style.css se elimine. */
-@layer theme, base, components, utilities;
+@layer theme, base, legacy, components, utilities;
 @import "tailwindcss/theme.css" layer(theme);
+/* CSS heredado: va en su propia capa, por debajo de las utilidades, para
+   que Tailwind gane sin !important mientras se migra sección por sección.
+   (Sin capa, su `* { margin: 0; padding: 0 }` anulaba cualquier p-/m-.) */
+@import "./style.css" layer(legacy);
 @import "tailwindcss/utilities.css" layer(utilities);
 
 /* Tokens de DESIGN.md. Los mismos valores viven en :root de style.css
@@ -25,4 +29,33 @@
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* Breakpoints alineados con los @media (max-width) de style.css:
+     max-md = ≤768px, max-nav = ≤899px, max-xl = ≤1100px, max-xs = ≤480px */
+  --breakpoint-*: initial;
+  --breakpoint-xs: 30.0625rem;
+  --breakpoint-md: 48.0625rem;
+  --breakpoint-nav: 56.25rem;
+  --breakpoint-lg: 62rem;
+  --breakpoint-xl: 68.8125rem;
+}
+
+/* Estados del header que JS activa con clases */
+@custom-variant scrolled {
+  &:where(.scrolled, .scrolled *) {
+    @slot;
+  }
+}
+/* Header transparente sobre hero oscuro (/tratamientos y fichas) */
+@custom-variant on-dark-hero {
+  &:where(.dark-hero header:not(.scrolled) *) {
+    @slot;
+  }
+}
+@custom-variant hover-fine {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
+  }
 }

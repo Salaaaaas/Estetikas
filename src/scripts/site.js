@@ -154,23 +154,7 @@ function renderReservarItems() {
     });
 }
 
-// Scroll lock — position:fixed trick, the only approach that reliably
-// locks background scroll on iOS without blocking scroll inside fixed overlays.
-let _savedScrollY = 0;
 let _lenis = null;
-
-function lockScroll() {
-    if (document.body.dataset.scrollLocked) return;
-    _savedScrollY = window.scrollY;
-    document.body.style.overflow = 'hidden';
-    document.body.dataset.scrollLocked = '1';
-}
-function unlockScroll() {
-    if (!document.body.dataset.scrollLocked) return;
-    document.body.style.overflow = '';
-    delete document.body.dataset.scrollLocked;
-    window.scrollTo(0, _savedScrollY);
-}
 
 // ---- SCHEDULE DATA ----
 // Weekly recurring slots are hardcoded here.
@@ -776,36 +760,6 @@ const initSite = () => {
         });
     });
 
-    // Hamburger menu
-    const headerEl = document.querySelector('header');
-    const navEl = document.querySelector('nav');
-    if (headerEl && navEl && !headerEl.querySelector('.nav-toggle')) {
-        const toggle = document.createElement('button');
-        toggle.className = 'nav-toggle';
-        toggle.setAttribute('aria-label', 'Abrir menú de navegación');
-        toggle.setAttribute('aria-expanded', 'false');
-        toggle.innerHTML = `<span></span><span></span><span></span>`;
-        headerEl.appendChild(toggle);
-
-        const closeNav = () => {
-            navEl.classList.remove('nav-open');
-            toggle.classList.remove('is-open');
-            toggle.setAttribute('aria-expanded', 'false');
-            unlockScroll();
-        };
-
-        toggle.addEventListener('click', () => {
-            const isOpen = navEl.classList.toggle('nav-open');
-            toggle.classList.toggle('is-open', isOpen);
-            toggle.setAttribute('aria-expanded', isOpen.toString());
-            if (isOpen) lockScroll(); else unlockScroll();
-        });
-
-        navEl.querySelectorAll('a').forEach(a => {
-            a.addEventListener('click', closeNav);
-        });
-    }
-
     if (isTouch) {
         document.body.classList.add('is-touch');
     }
@@ -820,13 +774,6 @@ const initSite = () => {
         _lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((time) => { _lenis.raf(time * 1000); });
         gsap.ticker.lagSmoothing(0);
-    }
-
-    // Header scroll effect
-    if (headerEl) {
-        const onScroll = () => headerEl.classList.toggle('scrolled', window.scrollY > 15);
-        window.addEventListener('scroll', onScroll, { passive: true });
-        onScroll();
     }
 
     // Internal anchor scroll
