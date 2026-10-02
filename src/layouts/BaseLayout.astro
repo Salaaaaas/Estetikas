@@ -28,7 +28,10 @@ const {
 } = Astro.props;
 
 const turnstileSitekey = import.meta.env.PUBLIC_TURNSTILE_SITEKEY ?? '';
-const canonical = new URL(Astro.url.pathname, Astro.site);
+// URL canónica sin barra final ni extensión: /tratamientos (build.format 'file'
+// expone /tratamientos.html y /index.html durante el build)
+const canonicalPath = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/');
+const canonical = new URL(canonicalPath, Astro.site);
 ---
 
 <!doctype html>
