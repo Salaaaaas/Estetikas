@@ -1,10 +1,11 @@
 import { supabase } from './_lib/supabase.mjs';
+import { profesionalesDe } from './_lib/profesionales.mjs';
 
-// Devuelve la sede donde quedaron ancladas las LIMPIEZAS FACIALES de una
-// fecha, o null si aún no hay ninguna. Katherine realiza las limpiezas y no
-// puede estar en dos localidades el mismo día: la primera reserva con
-// limpieza facial fija la sede de limpiezas de ese día. El resto de
-// tratamientos (Dra. Karen) no se ven afectados por este candado.
+// Ocupación por profesional de una fecha, para que el formulario ofrezca solo
+// sedes y horas compatibles (reglas en _lib/profesionales.mjs):
+//   citas: [{ sede, hora, profesionales }]   — sin datos personales
+//   sede:  sede de las limpiezas faciales del día o null (compatibilidad con
+//          clientes anteriores)
 
 function send(res, status, body) {
   res.setHeader('content-type', 'application/json; charset=utf-8');
@@ -24,13 +25,20 @@ export default async function handler(req, res) {
 
   const { data, error } = await supabase
     .from('citas')
-    .select('sede')
+    .select('sede, hora, servicios')
     .eq('fecha', date)
-    .neq('estado', 'cancelada')
-    .contains('servicios', JSON.stringify([{ slug: 'limpieza-facial' }]))
-    .limit(1);
+    .neq('estado', 'cancelada');
 
   if (error) return send(res, 500, { error: 'error_interno' });
 
-  return send(res, 200, { sede: data?.[0]?.sede ?? null });
+  const citas = (data ?? []).map((c) => {
+    const slugs = c.servicios.map((s) => s.slug);
+    return { sede: c.sede, hora: c.hora, slugs, profesionales: [...profesionalesDe(slugs)] };
+  });
+  const limpieza = citas.find((c) => c.slugs.includes('limpieza-facial'));
+
+  return send(res, 200, {
+    sede: limpieza?.sede ?? null,
+    citas: citas.map(({ sede, hora, profesionales }) => ({ sede, hora, profesionales })),
+  });
 }

@@ -1,9 +1,10 @@
 // Cliente de las funciones /api de reservas (Vercel). Cachea por sesión de página.
 import type { Session } from './schedule';
 import type { CartItem } from '../cart';
+import type { CitaSede } from '../../../api/_lib/profesionales.mjs';
 
 const monthCache = new Map<string, Record<string, string[]>>();
-const sedeLockCache = new Map<string, string | null>();
+const citasDiaCache = new Map<string, CitaSede[]>();
 
 /** Bloques de fecha publicados desde Google Calendar (vacío si falla). */
 export async function fetchCalendarSchedule(): Promise<Session[]> {
@@ -38,19 +39,23 @@ export async function fetchBookedTimes(date: string): Promise<Set<string>> {
   }
 }
 
-/** Sede ya fijada para limpiezas en esa fecha (null si no hay o falla). */
-export async function fetchLimpiezaSede(date: string): Promise<string | null> {
-  if (sedeLockCache.has(date)) return sedeLockCache.get(date) ?? null;
-  let sede: string | null = null;
+/**
+ * Citas activas de una fecha (sede, hora y profesionales; sin datos
+ * personales). Lista vacía si falla: el servidor revalida de todas formas.
+ */
+export async function fetchCitasDelDia(date: string): Promise<CitaSede[]> {
+  const cached = citasDiaCache.get(date);
+  if (cached) return cached;
+  let citas: CitaSede[] = [];
   try {
     const res = await fetch(`/api/sede-for-date?date=${date}`);
     const data = await res.json();
-    sede = data.sede ?? null;
+    if (Array.isArray(data.citas)) citas = data.citas;
   } catch {
-    sede = null;
+    citas = [];
   }
-  sedeLockCache.set(date, sede);
-  return sede;
+  citasDiaCache.set(date, citas);
+  return citas;
 }
 
 export interface BookingPayload {

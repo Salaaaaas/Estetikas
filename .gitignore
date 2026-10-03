@@ -28,4 +28,5 @@ pnpm-debug.log*
 # por eso es "/scripts/*" y no "/scripts/".
 /scripts/*
 !/scripts/test-mobile-auth.mjs
+!/scripts/test-profesionales.mjs
 !/scripts/backfill-telefono-hash.mjs

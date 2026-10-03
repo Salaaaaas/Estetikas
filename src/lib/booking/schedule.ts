@@ -9,6 +9,8 @@
 // calendario, así que no hay que hacer deploy. SCHEDULE_DATES es el
 // mecanismo alternativo hardcodeado.
 
+import { conflictoDeSede, mensajeConflicto, type CitaSede } from '../../../api/_lib/profesionales.mjs';
+
 export interface WeeklySession {
   id: string;
   type: 'weekly';
@@ -163,18 +165,18 @@ export interface SedeRules {
 }
 
 /**
- * Reglas de sede para una fecha. Katherine (limpiezas) atiende en una sola
- * sede por día: la primera reserva con limpieza la fija (`lockedLimpiezaSede`).
- * La Dra. Karen atiende en la sede de su bloque del día.
+ * Reglas de sede para una fecha. Cada profesional atiende en una sola ciudad
+ * por día, y Katherine y la Dra. Mónica en una sola sede; la Dra. Karen puede
+ * cambiar de local en Guápiles con 2 horas de margen, lo que se resuelve por
+ * hora en `slotBloqueado` (reglas en api/_lib/profesionales.mjs).
  */
 export function computeSedeRules(
   sessions: Session[],
   cartIds: string[],
-  lockedLimpiezaSede: string | null,
+  citasDelDia: CitaSede[],
 ): SedeRules {
   const allSedes = SEDE_OPTIONS.map((o) => o.value);
   const otros = cartIds.filter((id) => id !== LIMPIEZA_ID);
-  const hasLimpieza = cartIds.includes(LIMPIEZA_ID);
 
   let allowed: Set<string>;
   let hint = '';
@@ -192,15 +194,33 @@ export function computeSedeRules(
     if (sessions.some((s) => !s.sede)) allSedes.forEach((x) => allowed.add(x));
   }
 
-  if (hasLimpieza && allowed.size > 0 && lockedLimpiezaSede) {
-    allowed = new Set(allowed.has(lockedLimpiezaSede) ? [lockedLimpiezaSede] : []);
-    if (allowed.size === 1) hint = `Este día las limpiezas faciales se atienden en ${sedeLabel(lockedLimpiezaSede)}.`;
+  // Quita las sedes donde la profesional no puede estar a ninguna hora:
+  // otra ciudad, u otro local para quien no cambia de local. La hora exacta
+  // no importa para esos motivos, así que basta con probar la primera cita.
+  if (cartIds.length > 0 && citasDelDia.length > 0) {
+    let motivo: string | null = null;
+    for (const sede of [...allowed]) {
+      const c = citasDelDia
+        .map((cita) => conflictoDeSede({ sede, hora: cita.hora, slugs: cartIds }, [cita]))
+        .find((r) => r && r.motivo !== 'margen');
+      if (c) {
+        allowed.delete(sede);
+        motivo = mensajeConflicto(c);
+      }
+    }
+    if (motivo && allowed.size > 0) hint = motivo;
   }
 
   if (allowed.size === 0) {
     hint = 'No hay sede disponible para tus tratamientos en esta fecha. Por favor elige otro día.';
   }
   return { allowed, hint };
+}
+
+/** La hora choca con otra cita de la misma profesional en otro local (margen de 2 h). */
+export function slotBloqueado(sede: string, hora: string, cartIds: string[], citasDelDia: CitaSede[]): boolean {
+  if (!sede || cartIds.length === 0) return false;
+  return conflictoDeSede({ sede, hora, slugs: cartIds }, citasDelDia) !== null;
 }
 
 /** Días de la lista disponible cuyos turnos ya están todos ocupados. */

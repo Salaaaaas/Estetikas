@@ -10,7 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "node scripts/test-mobile-auth.mjs"
+    "test": "node scripts/test-mobile-auth.mjs && node scripts/test-profesionales.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.7",

@@ -11,6 +11,7 @@ import {
   getApplicableSchedules,
   getSessionsForDate,
   sessionsForSede,
+  slotBloqueado,
   type Session,
 } from '../../lib/booking/schedule';
 import {
@@ -18,9 +19,10 @@ import {
   createBooking,
   fetchBookedTimes,
   fetchCalendarSchedule,
-  fetchLimpiezaSede,
+  fetchCitasDelDia,
   fetchMonthAvailability,
 } from '../../lib/booking/api';
+import type { CitaSede } from '../../../api/_lib/profesionales.mjs';
 import Calendar from './Calendar';
 import { useTurnstile } from './useTurnstile';
 
@@ -69,6 +71,7 @@ export default function BookingForm() {
   const [fullDays, setFullDays] = useState<Set<string>>(new Set());
   const [allowedSedes, setAllowedSedes] = useState<Set<string> | null>(null);
   const [sedeHint, setSedeHint] = useState('');
+  const [citasDelDia, setCitasDelDia] = useState<CitaSede[]>([]);
   const [timeState, setTimeState] = useState<TimeState>(NO_DATE);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -102,7 +105,14 @@ export default function BookingForm() {
     return () => { cancelled = true; };
   }, [view, available, schedules]);
 
-  const loadTimes = useCallback(async (sessions: Session[], date: string, request: number) => {
+  const loadTimes = useCallback(async (
+    sessions: Session[],
+    date: string,
+    request: number,
+    sede: string,
+    citas: CitaSede[],
+    ids: string[],
+  ) => {
     if (!sessions.length) {
       setTimeState({ kind: 'message', text: 'Sin horario para esta fecha' });
       return;
@@ -119,8 +129,11 @@ export default function BookingForm() {
         slots: generateSlots(s.hours).map((slot) => {
           total++;
           const isBooked = booked.has(slot.time24);
-          if (!isBooked) free++;
-          return { value: slot.time24, label: isBooked ? `${slot.label} — Ocupado` : slot.label, booked: isBooked };
+          // Otra cita de la misma profesional en otro local a menos de 2 h
+          const blocked = !isBooked && slotBloqueado(sede, slot.time24, ids, citas);
+          if (!isBooked && !blocked) free++;
+          const label = isBooked ? `${slot.label} — Ocupado` : blocked ? `${slot.label} — No disponible en esta sede` : slot.label;
+          return { value: slot.time24, label, booked: isBooked || blocked };
         }),
       }))
       .filter((g) => g.slots.length > 0);
@@ -135,9 +148,10 @@ export default function BookingForm() {
     setForm((f) => ({ ...f, date, time: '' }));
     const sessions = getSessionsForDate(date, schedules);
 
-    const locked = cartIds.includes('limpieza-facial') ? await fetchLimpiezaSede(date) : null;
+    const citas = await fetchCitasDelDia(date);
     if (request !== dateRequest.current) return;
-    const { allowed, hint } = computeSedeRules(sessions, cartIds, locked);
+    setCitasDelDia(citas);
+    const { allowed, hint } = computeSedeRules(sessions, cartIds, citas);
     setAllowedSedes(allowed);
     setSedeHint(hint);
 
@@ -146,14 +160,14 @@ export default function BookingForm() {
     if (allowed.size === 1) sede = [...allowed][0];
     setForm((f) => ({ ...f, sede }));
 
-    loadTimes(sessionsForSede(sessions, sede), date, request);
+    loadTimes(sessionsForSede(sessions, sede), date, request, sede, citas, cartIds);
   };
 
   const onSedeChange = (sede: string) => {
     setForm((f) => ({ ...f, sede, time: '' }));
     if (!form.date) return;
     const request = ++dateRequest.current;
-    loadTimes(sessionsForSede(getSessionsForDate(form.date, schedules), sede), form.date, request);
+    loadTimes(sessionsForSede(getSessionsForDate(form.date, schedules), sede), form.date, request, sede, citasDelDia, cartIds);
   };
 
   const changeMonth = (delta: number) => {

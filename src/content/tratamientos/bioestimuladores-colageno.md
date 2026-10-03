@@ -9,7 +9,8 @@ about: "Usamos OLIDIA®, ácido poli-L-láctico, que activa los fibroblastos, la
 benefits:
   - "Define el óvalo facial y trata la flacidez"
   - "Reafirma tejidos delicados en cuello y escote"
-  - "Recupera volumen en manos y logra un efecto lifting en glúteos"
+  - "Mejora la calidad, la textura y la densidad de la piel"
+  - "Resultados naturales y progresivos que duran de 18 a 24 meses"
 indications:
   - "Flacidez facial leve o moderada"
   - "Pérdida de volumen o de definición del contorno"

@@ -4,12 +4,9 @@ import { validateBookingInput, safeUserAgent } from './_lib/validate.mjs';
 import { checkRateLimit, checkSubjectRateLimit, verifyTurnstile, audit, isOriginAllowed } from './_lib/security.mjs';
 import { requireMobileSession } from './_lib/mobile-auth.mjs';
 import { createCalendarEvent, getScheduleFromCalendar } from './_lib/calendar.mjs';
+import { conflictoDeSede, mensajeConflicto } from './_lib/profesionales.mjs';
 
 const LIMPIEZA_SLUG = 'limpieza-facial';
-
-function sedeCorta(sede) {
-  return sede.includes('Bataan') ? 'Bataan' : 'Guápiles';
-}
 
 function getHeader(req, name) {
   return req.headers[name.toLowerCase()] ?? null;
@@ -124,27 +121,27 @@ export default async function handler(req, res) {
   // estética, Guápiles) pueden atender en paralelo el mismo día.
   // ------------------------------------------------------------------
   const slugs       = v.data.servicios.map(s => s.slug);
-  const hasLimpieza = slugs.includes(LIMPIEZA_SLUG);
   const otros       = slugs.filter(s => s !== LIMPIEZA_SLUG);
 
-  // Regla 1: las limpiezas faciales solo se atienden en UNA sede por día
-  // (Katherine no puede estar en dos localidades). La primera reserva con
-  // limpieza fija la sede de limpiezas de esa fecha. El trigger
-  // citas_limpieza_sede en la BD respalda esta verificación contra carreras.
-  if (hasLimpieza) {
-    const { data: lim } = await supabase
-      .from('citas')
-      .select('sede')
-      .eq('fecha', v.data.fecha)
-      .neq('estado', 'cancelada')
-      .contains('servicios', JSON.stringify([{ slug: LIMPIEZA_SLUG }]))
-      .limit(1);
-    if (lim?.length && lim[0].sede !== v.data.sede) {
-      return send(res, 400, {
-        error:   'sede_no_disponible',
-        mensaje: `Este día las limpiezas faciales se atienden en ${sedeCorta(lim[0].sede)}.`
-      });
-    }
+  // Regla 1: cada profesional atiende en una sola ciudad por día; dentro de
+  // Guápiles la Dra. Karen puede cambiar de local con 2 horas de margen
+  // (reglas en _lib/profesionales.mjs). El trigger citas_profesional_sede en
+  // la BD respalda esta verificación contra carreras.
+  const { data: delDia, error: errDia } = await supabase
+    .from('citas')
+    .select('sede, hora, servicios')
+    .eq('fecha', v.data.fecha)
+    .neq('estado', 'cancelada');
+  if (errDia) {
+    console.error('select_dia_error', JSON.stringify(errDia));
+    return send(res, 500, { error: 'error_interno' });
+  }
+  const conflicto = conflictoDeSede(
+    { sede: v.data.sede, hora: v.data.hora, slugs },
+    delDia.map(c => ({ sede: c.sede, hora: c.hora, slugs: c.servicios.map(s => s.slug) }))
+  );
+  if (conflicto) {
+    return send(res, 400, { error: 'sede_no_disponible', mensaje: mensajeConflicto(conflicto) });
   }
 
   // Regla 2: en Bataan solo se realizan limpiezas faciales, salvo los días
@@ -231,12 +228,12 @@ export default async function handler(req, res) {
         mensaje: 'Ese horario acaba de ser reservado. Por favor elige otra hora.'
       });
     }
-    // Trigger citas_limpieza_sede: otra limpieza ganó la sede de este día
-    // entre nuestra verificación y el insert.
-    if (String(error.message || '').includes('limpieza_sede_conflict')) {
+    // Trigger citas_profesional_sede: otra reserva de la misma profesional
+    // en otra sede entró entre nuestra verificación y el insert.
+    if (/(profesional|limpieza)_sede_conflict/.test(String(error.message || ''))) {
       return send(res, 409, {
         error: 'sede_no_disponible',
-        mensaje: 'Las limpiezas faciales de este día acaban de quedar asignadas a otra sede. Por favor elige otra fecha.'
+        mensaje: 'Ese horario acaba de quedar ocupado en otra sede. Por favor elige otra hora o fecha.'
       });
     }
     return send(res, 500, { error: 'no_se_pudo_guardar_la_cita' });
