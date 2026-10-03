@@ -7,17 +7,17 @@ export const MARQUEE_TREATMENTS = [
   'Peelings Químicos',
   'Bioestimuladores',
   'Sueroterapia IV',
-  'Masajes Avanzados',
+  'Masajes',
   'Mesoterapia',
   'Dermaplaning',
-  'Depilación LDI',
+  'Depilación Láser',
 ];
 
 export type TrustIcon = 'pin' | 'user' | 'smile';
 
 export const TRUST_ITEMS: { icon: TrustIcon; label: string }[] = [
   { icon: 'pin', label: '3 sedes en Costa Rica' },
-  { icon: 'user', label: 'Médicos especialistas certificados' },
+  { icon: 'user', label: 'Médicas y especialistas certificadas' },
   { icon: 'smile', label: 'Resultados armónicos y naturales' },
 ];
 
@@ -39,8 +39,8 @@ export const TEAM: TeamMember[] = [
     photo: '/img/dr_karen.webp',
     alt: 'Dra. Karen Mayorga Quirós',
     bio: [
-      'Médico especializada en estética regenerativa y armonización facial. Su enfoque, respaldado por actualización constante en tendencias globales, se basa en realzar la belleza natural de cada paciente.',
-      'Garantiza tratamientos seguros y personalizados con protocolos médicos actualizados y productos certificados de la más alta calidad.',
+      'Médica con enfoque en estética regenerativa y armonización facial. Su objetivo es realzar tus rasgos sin cambiarlos: que te veas mejor, no distinta.',
+      'Trabaja con protocolos médicos actualizados y productos certificados. Atiende en Guápiles y en jornadas especiales en Bataan.',
     ],
     cta: 'Agendar con la Dra. Karen',
   },
@@ -50,8 +50,8 @@ export const TEAM: TeamMember[] = [
     photo: '/img/mami.webp',
     alt: 'Especialista Katherine Leitón Castillo',
     bio: [
-      'Especialista certificada en tratamientos faciales avanzados. Su pasión por el cuidado de la piel la ha llevado a dominar técnicas exclusivas que combinan bienestar con resultados visibles desde la primera sesión.',
-      'Su calidez y enfoque detallista aseguran que cada visita sea una atención cuidada, con resultados visibles y un trato cercano.',
+      'Especialista certificada en tratamientos faciales. Está a cargo de las limpiezas faciales profundas en nuestra sede de Bataan.',
+      'Detallista y paciente: revisa tu piel, te explica qué necesita y adapta cada limpieza a ti.',
     ],
     cta: 'Agendar con Katherine',
   },
@@ -61,14 +61,14 @@ export const TEAM: TeamMember[] = [
     photo: '/img/dra_monica.webp',
     alt: 'Dra. Mónica Gamboa Calderón',
     bio: [
-      'Especialista encargada de llevar el cuidado corporal a otro nivel. Meticulosa y conocedora del bienestar físico, domina un amplio espectro de técnicas manuales y terapias sistémicas.',
-      'Experta residente en <strong>Sueroterapia</strong> intravenosa y en <strong>Masajes</strong> avanzados: drenajes linfáticos, técnicas descontracturantes y reductivas, diseñando terapias únicas para la recuperación total del cuerpo.',
+      'Especialista en cuidado corporal y bienestar físico.',
+      'Está a cargo de la <strong>Sueroterapia</strong> intravenosa y de los <strong>Masajes</strong>: relajantes, descontracturantes, reductivos y drenaje linfático. Diseña cada sesión según lo que tu cuerpo necesita.',
     ],
     cta: 'Agendar con la Dra. Mónica',
   },
 ];
 
-export const PHILOSOPHY_TAGS = ['Abordaje Médico Integral', 'Resultados Naturales', 'Máxima Calidad'];
+export const PHILOSOPHY_TAGS = ['Criterio Médico', 'Resultados Naturales', 'Productos Certificados'];
 
 export interface Specialty {
   title: string;
@@ -79,18 +79,18 @@ export interface Specialty {
 export const SPECIALTIES: Specialty[] = [
   {
     title: 'Facial & Regeneración',
-    description: 'Revitaliza la textura y luminosidad de tu piel con protocolos clínicamente respaldados.',
+    description: 'Mejora la textura, las manchas y la luminosidad de tu piel.',
     items: ['Limpiezas Profundas y Dermaplaning', 'Peelings Químicos', 'Botox y Ácido Hialurónico', 'Exosomas y ADN de Salmón'],
   },
   {
     title: 'Bioestimulación',
-    description: 'Activa tu producción interna de colágeno y recupera la estructura natural del rostro.',
+    description: 'Estimula tu propio colágeno para recuperar firmeza y definir el contorno del rostro.',
     items: ['Bioestimuladores de Colágeno', 'Perfilado Facial y Doble Mentón', 'Redensificación de Cuello y Escote', 'Reestructuración de Manos'],
   },
   {
     title: 'Cuidado Corporal',
-    description: 'Soluciones integrales para esculpir tu silueta, recuperar el bienestar y regenerar desde adentro.',
-    items: ['Sueroterapia Vitamínica Intravenosa', 'Masajes Relajantes, Reductivos y más', 'Mesoterapia Reductiva y Estrías', 'Lunares y Depilación LDI'],
+    description: 'Moldea tu silueta, relaja tu cuerpo y repón vitaminas y nutrientes.',
+    items: ['Sueroterapia Vitamínica Intravenosa', 'Masajes Relajantes, Reductivos y más', 'Mesoterapia Reductiva y Estrías', 'Lunares y Depilación Láser'],
   },
 ];
 
@@ -140,35 +140,6 @@ export const CARE_PROTOCOLS: CareProtocol[] = [
   },
 ];
 
-export interface Testimonial {
-  quote: string;
-  name: string;
-  initial: string;
-  detail: string;
-}
-
-export const TESTIMONIAL_FEATURED: Testimonial = {
-  quote: "Llevaba años frustrada con mis imperfecciones y en Esteti'Kas encontré la solución. Katherine es una experta total, muy detallista y con mucha paciencia.",
-  name: 'Sofía V.',
-  initial: 'S',
-  detail: 'Tratamiento de Estrías · Bataan',
-};
-
-export const TESTIMONIALS_COMPACT: Testimonial[] = [
-  {
-    quote: 'Desde la primera sesión noté la diferencia. La Dra. Karen es increíblemente profesional y su trato es muy cálido. Mi piel luce como nunca.',
-    name: 'Karol B.',
-    initial: 'K',
-    detail: 'Limpieza Facial & Peelings · Limón',
-  },
-  {
-    quote: 'El ambiente es muy profesional y la atención personalizada hace toda la diferencia. Volvería mil veces.',
-    name: 'Adriana M.',
-    initial: 'A',
-    detail: 'Mesoterapia Corporal · Guápiles',
-  },
-];
-
 export interface FaqItem {
   q: string;
   /** Respuesta; admite <strong> */
@@ -176,10 +147,10 @@ export interface FaqItem {
 }
 
 export const FAQ: FaqItem[] = [
-  { q: '¿Necesito hacer una consulta antes de mi primer tratamiento?', a: 'Sí, siempre realizamos una valoración inicial gratuita para analizar tu tipo de piel, condición y objetivos. Esto nos permite diseñar un plan de tratamiento 100% personalizado y seguro para ti.' },
-  { q: '¿Los tratamientos son dolorosos?', a: 'La mayoría de nuestros procedimientos son indoloros o generan una leve sensación de calor o presión. Para tratamientos que requieran mayor precisión aplicamos cremas anestésicas tópicas. Tu comodidad es siempre nuestra prioridad.' },
-  { q: '¿Con cuánta anticipación debo agendar mi cita?', a: 'Recomendamos agendar con al menos 2 a 3 días de anticipación para garantizar disponibilidad en tu horario preferido. Puedes hacerlo directamente desde este sitio web o por WhatsApp, ¡en segundos!' },
-  { q: '¿Tienen disponibilidad en las tres sedes?', a: 'Sí, contamos con tres sedes: una en <strong>Bataan</strong> (Clínica ODONTOBATAAN) y dos en <strong>Guápiles</strong> (Clínica Medical Numancia y Eco Clinic). Al momento de agendar puedes indicar tu sede de preferencia y te confirmamos disponibilidad.' },
+  { q: '¿Necesito una valoración antes de mi primer tratamiento?', a: 'Sí. En la valoración revisamos tu piel, tu historial y lo que quieres lograr, y con eso armamos un plan seguro y hecho para ti. Escríbenos por WhatsApp para conocer el costo y la disponibilidad.' },
+  { q: '¿Los tratamientos son dolorosos?', a: 'La mayoría solo causa una leve sensación de calor o presión. Cuando hace falta, aplicamos crema anestésica antes de empezar.' },
+  { q: '¿Con cuánta anticipación debo agendar mi cita?', a: 'Te recomendamos reservar con 2 o 3 días de anticipación para conseguir el horario que prefieres. Puedes hacerlo desde este sitio o por WhatsApp.' },
+  { q: '¿Dónde están las sedes?', a: 'Tenemos tres: una en <strong>Bataan</strong> (Clínica ODONTOBATAAN) y dos en <strong>Guápiles</strong> (Clínica Medical Numancia y Eco Clinic). Al reservar eliges la sede y ves los horarios disponibles.' },
 ];
 
 export interface TreatmentOption {

@@ -13,19 +13,19 @@ export const TREATMENT_CATEGORIES: TreatmentCategory[] = [
   {
     name: 'Facial & Regeneración',
     slug: 'facial-regeneracion',
-    desc: 'Limpieza, textura y luminosidad: protocolos faciales que devuelven la salud de tu piel con respaldo médico.',
+    desc: 'Limpieza, textura y luminosidad: tratamientos faciales con respaldo médico.',
     featured: 'limpieza-facial',
   },
   {
     name: 'Bioestimulación & Contorno',
     slug: 'bioestimulacion-contorno',
-    desc: 'Activa tu propio colágeno y recupera la estructura natural del rostro, sin resultados artificiales.',
+    desc: 'Estimula tu propio colágeno y define el contorno del rostro, con resultados naturales.',
     featured: 'bioestimuladores-colageno',
   },
   {
     name: 'Cuidado Corporal',
     slug: 'cuidado-corporal',
-    desc: 'Silueta, recuperación y bienestar desde adentro: terapias corporales diseñadas para tu cuerpo.',
+    desc: 'Silueta, relajación y bienestar: tratamientos corporales pensados para ti.',
     featured: 'sueroterapia',
   },
 ];

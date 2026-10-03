@@ -14,7 +14,7 @@ benefits:
   - "Elimina vellos encarnados y mejora la textura de la piel"
 category: "Cuidado Corporal"
 cardTitle: "Depilación Láser Soprano Titanium"
-cardDescription: "Eliminación del vello no deseado de forma segura y eficiente."
+cardDescription: "Reduce el vello de forma progresiva con láser diodo Soprano Titanium."
 cardImage: "depilacion_laser.webp"
 cardImageAlt: "Sesión de depilación láser en las piernas de una paciente"
 cardPosition: "center 40%"

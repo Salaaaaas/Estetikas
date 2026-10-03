@@ -10,7 +10,7 @@ const EASE = 'power3.out';
 const SHOW = { opacity: 1, y: 0, ease: EASE, clearProps: 'transform,opacity' } as const;
 
 /** Elementos que aparecen en lote al entrar en pantalla */
-const REVEAL_TARGETS = '.faq-item, .testimonial-featured, .testimonial-card-compact, .contact-info, .contact-form-wrapper, .trust-item, .t-card';
+const REVEAL_TARGETS = '.faq-item, .contact-info, .contact-form-wrapper, .trust-item, .t-card';
 
 function revealOnScroll(): void {
   // Solo se oculta lo que está bajo el pliegue: lo visible al cargar no parpadea

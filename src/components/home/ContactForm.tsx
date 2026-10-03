@@ -17,7 +17,7 @@ const fieldClass = [
 ].join(' ');
 
 const LABELS: Record<Status, string> = {
-  idle: 'Enviar Solicitud',
+  idle: 'Enviar por WhatsApp',
   sending: 'Redirigiendo a WhatsApp...',
   sent: '¡Solicitud Abierta!',
 };

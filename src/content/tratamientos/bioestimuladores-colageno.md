@@ -1,11 +1,11 @@
 ---
 title: "Bioestimuladores de Colágeno"
-description: "Juventud que se construye desde tu interior"
+description: "Bioestimuladores de colágeno en Guápiles: recupera firmeza y define el óvalo facial con tu propio colágeno."
 heroImage: "bioestimuladores.webp"
 heroAlt: "Especialista aplicando bioestimulador de colágeno en la mejilla de una paciente"
 heroPosition: "center 30%"
-subtitle: "Juventud que se construye desde tu interior"
-about: "Los bioestimuladores de colágeno activan los fibroblastos para que tu propio organismo vuelva a producir colágeno de alta calidad. El resultado es redensificación y firmeza sumamente natural."
+subtitle: "Recupera firmeza estimulando tu propio colágeno"
+about: "Los bioestimuladores activan los fibroblastos, las células que producen colágeno. Con las semanas, tu piel recupera densidad y firmeza de forma gradual y natural."
 benefits:
   - "Define el óvalo facial y trata la flacidez"
   - "Reafirma tejidos delicados en cuello y escote"

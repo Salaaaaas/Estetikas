@@ -1,14 +1,14 @@
 ---
 title: "Mesoterapia Corporal"
-description: "Moldear y reafirmar tu figura"
+description: "Mesoterapia corporal contra celulitis, flacidez y grasa localizada en abdomen, muslos y brazos."
 heroImage: "mesoterapia_corporal.webp"
 heroAlt: "Aplicación de mesoterapia en el abdomen de una paciente"
 heroPosition: "center"
-subtitle: "Moldear y reafirmar tu figura"
-about: "Infiltración de sustancias activas directamente en zonas con celulitis, flacidez o acúmulos de grasa rebeldes."
+subtitle: "Moldea y reafirma tu figura sin cirugía"
+about: "Aplicamos activos con microinyecciones directamente en las zonas con celulitis, flacidez o grasa localizada."
 benefits:
   - "Reducción de grasa localizada en abdomen, muslos o brazos"
-  - "Mejora drástica del aspecto de piel de naranja"
+  - "Mejora visible de la piel de naranja (celulitis)"
   - "Estimulación de la microcirculación y drenaje"
 category: "Cuidado Corporal"
 cardTitle: "Mesoterapia Corporal"
