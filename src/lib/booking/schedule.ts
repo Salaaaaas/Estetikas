@@ -75,6 +75,7 @@ export const SCHEDULE_DATES: DateSession[] = [
       'mesoterapia', 'peelings', 'reduccion',
       'rejuvenecimiento-facial-integral', 'rellenos',
       'sueroterapia', 'tratamiento-estrias',
+      'rejuvenecimiento-facial-premium', 'onicomicosis-picolaser', 'terapia-capilar',
     ],
     sede: 'Bataan (Clínica ODONTOBATAAN)',
   },

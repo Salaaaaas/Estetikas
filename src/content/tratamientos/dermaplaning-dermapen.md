@@ -9,6 +9,17 @@ benefits:
   - "Piel más suave, donde el maquillaje se aplica mejor."
   - "Reducción visible de cicatrices de acné, poros dilatados y finas líneas de expresión."
   - "Tus productos de cuidado diario se absorben mejor."
+aftercare:
+  - "Es normal un enrojecimiento como de sol leve y algo de calor por 24 a 48 horas"
+  - "Primeras 24 horas: sin maquillaje ni ejercicio intenso; usa solo los productos indicados"
+  - "Primeras 72 horas: sin sol directo, exfoliantes, retinol, ácido glicólico ni vitamina C concentrada"
+  - "Evita piscina, mar y sauna; usa SPF 50+ a diario"
+contraindications:
+  - "Acné inflamatorio severo"
+  - "Herpes o infecciones activas"
+  - "Trastornos de coagulación"
+  - "Uso reciente de isotretinoína"
+  - "Tendencia a queloides"
 category: "Facial & Regeneración"
 cardTitle: "Textura: Dermaplaning & Dermapen"
 cardDescription: "Renueva la textura de tu piel, estimulando la producción de colágeno."

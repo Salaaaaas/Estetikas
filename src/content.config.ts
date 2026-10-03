@@ -14,6 +14,11 @@ const tratamientos = defineCollection({
     subtitle: z.string(),
     about: z.string(),
     benefits: z.array(z.string()),
+    /** Secciones opcionales tomadas del catálogo médico */
+    indications: z.array(z.string()).optional(),
+    sessions: z.string().optional(),
+    aftercare: z.array(z.string()).optional(),
+    contraindications: z.array(z.string()).optional(),
     category: z.string(),
     cardTitle: z.string(),
     cardDescription: z.string(),

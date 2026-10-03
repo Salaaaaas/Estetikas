@@ -11,6 +11,8 @@ export const MARQUEE_TREATMENTS = [
   'Mesoterapia',
   'Dermaplaning',
   'Depilación Láser',
+  'Hollywood Peel',
+  'Terapia Capilar',
 ];
 
 export type TrustIcon = 'pin' | 'user' | 'smile';
@@ -80,7 +82,7 @@ export const SPECIALTIES: Specialty[] = [
   {
     title: 'Facial & Regeneración',
     description: 'Mejora la textura, las manchas y la luminosidad de tu piel.',
-    items: ['Limpiezas Profundas y Dermaplaning', 'Peelings Químicos', 'Botox y Ácido Hialurónico', 'Exosomas y ADN de Salmón'],
+    items: ['Limpiezas Profundas y Dermaplaning', 'Peelings Químicos', 'Botox y Ácido Hialurónico', 'Hollywood Peel y Revitaskin', 'Terapia Capilar Regenerativa'],
   },
   {
     title: 'Bioestimulación',
@@ -90,7 +92,7 @@ export const SPECIALTIES: Specialty[] = [
   {
     title: 'Cuidado Corporal',
     description: 'Moldea tu silueta, relaja tu cuerpo y repón vitaminas y nutrientes.',
-    items: ['Sueroterapia Vitamínica Intravenosa', 'Masajes Relajantes, Reductivos y más', 'Mesoterapia Reductiva y Estrías', 'Lunares y Depilación Láser'],
+    items: ['Sueroterapia Vitamínica Intravenosa', 'Masajes Relajantes, Reductivos y más', 'Mesoterapia Reductiva y Estrías', 'Depilación Láser y Hongos en Uñas'],
   },
 ];
 
@@ -163,6 +165,7 @@ export const CONTACT_TREATMENTS: TreatmentOption[] = [
   { value: 'botox', label: 'Botox & Traptox' },
   { value: 'rellenos', label: 'Rellenos con Ácido Hialurónico' },
   { value: 'regeneracion', label: 'Regeneración Facial' },
+  { value: 'capilar', label: 'Terapia Capilar' },
   { value: 'corporal', label: 'Tratamiento Corporal' },
   { value: 'otro', label: 'Otro' },
 ];

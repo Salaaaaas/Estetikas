@@ -11,7 +11,9 @@ export async function getStaticPaths() {
 }
 
 const { treatment } = Astro.props;
-const { title, description, heroImage, heroAlt, heroPosition, subtitle, about, benefits, prices, cartName } = treatment.data;
+const { title, description, heroImage, heroAlt, heroPosition, subtitle, about, benefits, indications, sessions, aftercare, contraindications, prices, cartName } = treatment.data;
+
+const listItem = 'relative pl-6 mb-3 text-[1.02rem] leading-[1.55] text-muted before:content-[\'\'] before:absolute before:left-0 before:top-[0.6em] before:size-[7px] before:rounded-full before:bg-primary/70';
 ---
 
 <TreatmentLayout
@@ -41,6 +43,37 @@ const { title, description, heroImage, heroAlt, heroPosition, subtitle, about, b
       ))}
     </ul>
   </div>
+
+  {(indications || sessions) && (
+    <div class="mb-16">
+      <h2 class="text-[1.8rem] font-bold text-ink mb-6">¿Para quién es?</h2>
+      {indications && (
+        <ul class="list-none p-0 mb-6">
+          {indications.map((i) => <li class={listItem}>{i}</li>)}
+        </ul>
+      )}
+      {sessions && <p class="text-[1.02rem] leading-[1.7] text-ink"><strong class="font-semibold">Sesiones:</strong> {sessions}</p>}
+    </div>
+  )}
+
+  {aftercare && (
+    <div class="glass mb-16 p-12 rounded-[28px] max-md:p-8">
+      <h2 class="text-[1.8rem] font-bold mb-6">Cuidados después del tratamiento</h2>
+      <ul class="list-none p-0">
+        {aftercare.map((a) => <li class={listItem}>{a}</li>)}
+      </ul>
+    </div>
+  )}
+
+  {contraindications && (
+    <div class="mb-16">
+      <h2 class="text-[1.8rem] font-bold text-ink mb-3">Contraindicaciones</h2>
+      <p class="text-[0.95rem] text-muted mb-6">La valoración médica previa confirma si el tratamiento es adecuado para ti.</p>
+      <ul class="list-none p-0">
+        {contraindications.map((c) => <li class={listItem}>{c}</li>)}
+      </ul>
+    </div>
+  )}
 
   {prices && prices.length > 0 && (
     <div class="mb-16">

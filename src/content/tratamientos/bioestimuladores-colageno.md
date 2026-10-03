@@ -1,15 +1,31 @@
 ---
 title: "Bioestimuladores de Colágeno"
-description: "Bioestimuladores de colágeno en Guápiles: recupera firmeza y define el óvalo facial con tu propio colágeno."
+description: "Bioestimulación facial con ácido poliláctico OLIDIA®: más firmeza y menos flacidez con tu propio colágeno, con resultados de 18 a 24 meses."
 heroImage: "bioestimuladores.webp"
 heroAlt: "Especialista aplicando bioestimulador de colágeno en la mejilla de una paciente"
 heroPosition: "center 30%"
 subtitle: "Recupera firmeza estimulando tu propio colágeno"
-about: "Los bioestimuladores activan los fibroblastos, las células que producen colágeno. Con las semanas, tu piel recupera densidad y firmeza de forma gradual y natural."
+about: "Usamos OLIDIA®, ácido poli-L-láctico, que activa los fibroblastos, las células que producen colágeno. No cambia tus facciones: con las semanas tu piel recupera firmeza, elasticidad y densidad. El resultado definitivo se aprecia entre los 2 y 6 meses y puede durar de 18 a 24 meses. La aplicación toma de 45 a 60 minutos."
 benefits:
   - "Define el óvalo facial y trata la flacidez"
   - "Reafirma tejidos delicados en cuello y escote"
   - "Recupera volumen en manos y logra un efecto lifting en glúteos"
+indications:
+  - "Flacidez facial leve o moderada"
+  - "Pérdida de volumen o de definición del contorno"
+  - "Piel más delgada o con menos firmeza"
+  - "Mejillas, pómulos, sienes, mandíbula, mentón, cuello y escote"
+aftercare:
+  - "Masaje 5-5-5: 5 minutos, 5 veces al día, durante 5 días (salvo otra indicación)"
+  - "Primeras 24 a 48 horas: compresas frías, cabeza algo elevada al dormir, sin ejercicio intenso, sol ni sauna"
+  - "SPF 50+ a diario y al menos 2 litros de agua al día"
+  - "Si es posible, evita aspirina, ibuprofeno, vitamina E y omega 3 los días previos (consúltalo)"
+contraindications:
+  - "Embarazo y lactancia"
+  - "Infecciones o herpes activos en la zona"
+  - "Enfermedades autoinmunes descompensadas o trastornos de coagulación"
+  - "Tendencia a queloides"
+  - "Alergia a alguno de los componentes"
 category: "Bioestimulación & Contorno"
 cardTitle: "Colágeno: Bioestimuladores"
 cardDescription: "Activa tu producción de colágeno para combatir la flacidez."
