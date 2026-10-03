@@ -1,7 +1,7 @@
 import { supabase } from './_lib/supabase.mjs';
 import { encryptPII, hashPhone } from './_lib/crypto.mjs';
 import { validateBookingInput, safeUserAgent } from './_lib/validate.mjs';
-import { checkRateLimit, checkSubjectRateLimit, verifyTurnstile, audit } from './_lib/security.mjs';
+import { checkRateLimit, checkSubjectRateLimit, verifyTurnstile, audit, isOriginAllowed } from './_lib/security.mjs';
 import { requireMobileSession } from './_lib/mobile-auth.mjs';
 import { createCalendarEvent, getScheduleFromCalendar } from './_lib/calendar.mjs';
 
@@ -23,18 +23,6 @@ function getClientIp(req) {
   if (real)  return String(real).trim();
   if (xff)   return String(xff).split(',')[0].trim();
   return req.socket?.remoteAddress ?? null;
-}
-
-function isOriginAllowed(origin) {
-  if (!origin) return false;
-  if (String(origin).endsWith('.vercel.app')) return true;
-  const allowed = new Set([
-    'https://estetikascr.com',
-    'http://localhost:4321',
-    'http://localhost:3000',
-    'http://localhost:8888'
-  ]);
-  return allowed.has(origin);
 }
 
 function send(res, status, body) {

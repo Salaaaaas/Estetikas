@@ -136,14 +136,22 @@ export function getClientIp(headers) {
 // ---------------------------------------------------------------------
 const ALLOWED_ORIGINS = new Set([
   'https://estetikascr.com',
+  'https://www.estetikascr.com',
+]);
+
+const DEV_ORIGINS = new Set([
   'http://localhost:4321',
   'http://localhost:3000',
   'http://localhost:8888'
 ]);
 
+// Solo los previews de este proyecto (estetikas-<hash|git-rama>-estetikas-projects.vercel.app).
+// Antes se aceptaba cualquier *.vercel.app, y cualquiera puede publicar ahí.
+const PREVIEW_ORIGIN = /^https:\/\/estetikas-[a-z0-9-]+-estetikas-projects\.vercel\.app$/;
+
 export function isOriginAllowed(origin) {
   if (!origin) return false;
-  // Permite cualquier subdominio de vercel.app para previews
-  if (origin.endsWith('.vercel.app')) return true;
-  return ALLOWED_ORIGINS.has(origin);
+  if (ALLOWED_ORIGINS.has(origin)) return true;
+  if (process.env.VERCEL_ENV === 'production') return false;
+  return PREVIEW_ORIGIN.test(origin) || DEV_ORIGINS.has(origin);
 }
