@@ -9,12 +9,13 @@ interface Props {
   description: string;
   heroImage: string;
   heroAlt: string;
+  heroPosition?: string;
   heroTitle: string;
   heroSubtitle: string;
   cartName: string;
 }
 
-const { id, title, description, heroImage, heroAlt, heroTitle, heroSubtitle, cartName } = Astro.props;
+const { id, title, description, heroImage, heroAlt, heroPosition = 'center', heroTitle, heroSubtitle, cartName } = Astro.props;
 const waHref = `${WA_URL}?text=${encodeURIComponent(`Hola, me gustaría solicitar información sobre el tratamiento de ${heroTitle}.`)}`;
 ---
 
@@ -22,16 +23,36 @@ const waHref = `${WA_URL}?text=${encodeURIComponent(`Hola, me gustaría solicita
   title={`${title} | Esteti'Kas`}
   description={description}
   footerVariant="simple"
-  bodyClass="dark-hero"
   ogImage={`/img/${heroImage}`}
 >
+  <!-- Hero dividido como el del inicio: la foto se muestra entera en su proporción, sin estirarla a lo ancho -->
   <section
-    class="relative flex h-[50vh] items-center overflow-hidden px-[8%] pt-[15vh] text-center text-white before:content-[''] before:absolute before:inset-0 before:z-2 before:bg-[linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.3))]"
+    class="grid grid-cols-[1.1fr_1fr] items-center gap-[6%] bg-[radial-gradient(ellipse_60%_50%_at_85%_15%,rgba(0,125,136,.10)_0%,transparent_70%),radial-gradient(ellipse_55%_45%_at_10%_85%,rgba(201,168,76,.08)_0%,transparent_70%)] px-[8%] pt-[calc(15vh+2rem)] pb-16 max-desk:grid-cols-1 max-desk:gap-10 max-desk:text-center max-md:px-[5%] max-md:pt-32"
   >
-    <img class="absolute inset-0 z-1 size-full object-cover" src={`/img/${heroImage}`} alt={heroAlt} loading="eager" fetchpriority="high" />
-    <div class="relative z-3 max-w-[800px] mx-auto">
-      <h1 class="font-heading font-bold text-[3.5rem] mb-4 max-md:text-[2.5rem]">{heroTitle}</h1>
-      <p class="text-[1.25rem] font-light opacity-90">{heroSubtitle}</p>
+    <div class="flex flex-col max-desk:items-center">
+      <a href="/tratamientos" class="mb-6 inline-flex items-center gap-2 text-[0.8rem] font-medium uppercase tracking-[2px] text-primary no-underline hover:underline">
+        <span class="w-9 h-0.5 bg-gold" aria-hidden="true"></span>
+        Tratamientos
+      </a>
+      <h1 class="font-heading font-bold text-ink text-[clamp(2.5rem,4.6vw,4rem)] leading-[1.08] tracking-[-1px] mb-6">{heroTitle}</h1>
+      <p class="text-[1.15rem] leading-[1.7] font-light text-muted max-w-[46ch] mb-10">{heroSubtitle}</p>
+      <div class="flex flex-wrap items-center gap-4 max-desk:justify-center">
+        <a href="/reservar" class="btn">Reservar cita</a>
+        <a href={waHref} class="btn btn-outline-dark" target="_blank" rel="noopener noreferrer">Consultar por WhatsApp</a>
+      </div>
+    </div>
+    <div class="w-full max-w-[520px] justify-self-end aspect-[4/5] max-h-[min(640px,72vh)] rounded-[28px] overflow-hidden ring-1 ring-white/60 shadow-[0_24px_60px_rgba(0,60,66,0.16)] max-desk:justify-self-center max-desk:max-w-[440px] max-md:aspect-[4/3.6]">
+      <img
+        class="block size-full object-cover"
+        style={`object-position: ${heroPosition}`}
+        src={`/img/${heroImage}`}
+        alt={heroAlt}
+        width="800"
+        height="1000"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
     </div>
   </section>
 

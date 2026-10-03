@@ -30,6 +30,7 @@ const href = `/tratamientos/${t.id}`;
       height="250"
       loading={t.data.cardLoading}
       decoding="async"
+      style={`object-position: ${t.data.cardPosition}`}
       class:list={[
         'block w-full h-[230px] object-cover transition-[scale] duration-[450ms] ease-out group-hover:scale-105',
         featured && 'absolute inset-0 h-full max-md:static max-md:h-[230px]',

@@ -11,7 +11,7 @@ export async function getStaticPaths() {
 }
 
 const { treatment } = Astro.props;
-const { title, description, heroImage, heroAlt, subtitle, about, benefits, prices, cartName } = treatment.data;
+const { title, description, heroImage, heroAlt, heroPosition, subtitle, about, benefits, prices, cartName } = treatment.data;
 ---
 
 <TreatmentLayout
@@ -20,6 +20,7 @@ const { title, description, heroImage, heroAlt, subtitle, about, benefits, price
   description={description}
   heroImage={heroImage}
   heroAlt={heroAlt}
+  heroPosition={heroPosition}
   heroTitle={title}
   heroSubtitle={subtitle}
   cartName={cartName}

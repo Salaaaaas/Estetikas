@@ -8,6 +8,9 @@ const tratamientos = defineCollection({
     description: z.string(),
     heroImage: z.string(),
     heroAlt: z.string(),
+    /** object-position CSS: dónde está lo importante de la foto al recortarla */
+    heroPosition: z.string().default('center'),
+    cardPosition: z.string().default('center'),
     subtitle: z.string(),
     about: z.string(),
     benefits: z.array(z.string()),

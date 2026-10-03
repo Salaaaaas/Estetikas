@@ -1,8 +1,9 @@
 ---
 title: "Bioestimuladores de Colágeno"
 description: "Juventud que se construye desde tu interior"
-heroImage: "reduccion_estrias.webp"
-heroAlt: "Bioestimuladores de Colágeno"
+heroImage: "bioestimuladores.webp"
+heroAlt: "Especialista aplicando bioestimulador de colágeno en la mejilla de una paciente"
+heroPosition: "center 30%"
 subtitle: "Juventud que se construye desde tu interior"
 about: "Los bioestimuladores de colágeno activan los fibroblastos para que tu propio organismo vuelva a producir colágeno de alta calidad. El resultado es redensificación y firmeza sumamente natural."
 benefits:
@@ -12,8 +13,9 @@ benefits:
 category: "Bioestimulación & Contorno"
 cardTitle: "Colágeno: Bioestimuladores"
 cardDescription: "Activa tu producción de colágeno para combatir la flacidez."
-cardImage: "reduccion_estrias.webp"
-cardImageAlt: "Bioestimuladores"
+cardImage: "bioestimuladores.webp"
+cardImageAlt: "Especialista aplicando bioestimulador de colágeno en la mejilla de una paciente"
+cardPosition: "center 30%"
 cartName: "Bioestimuladores de Colágeno"
 cardLoading: "lazy"
 ---
