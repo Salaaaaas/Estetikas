@@ -173,5 +173,5 @@ alter table public.rate_limits_subject enable row level security;
 revoke all on public.mobile_devices      from anon, authenticated;
 revoke all on public.rate_limits_subject from anon, authenticated;
 
-revoke execute on function public.bump_rate_limit_subject(text, text, int) from anon, authenticated;
-revoke execute on function public.cleanup_rate_limits_subject()            from anon, authenticated;
+revoke execute on function public.bump_rate_limit_subject(text, text, int) from public, anon, authenticated;
+revoke execute on function public.cleanup_rate_limits_subject()            from public, anon, authenticated;

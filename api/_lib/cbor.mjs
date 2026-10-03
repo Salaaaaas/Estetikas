@@ -16,6 +16,8 @@ const MAJOR_MAP = 5;
 const MAJOR_TAG = 6;
 const MAJOR_SIMPLE = 7;
 
+const MAX_DEPTH = 16;
+
 class Reader {
   constructor(buf) {
     this.buf = buf;
@@ -60,7 +62,10 @@ class Reader {
     throw new Error(`cbor: cabecera inválida (info ${info})`);
   }
 
-  value() {
+  value(depth = 0) {
+    // Una atestación real anida 3-4 niveles; el tope evita depender del
+    // desbordamiento de pila del motor ante entradas maliciosas.
+    if (depth > MAX_DEPTH) throw new Error('cbor: anidamiento excesivo');
     const head = this.u8();
     const major = head >> 5;
     const info = head & 0x1f;
@@ -80,8 +85,11 @@ class Reader {
 
       case MAJOR_ARRAY: {
         const n = this.argument(info);
+        // Cada elemento ocupa al menos un byte: una longitud mayor que lo que
+        // queda es mentira y no se reserva memoria para ella.
+        if (n > this.buf.length - this.pos) throw new Error('cbor: datos truncados');
         const out = new Array(n);
-        for (let i = 0; i < n; i++) out[i] = this.value();
+        for (let i = 0; i < n; i++) out[i] = this.value(depth + 1);
         return out;
       }
 
@@ -89,12 +97,12 @@ class Reader {
         const n = this.argument(info);
         const out = Object.create(null);
         for (let i = 0; i < n; i++) {
-          const key = this.value();
+          const key = this.value(depth + 1);
           if (typeof key !== 'string') throw new Error('cbor: solo se aceptan claves de texto');
           // Claves duplicadas: en CBOR canónico no existen y aceptarlas
           // permitiría colar un segundo authData que sobrescriba al validado.
           if (key in out) throw new Error('cbor: clave duplicada en mapa');
-          out[key] = this.value();
+          out[key] = this.value(depth + 1);
         }
         return out;
       }
@@ -102,7 +110,7 @@ class Reader {
       case MAJOR_TAG:
         // Se descarta la etiqueta y se decodifica el contenido.
         this.argument(info);
-        return this.value();
+        return this.value(depth + 1);
 
       case MAJOR_SIMPLE:
         if (info === 20) return false;

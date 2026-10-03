@@ -1,13 +1,17 @@
+import { isIP } from 'node:net';
+import { createHash, timingSafeEqual } from 'node:crypto';
 import { supabase } from './supabase.mjs';
 
 // ---------------------------------------------------------------------
 // Rate limit por IP+endpoint usando la función SQL bump_rate_limit
 // ---------------------------------------------------------------------
 export async function checkRateLimit(ip, endpoint, { maxPerWindow = 5, windowMinutes = 10 } = {}) {
-  // Sin IP: permitir pero loguear (no bloquear al usuario)
-  if (!ip) {
-    console.warn('rate_limit: no IP detected, skipping');
-    return { ok: true, reason: 'no_ip' };
+  // Fail-closed: sin una IP válida o con la BD caída no se deja pasar. Antes
+  // ambos casos dejaban pasar, y una cabecera con una "IP" inválida rompía el
+  // cast a inet de bump_rate_limit y desactivaba el límite.
+  if (!ip || !isIP(ip)) {
+    console.warn('rate_limit: IP ausente o inválida');
+    return { ok: false, reason: 'sin_ip' };
   }
 
   try {
@@ -18,9 +22,8 @@ export async function checkRateLimit(ip, endpoint, { maxPerWindow = 5, windowMin
     });
 
     if (error) {
-      // Fail-open: si la BD falla, loguear pero no bloquear
       console.error('rate_limit_error', JSON.stringify(error));
-      return { ok: true, reason: 'rate_limit_db_error' };
+      return { ok: false, reason: 'rate_limit_db_error' };
     }
 
     if (data > maxPerWindow) {
@@ -30,7 +33,7 @@ export async function checkRateLimit(ip, endpoint, { maxPerWindow = 5, windowMin
     return { ok: true, count: data };
   } catch (err) {
     console.error('rate_limit_exception', err.message);
-    return { ok: true, reason: 'rate_limit_exception' };
+    return { ok: false, reason: 'rate_limit_exception' };
   }
 }
 
@@ -56,10 +59,9 @@ export async function checkSubjectRateLimit(subject, endpoint, { maxPerWindow = 
     });
 
     if (error) {
-      // Fail-open igual que el límite por IP: una caída de la BD no debe
-      // impedir reservar. El techo por IP sigue en pie por debajo.
+      // Fail-closed, igual que el límite por IP.
       console.error('rate_limit_subject_error', JSON.stringify(error));
-      return { ok: true, reason: 'rate_limit_db_error' };
+      return { ok: false, reason: 'rate_limit_db_error' };
     }
 
     if (data > maxPerWindow) {
@@ -69,7 +71,7 @@ export async function checkSubjectRateLimit(subject, endpoint, { maxPerWindow = 
     return { ok: true, count: data };
   } catch (err) {
     console.error('rate_limit_subject_exception', err.message);
-    return { ok: true, reason: 'rate_limit_exception' };
+    return { ok: false, reason: 'rate_limit_exception' };
   }
 }
 
@@ -98,6 +100,11 @@ export async function verifyTurnstile(token, ip) {
     if (!json.success) {
       return { ok: false, reason: 'turnstile_failed', codes: json['error-codes'] };
     }
+    // El token debe haberse resuelto en nuestro propio sitio, no en otro
+    // dominio que comparta la site key.
+    if (!hostnamePermitido(json.hostname)) {
+      return { ok: false, reason: 'turnstile_hostname', hostname: json.hostname };
+    }
     return { ok: true };
   } catch (err) {
     console.error('turnstile_fetch_error', err);
@@ -116,19 +123,38 @@ export async function audit({ actor, action, resourceId = null, metadata = null,
 }
 
 // ---------------------------------------------------------------------
-// Extracción segura de IP del cliente
-// Netlify pone la IP real en x-nf-client-connection-ip
+// IP del cliente
+//
+// Solo se leen cabeceras que Vercel fija y sobrescribe en su borde
+// (x-real-ip y el primer salto de x-forwarded-for). Antes se leía primero
+// x-nf-client-connection-ip, que es de Netlify: en Vercel la manda el
+// cliente y permitía elegir la IP con que se contaba el rate limit.
+// Devuelve null si el valor no es una IP válida.
 // ---------------------------------------------------------------------
-export function getClientIp(headers) {
-  const h = name => headers.get ? headers.get(name) : headers[name];
-  // Vercel usa x-forwarded-for, Netlify usa x-nf-client-connection-ip
-  const nf  = h('x-nf-client-connection-ip');
-  const xff = h('x-forwarded-for');
+export function getClientIp(req) {
+  const h = name => {
+    const v = req.headers?.get ? req.headers.get(name) : req.headers?.[name];
+    return Array.isArray(v) ? v[0] : v;
+  };
   const real = h('x-real-ip');
-  if (nf)   return nf.trim();
-  if (real) return real.trim();
-  if (xff)  return xff.split(',')[0].trim();
-  return null;
+  const xff  = h('x-forwarded-for');
+  const ip = real ? String(real).trim() : xff ? String(xff).split(',')[0].trim() : req.socket?.remoteAddress ?? null;
+  return ip && isIP(ip) ? ip : null;
+}
+
+// ---------------------------------------------------------------------
+// Comparación de secretos en tiempo constante (Bearer de cron/admin,
+// token del webhook). Un secreto ausente nunca coincide.
+// ---------------------------------------------------------------------
+export function secretoCoincide(recibido, esperado) {
+  if (!esperado || typeof recibido !== 'string') return false;
+  const a = createHash('sha256').update(recibido).digest();
+  const b = createHash('sha256').update(esperado).digest();
+  return timingSafeEqual(a, b);
+}
+
+export function bearerCoincide(authorization, secreto) {
+  return !!secreto && secretoCoincide(String(authorization ?? ''), `Bearer ${secreto}`);
 }
 
 // ---------------------------------------------------------------------
@@ -154,4 +180,10 @@ export function isOriginAllowed(origin) {
   if (ALLOWED_ORIGINS.has(origin)) return true;
   if (process.env.VERCEL_ENV === 'production') return false;
   return PREVIEW_ORIGIN.test(origin) || DEV_ORIGINS.has(origin);
+}
+
+function hostnamePermitido(hostname) {
+  if (!hostname) return false;
+  if (isOriginAllowed(`https://${hostname}`)) return true;
+  return process.env.VERCEL_ENV !== 'production' && hostname === 'localhost';
 }

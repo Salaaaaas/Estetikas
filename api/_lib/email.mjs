@@ -25,10 +25,17 @@ function formatHora(hora24) {
   return `${h12}:${String(m).padStart(2, '0')} ${period}`;
 }
 
+// Todo dato de la cita se escapa antes de entrar al HTML del correo.
+function esc(v) {
+  return String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 export async function sendReminderEmail({ to, nombre, fecha, hora, sede, servicios }) {
-  const fechaFormateada = formatFecha(fecha);
+  const fechaFormateada = esc(formatFecha(fecha));
   const horaFormateada  = formatHora(hora);
-  const serviciosStr    = Array.isArray(servicios) ? servicios.join(', ') : servicios;
+  const serviciosStr    = esc(Array.isArray(servicios) ? servicios.join(', ') : servicios);
+  nombre = esc(nombre);
+  sede   = esc(sede);
 
   const html = `
 <!DOCTYPE html>

@@ -38,7 +38,8 @@ function sameSignature(a, b) {
 /* ----------------------------------------------------------------- reto -- */
 
 /**
- * Reto de un solo uso para la atestación. Formato: `<random>.<exp>.<firma>`.
+ * Reto de un solo uso para la atestación (attest.mjs lo consume en la tabla
+ * mobile_challenges_used; aquí solo se firma y se verifica la caducidad). Formato: `<random>.<exp>.<firma>`.
  * El cliente lo devuelve tal cual junto con la atestación.
  */
 export function issueChallenge() {

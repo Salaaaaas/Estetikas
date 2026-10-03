@@ -30,3 +30,5 @@ pnpm-debug.log*
 !/scripts/test-mobile-auth.mjs
 !/scripts/test-profesionales.mjs
 !/scripts/backfill-telefono-hash.mjs
+!/scripts/build-catalogo.mjs
+!/scripts/test-seguridad.mjs

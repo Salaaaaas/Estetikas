@@ -1,25 +1,16 @@
 import { supabase } from './_lib/supabase.mjs';
 import { encryptPII, hashPhone } from './_lib/crypto.mjs';
 import { validateBookingInput, safeUserAgent } from './_lib/validate.mjs';
-import { checkRateLimit, checkSubjectRateLimit, verifyTurnstile, audit, isOriginAllowed } from './_lib/security.mjs';
+import { checkRateLimit, checkSubjectRateLimit, verifyTurnstile, audit, isOriginAllowed, getClientIp } from './_lib/security.mjs';
 import { requireMobileSession } from './_lib/mobile-auth.mjs';
-import { createCalendarEvent, getScheduleFromCalendar } from './_lib/calendar.mjs';
-import { conflictoDeSede, mensajeConflicto } from './_lib/profesionales.mjs';
+import { createCalendarEvent, getScheduleFromCalendar, getBookedDetailedFromCalendar } from './_lib/calendar.mjs';
+import { horasOfrecidas } from './_lib/horarios.mjs';
+import { conflictoDeSede, mensajeConflicto, ciudadDeSede } from './_lib/profesionales.mjs';
 
 const LIMPIEZA_SLUG = 'limpieza-facial';
 
 function getHeader(req, name) {
   return req.headers[name.toLowerCase()] ?? null;
-}
-
-function getClientIp(req) {
-  const nf  = getHeader(req, 'x-nf-client-connection-ip');
-  const real = getHeader(req, 'x-real-ip');
-  const xff = getHeader(req, 'x-forwarded-for');
-  if (nf)    return String(nf).trim();
-  if (real)  return String(real).trim();
-  if (xff)   return String(xff).split(',')[0].trim();
-  return req.socket?.remoteAddress ?? null;
 }
 
 function send(res, status, body) {
@@ -28,10 +19,20 @@ function send(res, status, body) {
   res.status(status).json(body);
 }
 
+const MAX_BODY = 8_000;
+
+// Lee el cuerpo cortando apenas pasa el límite (antes se leía completo y
+// recién después se medía).
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let data = '';
-    req.on('data', chunk => { data += chunk; });
+    req.on('data', chunk => {
+      data += chunk;
+      if (data.length > MAX_BODY) {
+        req.destroy();
+        reject(Object.assign(new Error('payload_demasiado_grande'), { tooLarge: true }));
+      }
+    });
     req.on('end', () => resolve(data));
     req.on('error', reject);
   });
@@ -105,15 +106,30 @@ export default async function handler(req, res) {
 
   let payload;
   try {
-    const text = await readBody(req);
-    if (text.length > 8_000) return send(res, 413, { error: 'payload_demasiado_grande' });
-    payload = JSON.parse(text);
-  } catch {
+    payload = JSON.parse(await readBody(req));
+  } catch (err) {
+    if (err?.tooLarge) return send(res, 413, { error: 'payload_demasiado_grande' });
     return send(res, 400, { error: 'json_invalido' });
   }
 
   const v = validateBookingInput(payload, { requireTurnstile: !isMobile });
   if (!v.ok) return send(res, 400, { error: 'validacion_fallida', detalles: v.errors });
+
+  // La app ya demostró su legitimidad al atestar el dispositivo; Turnstile
+  // solo aplica a la ruta web.
+  // El atajo BYPASS_DEV solo existe fuera de producción, aunque alguien deje
+  // TURNSTILE_BYPASS=1 configurado por error.
+  const skipTurnstile =
+    isMobile || (v.data.turnstile_token === 'BYPASS_DEV' &&
+                 process.env.TURNSTILE_BYPASS === '1' &&
+                 process.env.VERCEL_ENV !== 'production');
+  if (!skipTurnstile) {
+    const ts = await verifyTurnstile(v.data.turnstile_token, ip);
+    if (!ts.ok) {
+      await audit({ actor: 'public', action: 'turnstile_failed', metadata: { reason: ts.reason }, ip });
+      return send(res, 403, { error: 'verificacion_humana_fallida' });
+    }
+  }
 
   // ------------------------------------------------------------------
   // Reglas de sede. El modelo anterior anclaba TODO el día a una sola
@@ -122,6 +138,38 @@ export default async function handler(req, res) {
   // ------------------------------------------------------------------
   const slugs       = v.data.servicios.map(s => s.slug);
   const otros       = slugs.filter(s => s !== LIMPIEZA_SLUG);
+
+  // ------------------------------------------------------------------
+  // La hora debe ser un turno que el formulario realmente ofrece ese día
+  // en esa sede (horarios fijos + bloques del Calendar) y no estar ocupada
+  // por una cita creada a mano en el Calendar. Antes solo el navegador lo
+  // verificaba y la API aceptaba cualquier "HH:MM".
+  // Fail-closed: sin calendario no se puede confirmar el turno.
+  // ------------------------------------------------------------------
+  const diaMin = `${v.data.fecha}T00:00:00-06:00`;
+  const diaMax = `${v.data.fecha}T23:59:59-06:00`;
+  let sesionesCal, ocupadasCal;
+  try {
+    [sesionesCal, ocupadasCal] = await Promise.all([
+      getScheduleFromCalendar(diaMin, diaMax),
+      getBookedDetailedFromCalendar(diaMin, diaMax),
+    ]);
+  } catch (err) {
+    console.error('schedule_check_error', err?.message);
+    return send(res, 503, {
+      error: 'calendario_no_disponible',
+      mensaje: 'No pudimos confirmar la disponibilidad en este momento. Intenta de nuevo en unos minutos.'
+    });
+  }
+  if (!horasOfrecidas(v.data.fecha, v.data.sede, slugs, sesionesCal).has(v.data.hora)) {
+    return send(res, 400, { error: 'hora_no_ofrecida', mensaje: 'Esa hora no está disponible para la fecha y sede elegidas.' });
+  }
+  const ciudad = ciudadDeSede(v.data.sede);
+  const ocupadaEnCal = (ocupadasCal[v.data.fecha] ?? []).some(e =>
+    e.hora === v.data.hora && (e.sede === null || ciudadDeSede(e.sede) === ciudad));
+  if (ocupadaEnCal) {
+    return send(res, 409, { error: 'slot_no_disponible', mensaje: 'Ese horario ya está ocupado. Por favor elige otra hora.' });
+  }
 
   // Regla 1: cada profesional atiende en una sola ciudad por día; dentro de
   // Guápiles la Dra. Karen puede cambiar de local con 2 horas de margen
@@ -149,38 +197,16 @@ export default async function handler(req, res) {
   // creando en Google Calendar un bloque con location "Bataan" (get-schedule
   // ya los publica al frontend); aquí se revalida server-side.
   if (otros.length > 0 && v.data.sede.includes('Bataan')) {
-    let draEnBatan = false;
-    try {
-      const schedule = await getScheduleFromCalendar(
-        `${v.data.fecha}T00:00:00-06:00`,
-        `${v.data.fecha}T23:59:59-06:00`
-      );
-      draEnBatan = schedule.some(s =>
-        s.date === v.data.fecha &&
-        s.sede.includes('Bataan') &&
-        (s.forIds.includes('*') || otros.every(id => s.forIds.includes(id)))
-      );
-    } catch (err) {
-      // Fail-closed: sin calendario no podemos confirmar el día especial.
-      console.error('schedule_check_error', err?.message);
-    }
+    const draEnBatan = sesionesCal.some(s =>
+      s.date === v.data.fecha &&
+      s.sede.includes('Bataan') &&
+      (s.forIds.includes('*') || otros.every(id => s.forIds.includes(id)))
+    );
     if (!draEnBatan) {
       return send(res, 400, {
         error:   'sede_no_disponible',
         mensaje: 'En Bataan únicamente se realizan limpiezas faciales. Los demás tratamientos se atienden en Guápiles, o en Bataan solo en fechas especiales con la Dra.'
       });
-    }
-  }
-
-  // La app ya demostró su legitimidad al atestar el dispositivo; Turnstile
-  // solo aplica a la ruta web.
-  const skipTurnstile =
-    isMobile || (v.data.turnstile_token === 'BYPASS_DEV' && process.env.TURNSTILE_BYPASS === '1');
-  if (!skipTurnstile) {
-    const ts = await verifyTurnstile(v.data.turnstile_token, ip);
-    if (!ts.ok) {
-      await audit({ actor: 'public', action: 'turnstile_failed', metadata: { reason: ts.reason }, ip });
-      return send(res, 403, { error: 'verificacion_humana_fallida' });
     }
   }
 

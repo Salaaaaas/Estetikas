@@ -95,6 +95,22 @@ export async function createCalendarEvent(cita) {
   return data.id;
 }
 
+/**
+ * Un evento se publica como bloque de disponibilidad (y su título sale en
+ * /api/get-schedule para cualquiera) solo si:
+ *  - tiene sede en la ubicación (la convención de siempre),
+ *  - lo creó la propia clínica: una invitación de otra persona trae
+ *    organizer.self = false y ya no se publica,
+ *  - no está cancelado ni es una cita de paciente ("Cita — <nombre>"), por si
+ *    alguien le puso sede en la ubicación a una cita hecha a mano.
+ */
+function esBloqueDeDisponibilidad(event) {
+  if (event.status === 'cancelled') return false;
+  if (event.organizer && event.organizer.self !== true) return false;
+  if (/^\s*cita\b/i.test(event.summary ?? '')) return false;
+  return true;
+}
+
 export async function getScheduleFromCalendar(timeMin, timeMax) {
   const accessToken = await getAccessToken();
   const calendarId  = encodeURIComponent(process.env.GOOGLE_CALENDAR_ID);
@@ -116,6 +132,7 @@ export async function getScheduleFromCalendar(timeMin, timeMax) {
 
   const schedule = [];
   for (const event of data.items ?? []) {
+    if (!esBloqueDeDisponibilidad(event)) continue;
     const sede = sedeFromLocation(event.location);
     if (!sede) continue;
 

@@ -12,6 +12,8 @@
 // siempre.
 
 import { getAccessToken } from './_lib/calendar.mjs';
+import { aplicarRetencion } from './_lib/retencion.mjs';
+import { bearerCoincide } from './_lib/security.mjs';
 import { syncCancellations } from './_lib/calendar-sync.mjs';
 import { supabase } from './_lib/supabase.mjs';
 
@@ -46,15 +48,13 @@ export default async function handler(req, res) {
     return send(res, 405, { error: 'method_not_allowed' });
   }
 
-  // Se acepta CRON_SECRET (el cron) o CALENDAR_WEBHOOK_TOKEN (a mano). Ambos
-  // tienen que estar configurados para valer: sin secreto no hay comparación
-  // que hacer y el endpoint quedaría abierto.
-  const authHeader = req.headers['authorization'];
-  const aceptados = [process.env.CRON_SECRET, process.env.CALENDAR_WEBHOOK_TOKEN]
-    .filter(Boolean)
-    .map((s) => `Bearer ${s}`);
-  if (aceptados.length === 0) return send(res, 500, { error: 'secretos_no_configurados' });
-  if (!aceptados.includes(authHeader)) return send(res, 401, { error: 'unauthorized' });
+  // Solo CRON_SECRET. Antes también valía CALENDAR_WEBHOOK_TOKEN, pero Google
+  // reenvía ese token en cada notificación, así que no es exclusivo del
+  // operador.
+  if (!process.env.CRON_SECRET) return send(res, 500, { error: 'cron_secret_no_configurado' });
+  if (!bearerCoincide(req.headers['authorization'], process.env.CRON_SECRET)) {
+    return send(res, 401, { error: 'unauthorized' });
+  }
 
   const webhookToken = process.env.CALENDAR_WEBHOOK_TOKEN;
   if (!webhookToken) {
@@ -86,6 +86,15 @@ export default async function handler(req, res) {
     repaso = await syncCancellations(VENTANA_REPASO_MIN, 'cron');
   } catch (err) {
     console.error('register_watch_sync_error', err?.message);
+  }
+
+  // 1b. Retención de datos (citas de hace más de 2 años, sus eventos en
+  //     Calendar, bitácora vieja y tablas de rate limit). Best-effort.
+  let retencion = null;
+  try {
+    retencion = await aplicarRetencion();
+  } catch (err) {
+    console.error('register_watch_retencion_error', err?.message);
   }
 
   // 2. Cerrar el canal vigente, si lo hay.
@@ -121,7 +130,7 @@ export default async function handler(req, res) {
     // verificado en Google Cloud. Se propaga tal cual: es lo único que
     // permite distinguirlo desde los logs.
     console.error('register_watch_error', err?.message);
-    return send(res, 500, { error: 'no_se_pudo_registrar_el_canal', detail: err?.message, repaso });
+    return send(res, 500, { error: 'no_se_pudo_registrar_el_canal', repaso, retencion });
   }
 
   const expiration = data.expiration ? new Date(Number(data.expiration)).toISOString() : null;
@@ -140,5 +149,5 @@ export default async function handler(req, res) {
   if (upErr) console.error('calendar_watch_upsert_error', upErr.message);
 
   console.log('calendar_watch_registered', { channelId, expiration, webhookUrl });
-  return send(res, 200, { ok: true, channelId, expiration, webhookUrl, repaso });
+  return send(res, 200, { ok: true, channelId, expiration, webhookUrl, repaso, retencion });
 }

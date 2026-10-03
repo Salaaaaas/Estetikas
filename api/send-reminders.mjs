@@ -1,4 +1,5 @@
 import { supabase } from './_lib/supabase.mjs';
+import { bearerCoincide } from './_lib/security.mjs';
 import { decryptPII } from './_lib/crypto.mjs';
 import { sendReminderEmail } from './_lib/email.mjs';
 
@@ -18,14 +19,21 @@ function getTomorrowStr() {
 }
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
+  // GET es lo que manda Vercel Cron (antes solo se aceptaba POST y el cron
+  // diario recibía 405: los recordatorios no salían). POST queda para
+  // dispararlo a mano.
+  if (req.method !== 'GET' && req.method !== 'POST') {
     res.status(405).json({ error: 'method_not_allowed' });
     return;
   }
 
-  // Protección simple: solo Vercel Cron puede llamar esto
-  const authHeader = req.headers['authorization'];
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  // Solo con CRON_SECRET configurado y en tiempo constante: sin la variable,
+  // antes 'Bearer undefined' era una credencial válida.
+  if (!process.env.CRON_SECRET) {
+    res.status(500).json({ error: 'cron_secret_no_configurado' });
+    return;
+  }
+  if (!bearerCoincide(req.headers['authorization'], process.env.CRON_SECRET)) {
     res.status(401).json({ error: 'unauthorized' });
     return;
   }

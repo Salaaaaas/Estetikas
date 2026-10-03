@@ -33,11 +33,14 @@ function readTlv(buf, pos) {
     if (n > 4) throw new Error('der: longitud demasiado grande');
     if (p + n > buf.length) throw new Error('der: datos truncados');
     len = 0;
-    for (let i = 0; i < n; i++) len = (len << 8) | buf[p++];
+    // Aritmética normal y no `<<`: con 4 bytes el desplazamiento desbordaba a
+    // un entero negativo y children() podía quedar en un bucle infinito.
+    for (let i = 0; i < n; i++) len = len * 256 + buf[p++];
   }
 
   const end = p + len;
   if (end > buf.length) throw new Error('der: datos truncados');
+  if (end <= pos) throw new Error('der: longitud inválida');
 
   return { tag, constructed: (tag & 0x20) !== 0, content: buf.subarray(p, end), end };
 }

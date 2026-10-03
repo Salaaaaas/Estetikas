@@ -128,31 +128,18 @@ INSERT INTO instagram_queue (
 -- Habilitar RLS
 ALTER TABLE instagram_queue ENABLE ROW LEVEL SECURITY;
 
--- Política: Solo admin puede insertar
-CREATE POLICY "Only admins can insert instagram_queue"
-  ON instagram_queue
-  FOR INSERT
-  WITH CHECK (auth.role() = 'authenticated');
-
--- Política: Solo admin puede ver todos
-CREATE POLICY "Only admins can view instagram_queue"
-  ON instagram_queue
-  FOR SELECT
-  USING (auth.role() = 'authenticated');
-
--- Política: Solo admin puede actualizar
-CREATE POLICY "Only admins can update instagram_queue"
-  ON instagram_queue
-  FOR UPDATE
-  USING (auth.role() = 'authenticated')
-  WITH CHECK (auth.role() = 'authenticated');
+-- Sin policies para anon/authenticated: la cola guarda datos de clientas y
+-- solo la opera el backend con service_role (que ignora RLS). Las policies
+-- anteriores, "Only admins ...", en realidad dejaban pasar a cualquier usuario
+-- autenticado.
+REVOKE ALL ON instagram_queue FROM anon, authenticated;
 
 -- ============================================================================
 -- VISTAS ÚTILES
 -- ============================================================================
 
 -- Vista: Posts pendientes hoy
-CREATE OR REPLACE VIEW vw_instagram_hoy_pendientes AS
+CREATE OR REPLACE VIEW vw_instagram_hoy_pendientes WITH (security_invoker = true) AS
   SELECT *
   FROM instagram_queue
   WHERE estado = 'pendiente'
@@ -160,7 +147,7 @@ CREATE OR REPLACE VIEW vw_instagram_hoy_pendientes AS
   ORDER BY created_at ASC;
 
 -- Vista: Historial de publicados
-CREATE OR REPLACE VIEW vw_instagram_publicados AS
+CREATE OR REPLACE VIEW vw_instagram_publicados WITH (security_invoker = true) AS
   SELECT
     id,
     type,
@@ -174,7 +161,7 @@ CREATE OR REPLACE VIEW vw_instagram_publicados AS
   LIMIT 30;
 
 -- Vista: Errores recientes
-CREATE OR REPLACE VIEW vw_instagram_errores AS
+CREATE OR REPLACE VIEW vw_instagram_errores WITH (security_invoker = true) AS
   SELECT
     id,
     type,
@@ -184,3 +171,7 @@ CREATE OR REPLACE VIEW vw_instagram_errores AS
   WHERE estado = 'error'
   ORDER BY updated_at DESC
   LIMIT 10;
+
+-- Las vistas respetan el RLS de quien consulta (security_invoker) y no se
+-- exponen a la API pública.
+REVOKE ALL ON vw_instagram_hoy_pendientes, vw_instagram_publicados, vw_instagram_errores FROM anon, authenticated;

@@ -157,6 +157,6 @@ revoke all on public.citas       from anon, authenticated;
 revoke all on public.audit_log   from anon, authenticated;
 revoke all on public.rate_limits from anon, authenticated;
 
-revoke execute on function public.bump_rate_limit(inet, text, int) from anon, authenticated;
-revoke execute on function public.cleanup_rate_limits()            from anon, authenticated;
-revoke execute on function public.purge_old_citas()                from anon, authenticated;
+revoke execute on function public.bump_rate_limit(inet, text, int) from public, anon, authenticated;
+revoke execute on function public.cleanup_rate_limits()            from public, anon, authenticated;
+revoke execute on function public.purge_old_citas()                from public, anon, authenticated;

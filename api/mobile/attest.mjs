@@ -12,7 +12,8 @@
 import { supabase } from '../_lib/supabase.mjs';
 import { verifyAppAttest, verifyPlayIntegrity } from '../_lib/attest.mjs';
 import { issueChallenge, issueSession, verifyChallenge } from '../_lib/mobile-auth.mjs';
-import { checkRateLimit, audit } from '../_lib/security.mjs';
+import { createHash } from 'node:crypto';
+import { checkRateLimit, audit, getClientIp } from '../_lib/security.mjs';
 import { safeUserAgent } from '../_lib/validate.mjs';
 
 const RE_DEVICE_ID = /^[A-Za-z0-9_.:+/=-]{16,200}$/;
@@ -28,20 +29,15 @@ function getHeader(req, name) {
   return req.headers[name.toLowerCase()] ?? null;
 }
 
-function getClientIp(req) {
-  const real = getHeader(req, 'x-real-ip');
-  const xff = getHeader(req, 'x-forwarded-for');
-  if (real) return String(real).trim();
-  if (xff) return String(xff).split(',')[0].trim();
-  return req.socket?.remoteAddress ?? null;
-}
-
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let data = '';
     req.on('data', (chunk) => {
       data += chunk;
-      if (data.length > MAX_BODY) reject(new Error('payload_demasiado_grande'));
+      if (data.length > MAX_BODY) {
+        req.destroy();
+        reject(new Error('payload_demasiado_grande'));
+      }
     });
     req.on('end', () => resolve(data));
     req.on('error', reject);
@@ -85,6 +81,15 @@ export default async function handler(req, res) {
 
   const challenge = verifyChallenge(payload?.challenge);
   if (!challenge.ok) return send(res, 400, { error: challenge.reason });
+
+  // El reto es de un solo uso de verdad: se consume antes de llamar a Apple o
+  // Google. Antes solo se verificaban la firma y la caducidad, y el mismo reto
+  // (con el mismo token de Play Integrity) servía varias veces en 5 minutos.
+  const consumo = await consumirReto(payload.challenge);
+  if (!consumo.ok) {
+    if (consumo.reason === 'reto_ya_usado') return send(res, 400, { error: 'reto_ya_usado' });
+    return send(res, 500, { error: 'error_interno' });
+  }
 
   let deviceId;
   let keyId = null;
@@ -136,13 +141,36 @@ export default async function handler(req, res) {
 
     // Play Integrity certifica "app genuina en dispositivo íntegro", pero no
     // devuelve un identificador estable de aparato. El deviceId lo genera el
-    // cliente y sirve para el rate limit: rotarlo exige un token de integridad
-    // nuevo por cada intento, y esos los emite Google desde un dispositivo real.
+    // cliente y sirve para el rate limit: como cada reto se consume una sola
+    // vez, rotarlo exige un token de integridad nuevo por cada intento, y un id
+    // que ya existe (o está revocado) se rechaza más abajo.
     deviceId = payload.deviceId;
   }
 
   const appVersion =
     typeof payload.appVersion === 'string' ? payload.appVersion.slice(0, 40) : null;
+
+  // Una nueva atestación nunca deshace una revocación ni pisa la fila de otro
+  // dispositivo: si el id ya existe, debe ser el mismo aparato (misma
+  // plataforma y misma clave) y no estar revocado.
+  const { data: existente, error: lookupErr } = await supabase
+    .from('mobile_devices')
+    .select('platform, key_id, revoked_at')
+    .eq('device_id', deviceId)
+    .maybeSingle();
+  if (lookupErr) {
+    console.error('mobile_device_lookup_error', JSON.stringify(lookupErr));
+    return send(res, 500, { error: 'error_interno' });
+  }
+  if (existente && (existente.revoked_at || existente.platform !== platform || (existente.key_id ?? null) !== keyId)) {
+    await audit({
+      actor: 'mobile',
+      action: 'attest_conflict',
+      metadata: { platform, revocado: !!existente.revoked_at, otra_plataforma: existente.platform !== platform },
+      ip,
+    });
+    return send(res, 403, { error: 'atestacion_rechazada' });
+  }
 
   const { error } = await supabase.from('mobile_devices').upsert(
     {
@@ -152,7 +180,6 @@ export default async function handler(req, res) {
       public_key: publicKey,
       app_version: appVersion,
       last_seen_at: new Date().toISOString(),
-      revoked_at: null,
     },
     { onConflict: 'device_id' }
   );
@@ -174,4 +201,17 @@ export default async function handler(req, res) {
     session: issueSession({ deviceId, platform }),
     deviceId,
   });
+}
+
+/** Marca el reto como usado; un segundo intento choca con la clave primaria. */
+async function consumirReto(reto) {
+  const nonceHash = createHash('sha256').update(reto).digest('hex');
+  const { error } = await supabase.from('mobile_challenges_used').insert({
+    nonce_hash: nonceHash,
+    expires_at: new Date(Date.now() + 10 * 60_000).toISOString(),
+  });
+  if (!error) return { ok: true };
+  if (error.code === '23505') return { ok: false, reason: 'reto_ya_usado' };
+  console.error('challenge_consume_error', JSON.stringify(error));
+  return { ok: false, reason: 'error_interno' };
 }

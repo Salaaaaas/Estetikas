@@ -20,7 +20,7 @@
 import { supabase } from '../_lib/supabase.mjs';
 import { decryptPII, hashPhone } from '../_lib/crypto.mjs';
 import { normalizePhoneE164 } from '../_lib/validate.mjs';
-import { audit } from '../_lib/security.mjs';
+import { audit, bearerCoincide } from '../_lib/security.mjs';
 
 // Tope por invocación para no acercarse al límite de tiempo de la función.
 // Si quedan filas, la respuesta lo dice y basta con volver a llamar.
@@ -37,7 +37,7 @@ export default async function handler(req, res) {
 
   const secret = process.env.CRON_SECRET;
   if (!secret) return send(res, 500, { error: 'cron_secret_no_configurado' });
-  if (req.headers['authorization'] !== `Bearer ${secret}`) {
+  if (!bearerCoincide(req.headers['authorization'], secret)) {
     return send(res, 401, { error: 'unauthorized' });
   }
 

@@ -6,6 +6,7 @@
 // diario, que cubre las notificaciones que se pierdan.
 
 import { syncCancellations } from './_lib/calendar-sync.mjs';
+import { secretoCoincide } from './_lib/security.mjs';
 
 const VENTANA_MIN = 120;
 
@@ -28,7 +29,7 @@ export default async function handler(req, res) {
     console.error('calendar_webhook_sin_token_configurado');
     return send(res, 500, { error: 'webhook_no_configurado' });
   }
-  if (req.headers['x-goog-channel-token'] !== expectedToken) {
+  if (!secretoCoincide(req.headers['x-goog-channel-token'], expectedToken)) {
     return send(res, 403, { error: 'invalid_token' });
   }
 
