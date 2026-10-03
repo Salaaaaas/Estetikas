@@ -1,8 +1,9 @@
 ---
 title: "Limpieza Facial Profunda"
 description: "Revitaliza tu piel y recupera tu brillo natural"
-heroImage: "limpieza_facial.webp"
-heroAlt: "Limpieza Facial Profunda"
+heroImage: "facial.webp"
+heroAlt: "Paciente recibiendo una limpieza facial con vapor"
+heroPosition: "center 30%"
 subtitle: "Revitaliza tu piel y recupera tu brillo natural"
 about: "La limpieza facial profunda es un procedimiento indispensable para mantener un cutis sano. Nuestro tratamiento incluye evaluación, exfoliación, extracción de impurezas y la aplicación de mascarillas específicas según el tipo y necesidad de tu piel."
 benefits:
@@ -12,8 +13,9 @@ benefits:
 category: "Facial & Regeneración"
 cardTitle: "Limpiezas Faciales Profundas"
 cardDescription: "Higiene y oxigenación celular personalizada."
-cardImage: "limpieza_facial.webp"
-cardImageAlt: "Limpieza Facial Profunda"
+cardImage: "facial.webp"
+cardImageAlt: "Paciente recibiendo una limpieza facial con vapor"
+cardPosition: "center 55%"
 cartName: "Limpieza Facial Profunda"
 cardLoading: "lazy"
 ---
