@@ -18,6 +18,7 @@
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@vercel/analytics": "^2.0.1",
     "astro": "^6.3.8",
     "googleapis": "^173.0.0",
     "gsap": "^3.15.0",

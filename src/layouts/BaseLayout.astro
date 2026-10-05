@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Analytics from '@vercel/analytics/astro';
 import FloatingActions from '../components/FloatingActions';
 import '../styles/global.css';
 
@@ -78,7 +79,7 @@ const canonical = new URL(canonicalPath, Astro.site);
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;1,6..96,400;1,6..96,700&family=Jost:wght@300;400;500;600&display=swap"></noscript>
 
   {isHome && <link rel="preload" as="image" href="/img/hero-facial.webp" fetchpriority="high" />}
-
+  <Analytics />
 </head>
 <body class={bodyClass}>
   <Header isHome={isHome} />
