@@ -1,30 +1,4 @@
-function toTime12(isoDatetime) {
-  const match = isoDatetime?.match(/T(\d{2}):(\d{2})/);
-  if (!match) return null;
-  let h = parseInt(match[1]);
-  const m = match[2];
-  const period = h >= 12 ? 'PM' : 'AM';
-  if (h > 12) h -= 12;
-  else if (h === 0) h = 12;
-  return `${h}:${m} ${period}`;
-}
-
-function sedeFromLocation(location) {
-  if (!location) return null;
-  const l = location.toLowerCase();
-  if (l.includes('bataan'))                              return 'Bataan (Clínica ODONTOBATAAN)';
-  if (l.includes('eco clinic') || l.includes('eco-clinic')) return 'Guápiles (Eco Clinic)';
-  if (l.includes('guápiles') || l.includes('guapiles')) return 'Guápiles (Clínica Medical Numancia)';
-  return null;
-}
-
-function forIdsFromTitle(title) {
-  if (!title) return ['*'];
-  const t = title.toLowerCase();
-  if (t.includes('masaje'))   return ['masajes', 'limpieza-facial'];
-  if (t.includes('limpieza')) return ['limpieza-facial'];
-  return ['*'];
-}
+import { clasificarEventos } from './agenda.mjs';
 
 export async function getAccessToken() {
   const res = await fetch('https://oauth2.googleapis.com/token', {
@@ -96,160 +70,45 @@ export async function createCalendarEvent(cita) {
 }
 
 /**
- * Un evento se publica como bloque de disponibilidad (y su título sale en
- * /api/get-schedule para cualquiera) solo si:
- *  - tiene sede en la ubicación (la convención de siempre),
- *  - lo creó la propia clínica: una invitación de otra persona trae
- *    organizer.self = false y ya no se publica,
- *  - no está cancelado ni es una cita de paciente ("Cita — <nombre>"), por si
- *    alguien le puso sede en la ubicación a una cita hecha a mano.
+ * Todos los eventos que se cruzan con [timeMin, timeMax), con paginación
+ * (antes se leía una sola página y un mes cargado podía perder eventos).
  */
-function esBloqueDeDisponibilidad(event) {
-  if (event.status === 'cancelled') return false;
-  if (event.organizer && event.organizer.self !== true) return false;
-  if (/^\s*cita\b/i.test(event.summary ?? '')) return false;
-  return true;
+async function listEvents(params) {
+  const accessToken = await getAccessToken();
+  const calendarId  = encodeURIComponent(process.env.GOOGLE_CALENDAR_ID);
+  const items = [];
+  let pageToken;
+  do {
+    const qs = new URLSearchParams({ ...params, maxResults: '250' });
+    if (pageToken) qs.set('pageToken', pageToken);
+    const res  = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?${qs}`,
+      { headers: { authorization: `Bearer ${accessToken}` } }
+    );
+    const data = await res.json();
+    if (!res.ok) throw new Error('google_calendar_error: ' + JSON.stringify(data));
+    items.push(...(data.items ?? []));
+    pageToken = data.nextPageToken;
+  } while (pageToken);
+  return items;
 }
 
+/**
+ * Bloques de disponibilidad e intervalos ocupados del calendario entre
+ * timeMin y timeMax (ISO con zona). Reglas en _lib/agenda.mjs.
+ */
+export async function getAgendaFromCalendar(timeMin, timeMax) {
+  const events = await listEvents({ timeMin, timeMax, singleEvents: 'true', orderBy: 'startTime' });
+  return clasificarEventos(events);
+}
+
+/** Solo los bloques de disponibilidad (lo que publica /api/get-schedule). */
 export async function getScheduleFromCalendar(timeMin, timeMax) {
-  const accessToken = await getAccessToken();
-  const calendarId  = encodeURIComponent(process.env.GOOGLE_CALENDAR_ID);
-
-  const params = new URLSearchParams({
-    timeMin,
-    timeMax,
-    singleEvents: 'true',
-    orderBy:      'startTime',
-    maxResults:   '250',
-  });
-
-  const res  = await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?${params}`,
-    { headers: { authorization: `Bearer ${accessToken}` } }
-  );
-  const data = await res.json();
-  if (!res.ok) throw new Error('google_calendar_error: ' + JSON.stringify(data));
-
-  const schedule = [];
-  for (const event of data.items ?? []) {
-    if (!esBloqueDeDisponibilidad(event)) continue;
-    const sede = sedeFromLocation(event.location);
-    if (!sede) continue;
-
-    const dateStr = event.start?.date ?? event.start?.dateTime?.split('T')[0];
-    if (!dateStr) continue;
-
-    const start12 = toTime12(event.start?.dateTime);
-    const end12   = toTime12(event.end?.dateTime);
-    if (!start12 || !end12) continue; // skip all-day events
-
-    schedule.push({
-      id:     `cal-${event.id}`,
-      type:   'date',
-      date:   dateStr,
-      hours:  `${start12} – ${end12}`,
-      label:  event.summary ?? 'Disponible',
-      forIds: forIdsFromTitle(event.summary),
-      sede,
-    });
-  }
-
-  return schedule;
+  return (await getAgendaFromCalendar(timeMin, timeMax)).bloques;
 }
 
-/**
- * Sede de una cita creada por el sitio, leída de la línea "📍 Sede: ..." que
- * escribe createCalendarEvent en la descripción.
- *
- * No se usa `location` a propósito: un evento con sede en location es, por
- * convención de este calendario, un bloque de disponibilidad, no una cita.
- * Devuelve null para eventos creados a mano en Google Calendar, que no llevan
- * la línea; esos bloquean la hora en TODAS las sedes, que es lo prudente.
- */
-function sedeFromDescription(description) {
-  const match = /📍\s*Sede:\s*(.+)/.exec(description ?? '');
-  return match ? sedeFromLocation(match[1]) : null;
-}
-
-/**
- * Igual que getBookedFromCalendar pero conservando la sede de cada cita.
- * Returns { "YYYY-MM-DD": [{ hora: "HH:MM", sede: string|null }, ...] }
- */
-export async function getBookedDetailedFromCalendar(timeMin, timeMax) {
-  const accessToken = await getAccessToken();
-  const calendarId  = encodeURIComponent(process.env.GOOGLE_CALENDAR_ID);
-
-  const params = new URLSearchParams({
-    timeMin,
-    timeMax,
-    singleEvents: 'true',
-    orderBy:      'startTime',
-    maxResults:   '500',
-  });
-
-  const res  = await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?${params}`,
-    { headers: { authorization: `Bearer ${accessToken}` } }
-  );
-  const data = await res.json();
-  if (!res.ok) throw new Error('google_calendar_error: ' + JSON.stringify(data));
-
-  const grouped = {};
-  for (const event of data.items ?? []) {
-    if (event.status === 'cancelled') continue;
-    // Skip availability blocks (they have a sede in location)
-    if (sedeFromLocation(event.location)) continue;
-    // Skip all-day events (no dateTime)
-    const startDT = event.start?.dateTime;
-    if (!startDT) continue;
-
-    // Convert to Costa Rica time (UTC-6) to extract the local date and hour
-    const d = new Date(startDT);
-    const crOffset = -6 * 60;
-    const localMs  = d.getTime() + (crOffset - d.getTimezoneOffset()) * 60_000;
-    const local    = new Date(localMs);
-    const dateStr  = local.toISOString().slice(0, 10);
-    const hh       = String(local.getUTCHours()).padStart(2, '0');
-    const mm       = String(local.getUTCMinutes()).padStart(2, '0');
-
-    if (!grouped[dateStr]) grouped[dateStr] = [];
-    grouped[dateStr].push({ hora: `${hh}:${mm}`, sede: sedeFromDescription(event.description) });
-  }
-
-  return grouped;
-}
-
-/**
- * Horas ocupadas sin distinguir sede: la unión de todas. Es lo que consume el
- * sitio web, que no filtra por sede.
- * Returns { "YYYY-MM-DD": ["HH:MM", ...] }
- */
-export async function getBookedFromCalendar(timeMin, timeMax) {
-  const detailed = await getBookedDetailedFromCalendar(timeMin, timeMax);
-  const grouped = {};
-  for (const [date, entries] of Object.entries(detailed)) {
-    grouped[date] = [...new Set(entries.map(e => e.hora))];
-  }
-  return grouped;
-}
-
+/** Eventos creados, editados o borrados en los últimos `minutesBack` minutos. */
 export async function getRecentlyChangedEvents(minutesBack = 120) {
-  const accessToken = await getAccessToken();
-  const calendarId  = encodeURIComponent(process.env.GOOGLE_CALENDAR_ID);
-  const updatedMin  = new Date(Date.now() - minutesBack * 60 * 1000).toISOString();
-
-  const params = new URLSearchParams({
-    updatedMin,
-    showDeleted:  'true',
-    singleEvents: 'true',
-    maxResults:   '50',
-  });
-
-  const res  = await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?${params}`,
-    { headers: { authorization: `Bearer ${accessToken}` } }
-  );
-  const data = await res.json();
-  if (!res.ok) throw new Error('google_calendar_error: ' + JSON.stringify(data));
-  return data.items ?? [];
+  const updatedMin = new Date(Date.now() - minutesBack * 60 * 1000).toISOString();
+  return listEvents({ updatedMin, showDeleted: 'true', singleEvents: 'true' });
 }

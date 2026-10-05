@@ -10,7 +10,9 @@
 // mecanismo alternativo hardcodeado.
 // El evento debe crearlo la cuenta de la clínica (las invitaciones de otras
 // personas no se publican) y su título no puede empezar con "Cita": así se
-// distinguen los bloques de las citas de pacientes.
+// distinguen los bloques de las citas de pacientes. Cualquier otro evento del
+// calendario (personal, de día completo, una cita a mano) ocupa los turnos con
+// los que se cruza. Reglas completas en api/_lib/agenda.mjs.
 
 import { conflictoDeSede, mensajeConflicto, type CitaSede } from '../../../api/_lib/profesionales.mjs';
 
@@ -115,7 +117,7 @@ export function slotBloqueado(sede: string, hora: string, cartIds: string[], cit
   return conflictoDeSede({ sede, hora, slugs: cartIds }, citasDelDia) !== null;
 }
 
-/** Días de la lista disponible cuyos turnos ya están todos ocupados. */
+/** Días de la lista disponible en los que todos sus turnos están ocupados. */
 export function computeFullDays(
   availableSet: Set<string>,
   schedules: Session[],
@@ -123,9 +125,11 @@ export function computeFullDays(
 ): Set<string> {
   const full = new Set<string>();
   availableSet.forEach((dateStr) => {
-    const total = getSessionsForDate(dateStr, schedules).reduce((sum, s) => sum + generateSlots(s.hours).length, 0);
-    const booked = (bookedByDate[dateStr] ?? []).length;
-    if (total > 0 && booked >= total) full.add(dateStr);
+    // Se compara turno por turno: la lista de ocupados trae también horas de
+    // otros tratamientos y sedes, así que contar no basta.
+    const turnos = getSessionsForDate(dateStr, schedules).flatMap((s) => generateSlots(s.hours).map((x) => x.time24));
+    const booked = new Set(bookedByDate[dateStr] ?? []);
+    if (turnos.length > 0 && turnos.every((t) => booked.has(t))) full.add(dateStr);
   });
   return full;
 }

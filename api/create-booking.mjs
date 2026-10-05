@@ -3,9 +3,10 @@ import { encryptPII, hashPhone } from './_lib/crypto.mjs';
 import { validateBookingInput, safeUserAgent } from './_lib/validate.mjs';
 import { checkRateLimit, checkSubjectRateLimit, verifyTurnstile, audit, isOriginAllowed, getClientIp } from './_lib/security.mjs';
 import { requireMobileSession } from './_lib/mobile-auth.mjs';
-import { createCalendarEvent, getScheduleFromCalendar, getBookedDetailedFromCalendar } from './_lib/calendar.mjs';
+import { createCalendarEvent, getAgendaFromCalendar } from './_lib/calendar.mjs';
+import { ocupadosDeCitas, turnoOcupado } from './_lib/agenda.mjs';
 import { horasOfrecidas } from './_lib/horarios.mjs';
-import { conflictoDeSede, mensajeConflicto, ciudadDeSede } from './_lib/profesionales.mjs';
+import { conflictoDeSede, mensajeConflicto } from './_lib/profesionales.mjs';
 
 const LIMPIEZA_SLUG = 'limpieza-facial';
 
@@ -141,19 +142,16 @@ export default async function handler(req, res) {
 
   // ------------------------------------------------------------------
   // La hora debe ser un turno que el formulario realmente ofrece ese día
-  // en esa sede (horarios fijos + bloques del Calendar) y no estar ocupada
-  // por una cita creada a mano en el Calendar. Antes solo el navegador lo
-  // verificaba y la API aceptaba cualquier "HH:MM".
+  // en esa sede (horarios fijos + bloques del Calendar) y su hora completa
+  // no puede cruzarse con nada del Calendar: citas, eventos personales de
+  // Katherine o días completos (reglas en _lib/agenda.mjs).
   // Fail-closed: sin calendario no se puede confirmar el turno.
   // ------------------------------------------------------------------
   const diaMin = `${v.data.fecha}T00:00:00-06:00`;
   const diaMax = `${v.data.fecha}T23:59:59-06:00`;
-  let sesionesCal, ocupadasCal;
+  let agenda;
   try {
-    [sesionesCal, ocupadasCal] = await Promise.all([
-      getScheduleFromCalendar(diaMin, diaMax),
-      getBookedDetailedFromCalendar(diaMin, diaMax),
-    ]);
+    agenda = await getAgendaFromCalendar(diaMin, diaMax);
   } catch (err) {
     console.error('schedule_check_error', err?.message);
     return send(res, 503, {
@@ -161,13 +159,11 @@ export default async function handler(req, res) {
       mensaje: 'No pudimos confirmar la disponibilidad en este momento. Intenta de nuevo en unos minutos.'
     });
   }
+  const sesionesCal = agenda.bloques;
   if (!horasOfrecidas(v.data.fecha, v.data.sede, slugs, sesionesCal).has(v.data.hora)) {
     return send(res, 400, { error: 'hora_no_ofrecida', mensaje: 'Esa hora no está disponible para la fecha y sede elegidas.' });
   }
-  const ciudad = ciudadDeSede(v.data.sede);
-  const ocupadaEnCal = (ocupadasCal[v.data.fecha] ?? []).some(e =>
-    e.hora === v.data.hora && (e.sede === null || ciudadDeSede(e.sede) === ciudad));
-  if (ocupadaEnCal) {
+  if (turnoOcupado(v.data.fecha, v.data.hora, v.data.sede, agenda.ocupados)) {
     return send(res, 409, { error: 'slot_no_disponible', mensaje: 'Ese horario ya está ocupado. Por favor elige otra hora.' });
   }
 
@@ -177,12 +173,17 @@ export default async function handler(req, res) {
   // la BD respalda esta verificación contra carreras.
   const { data: delDia, error: errDia } = await supabase
     .from('citas')
-    .select('sede, hora, servicios')
+    .select('fecha, sede, hora, servicios')
     .eq('fecha', v.data.fecha)
     .neq('estado', 'cancelada');
   if (errDia) {
     console.error('select_dia_error', JSON.stringify(errDia));
     return send(res, 500, { error: 'error_interno' });
+  }
+  // El índice único de la BD solo atrapa la misma hora exacta; esto atrapa
+  // también turnos que se cruzan (p. ej. 9:00 y 9:30 en la misma ciudad).
+  if (turnoOcupado(v.data.fecha, v.data.hora, v.data.sede, ocupadosDeCitas(delDia))) {
+    return send(res, 409, { error: 'slot_no_disponible', mensaje: 'Ese horario ya está ocupado. Por favor elige otra hora.' });
   }
   const conflicto = conflictoDeSede(
     { sede: v.data.sede, hora: v.data.hora, slugs },

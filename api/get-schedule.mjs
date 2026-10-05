@@ -2,7 +2,7 @@ import { getScheduleFromCalendar } from './_lib/calendar.mjs';
 
 function send(res, status, body) {
   res.setHeader('content-type', 'application/json; charset=utf-8');
-  res.setHeader('cache-control', 'public, max-age=1800, s-maxage=1800');
+  res.setHeader('cache-control', 'public, max-age=300, s-maxage=300');
   res.status(status).json(body);
 }
 

@@ -1,8 +1,13 @@
 # Sincronización Google Calendar → sitio
 
-Cuando Katherine borra o cancela una cita directamente en Google Calendar, el
-sitio tiene que enterarse: si no, la fila sigue viva en `citas` y esa hora queda
-bloqueada para siempre en la parrilla de reservas.
+Cuando Katherine borra, cancela o mueve una cita directamente en Google
+Calendar, el sitio tiene que enterarse: si no, la fila de `citas` queda en la
+hora vieja, ese turno sigue bloqueado y el recordatorio sale con datos malos.
+
+- **Borrada o cancelada** → la cita pasa a `cancelada`.
+- **Movida** (otra fecha u hora) → la cita toma la fecha y hora nuevas. Si el
+  turno nuevo choca con otra cita (índice único o trigger de sede), no se
+  cambia y queda `move_from_calendar_failed` en `audit_log` para revisarlo.
 
 ## Cómo funciona
 
@@ -18,7 +23,8 @@ red falla, la función puede estar fría. Por eso el cron, además de renovar el
 canal, repasa una ventana larga con dos horas de solape. Si un push se pierde,
 la cancelación se aplica igual al día siguiente en vez de quedar colgada.
 
-La reconciliación es idempotente: solo toca filas que aún no están canceladas.
+La reconciliación es idempotente: solo toca filas que todavía difieren del
+Calendar.
 
 ## Por qué hacía falta arreglarlo
 
@@ -78,12 +84,17 @@ la raíz del sitio.
 El detalle del error de Google se propaga tal cual en la respuesta y en los
 logs, así que ahí se ve si es esto u otra cosa.
 
-## Límite conocido
+## Qué cuenta como ocupado en la parrilla
 
-Solo se sincronizan **cancelaciones**. Si en Calendar se mueve una cita de hora
-o de día, la BD no se entera y las dos fuentes quedan discrepando. Se puede
-añadir cuando haga falta; hoy la clínica cancela mucho más de lo que reagenda.
+Reglas en `api/_lib/agenda.mjs` (pruebas: `node scripts/test-agenda.mjs`).
+Todo se compara como intervalos: un turno de 60 min está ocupado si se cruza
+aunque sea un minuto con algo del calendario.
 
-`getRecentlyChangedEvents` pide 50 cambios como máximo por consulta y no pagina.
-Para el volumen actual sobra; si algún día un solo día trae más de 50 cambios,
-hay que paginar.
+| Evento en el Calendar | Efecto |
+| --- | --- |
+| Con sede en "Ubicación", creado por la clínica, con hora, título que no empieza con "Cita" | **Bloque de disponibilidad**: abre turnos |
+| Cita del sitio ("Cita — Nombre") | Ocupa su hora en su ciudad |
+| Evento personal o cita a mano sin sede | Ocupa todos los turnos que cruza, en todas las sedes |
+| Evento con sede en "Ubicación" que no es bloque (cita a mano, invitación ajena) | Ocupa los turnos que cruza en esa ciudad |
+| Evento de día completo (vacaciones, etc.) | Ocupa el día entero (o los días que abarque) |
+| Cancelado, o invitación que Katherine rechazó | No cuenta |

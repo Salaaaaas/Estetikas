@@ -1,8 +1,9 @@
 // Reconciliación Google Calendar → tabla citas.
 //
-// Cuando Katherine borra o cancela un evento directamente en Google Calendar,
-// la cita seguía viva en la BD y su hora quedaba bloqueada para siempre. Esto
-// lo arregla marcándola como cancelada.
+// Cuando Katherine borra o cancela el evento de una cita directamente en
+// Google Calendar, la cita se marca como cancelada en la BD. Cuando lo MUEVE
+// a otra fecha u hora, la cita de la BD se mueve con él (antes quedaba en la
+// hora vieja: bloqueaba ese turno y el recordatorio salía con la hora mala).
 //
 // Vive en su propio módulo porque hay DOS disparadores, a propósito:
 //
@@ -18,22 +19,27 @@
 
 import { supabase } from './supabase.mjs';
 import { getRecentlyChangedEvents } from './calendar.mjs';
+import { fechaHoraCR } from './agenda.mjs';
 import { audit } from './security.mjs';
 
 /**
- * Marca como canceladas las citas cuyo evento de Calendar ya no existe.
+ * Lleva a la tabla citas los cambios hechos en Calendar a eventos de citas:
+ * borrados → cancelada; movidos → nueva fecha y hora.
  *
- * Es idempotente: solo toca filas que aún no están canceladas, así que
+ * Es idempotente: solo toca filas que todavía difieren del Calendar, así que
  * repetirla sobre la misma ventana no hace nada la segunda vez.
  *
  * @param {number} minutesBack ventana de cambios a revisar
  * @param {string} origen      queda en el audit_log para saber quién disparó
  */
-export async function syncCancellations(minutesBack, origen) {
+export async function syncDesdeCalendar(minutesBack, origen) {
   const events = await getRecentlyChangedEvents(minutesBack);
   const cancelled = events.filter((e) => e.status === 'cancelled');
+  const vivos = events.filter((e) => e.status !== 'cancelled' && e.start?.dateTime);
 
   let canceladas = 0;
+  let movidas = 0;
+  let conflictos = 0;
 
   for (const event of cancelled) {
     const { data: updated, error } = await supabase
@@ -59,5 +65,58 @@ export async function syncCancellations(minutesBack, origen) {
     }
   }
 
-  return { revisados: events.length, cancelados_en_calendar: cancelled.length, canceladas };
+  if (vivos.length > 0) {
+    const { data: citas, error } = await supabase
+      .from('citas')
+      .select('id, fecha, hora, google_event_id')
+      .in('google_event_id', vivos.map((e) => e.id))
+      .neq('estado', 'cancelada');
+
+    if (error) {
+      console.error('sync_move_select_error', { message: error.message });
+    } else {
+      const porEvento = new Map(vivos.map((e) => [e.id, e]));
+      for (const cita of citas ?? []) {
+        const nuevo = fechaHoraCR(Date.parse(porEvento.get(cita.google_event_id).start.dateTime));
+        if (nuevo.fecha === cita.fecha && nuevo.hora === cita.hora) continue;
+
+        const antes = { fecha: cita.fecha, hora: cita.hora };
+        const { error: errMove } = await supabase
+          .from('citas')
+          .update({ fecha: nuevo.fecha, hora: nuevo.hora })
+          .eq('id', cita.id);
+
+        // El índice de turno único o el trigger de sede por profesional pueden
+        // rechazar el cambio (otra cita ya ocupa ese turno). Se deja la cita
+        // como estaba y queda registrado para revisarlo a mano.
+        if (errMove) {
+          conflictos++;
+          console.error('sync_move_error', { citaId: cita.id, message: errMove.message });
+          await audit({
+            actor: 'system',
+            action: 'move_from_calendar_failed',
+            resourceId: cita.id,
+            metadata: { google_event_id: cita.google_event_id, antes, despues: nuevo, origen, code: errMove.code },
+          });
+          continue;
+        }
+
+        movidas++;
+        await audit({
+          actor: 'system',
+          action: 'move_from_calendar',
+          resourceId: cita.id,
+          metadata: { google_event_id: cita.google_event_id, antes, despues: nuevo, origen, ventana_min: minutesBack },
+        });
+      }
+    }
+  }
+
+  return {
+    revisados: events.length,
+    cancelados_en_calendar: cancelled.length,
+    canceladas,
+    movidas,
+    conflictos,
+  };
 }

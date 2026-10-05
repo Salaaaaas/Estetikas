@@ -14,7 +14,7 @@
 import { getAccessToken } from './_lib/calendar.mjs';
 import { aplicarRetencion } from './_lib/retencion.mjs';
 import { bearerCoincide } from './_lib/security.mjs';
-import { syncCancellations } from './_lib/calendar-sync.mjs';
+import { syncDesdeCalendar } from './_lib/calendar-sync.mjs';
 import { supabase } from './_lib/supabase.mjs';
 
 // 26 horas: la ventana del cron diario, con dos horas de solape para que un
@@ -83,7 +83,7 @@ export default async function handler(req, res) {
   //    cancelaciones del último día ya quedaron aplicadas.
   let repaso = null;
   try {
-    repaso = await syncCancellations(VENTANA_REPASO_MIN, 'cron');
+    repaso = await syncDesdeCalendar(VENTANA_REPASO_MIN, 'cron');
   } catch (err) {
     console.error('register_watch_sync_error', err?.message);
   }

@@ -1,23 +1,26 @@
 import { supabase } from './_lib/supabase.mjs';
-import { getBookedDetailedFromCalendar } from './_lib/calendar.mjs';
+import { getAgendaFromCalendar } from './_lib/calendar.mjs';
+import { horasOfrecidas } from './_lib/horarios.mjs';
+import { ocupadosDeCitas, turnoOcupado } from './_lib/agenda.mjs';
+import { ciudadDeSede } from './_lib/profesionales.mjs';
 
-// Horas ya ocupadas, por día o por mes.
+// Turnos ya ocupados, por día o por mes: { booked: ["HH:MM"] } o
+// { "YYYY-MM-DD": ["HH:MM"] }.
 //
-// El parámetro `sede` es opcional y retrocompatible: sin él, la respuesta es la
-// unión de todas las sedes, exactamente igual que antes. Con él, solo cuentan
-// las citas de esa ciudad. El sitio web no lo envía; la app sí.
+// Un turno está ocupado si su hora (60 min) se cruza con una cita de la BD o
+// con cualquier evento del Calendar que no sea un bloque de disponibilidad:
+// citas, eventos personales de Katherine, días completos. Las reglas de qué
+// cuenta como ocupado viven en _lib/agenda.mjs.
 //
-// Existe porque el candado de slot pasó a ser por ciudad: Katherine en Bataan y
-// la Dra. Karen en Guápiles ya pueden atender a la misma hora, así que una
-// parrilla que no distinga sede mostraría horas ocupadas que en realidad están
-// libres.
+// Se evalúan todos los turnos que el formulario puede ofrecer ese día
+// (horarios fijos + bloques del Calendar, para cualquier tratamiento), más la
+// hora exacta de cada cita de la BD por compatibilidad.
 //
-// La comparación es por CIUDAD, no por sede exacta, igual que el índice
-// citas_slot_ciudad_unico_idx: los dos locales de Guápiles comparten
-// profesional, así que una cita en Eco Clinic sí ocupa esa hora en Numancia.
-//
-// Las citas creadas a mano en Google Calendar no llevan sede identificable y
-// bloquean la hora en TODAS las sedes: ante la duda, no se ofrece el hueco.
+// El parámetro `sede` es opcional y retrocompatible: sin él cuenta lo ocupado
+// en cualquier sede (lo que usa el sitio web). Con él, solo lo de esa CIUDAD
+// (los dos locales de Guápiles comparten profesional), igual que el índice
+// citas_slot_ciudad_unico_idx; lo usa la app. Un evento del Calendar sin sede
+// identificable bloquea todas las ciudades.
 
 const SEDES_VALIDAS = new Set([
   'Bataan (Clínica ODONTOBATAAN)',
@@ -25,31 +28,22 @@ const SEDES_VALIDAS = new Set([
   'Guápiles (Eco Clinic)',
 ]);
 
-/** Espejo de la función SQL public.sede_ciudad. */
-export function ciudadDeSede(sede) {
-  return sede?.startsWith('Bataan') ? 'Bataan' : 'Guápiles';
-}
-
 function send(res, status, body) {
   res.setHeader('content-type', 'application/json; charset=utf-8');
   res.setHeader('cache-control', 'no-store');
   res.status(status).json(body);
 }
 
-/** Horas ocupadas de un día, filtrando por la ciudad de la sede si se pidió. */
-function horasOcupadas(dbRows, calEntries, sede) {
+/** Turnos ocupados de un día. */
+function horasOcupadas(fecha, citasDia, bloques, ocupadosCal, sede) {
   const ciudad = sede ? ciudadDeSede(sede) : null;
-  const horas = new Set();
-  for (const row of dbRows) {
-    if (!ciudad || ciudadDeSede(row.sede) === ciudad) horas.add(row.hora);
-  }
-  for (const entry of calEntries) {
-    // sede null = evento creado a mano, sin sede legible → bloquea todas.
-    if (!ciudad || entry.sede === null || ciudadDeSede(entry.sede) === ciudad) {
-      horas.add(entry.hora);
-    }
-  }
-  return [...horas];
+  const citas = citasDia.filter((c) => !ciudad || ciudadDeSede(c.sede) === ciudad);
+  const ocupados = [...ocupadosDeCitas(citas), ...ocupadosCal];
+
+  const candidatas = horasOfrecidas(fecha, sede, [], bloques);
+  for (const c of citas) candidatas.add(c.hora);
+
+  return [...candidatas].filter((hora) => turnoOcupado(fecha, hora, sede, ocupados)).sort();
 }
 
 export default async function handler(req, res) {
@@ -69,16 +63,19 @@ export default async function handler(req, res) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return send(res, 400, { error: 'fecha_invalida' });
 
     const [dbResult, calResult] = await Promise.allSettled([
-      supabase.from('citas').select('hora, sede').eq('fecha', date).neq('estado', 'cancelada'),
-      getBookedDetailedFromCalendar(`${date}T00:00:00-06:00`, `${date}T23:59:59-06:00`),
+      supabase.from('citas').select('fecha, hora, sede').eq('fecha', date).neq('estado', 'cancelada'),
+      getAgendaFromCalendar(`${date}T00:00:00-06:00`, `${date}T23:59:59-06:00`),
     ]);
 
     if (dbResult.status === 'rejected') return send(res, 500, { error: 'error_interno' });
     if (dbResult.value.error)           return send(res, 500, { error: 'error_interno' });
 
-    const calEntries = calResult.status === 'fulfilled' ? (calResult.value[date] ?? []) : [];
+    // Si Google falla se responde solo con la BD: create-booking revalida
+    // contra el Calendar y rechaza la reserva si no puede consultarlo.
+    const { bloques, ocupados } = calResult.status === 'fulfilled'
+      ? calResult.value : { bloques: [], ocupados: [] };
 
-    return send(res, 200, { booked: horasOcupadas(dbResult.value.data, calEntries, sede) });
+    return send(res, 200, { booked: horasOcupadas(date, dbResult.value.data, bloques, ocupados, sede) });
   }
 
   if (year && month) {
@@ -95,7 +92,7 @@ export default async function handler(req, res) {
 
     const [dbResult, calResult] = await Promise.allSettled([
       supabase.from('citas').select('fecha, hora, sede').gte('fecha', startDate).lte('fecha', endDate).neq('estado', 'cancelada'),
-      getBookedDetailedFromCalendar(`${startDate}T00:00:00-06:00`, `${endDate}T23:59:59-06:00`),
+      getAgendaFromCalendar(`${startDate}T00:00:00-06:00`, `${endDate}T23:59:59-06:00`),
     ]);
 
     if (dbResult.status === 'rejected') return send(res, 500, { error: 'error_interno' });
@@ -105,11 +102,13 @@ export default async function handler(req, res) {
     for (const row of dbResult.value.data) {
       (dbByDate[row.fecha] ??= []).push(row);
     }
-    const calByDate = calResult.status === 'fulfilled' ? calResult.value : {};
+    const { bloques, ocupados } = calResult.status === 'fulfilled'
+      ? calResult.value : { bloques: [], ocupados: [] };
 
     const out = {};
-    for (const fecha of new Set([...Object.keys(dbByDate), ...Object.keys(calByDate)])) {
-      const horas = horasOcupadas(dbByDate[fecha] ?? [], calByDate[fecha] ?? [], sede);
+    for (let d = 1; d <= lastDay; d++) {
+      const fecha = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const horas = horasOcupadas(fecha, dbByDate[fecha] ?? [], bloques, ocupados, sede);
       if (horas.length > 0) out[fecha] = horas;
     }
 

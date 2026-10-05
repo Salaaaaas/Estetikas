@@ -5,7 +5,7 @@
 // reciente. El repaso vive en _lib/calendar-sync.mjs y lo comparte con el cron
 // diario, que cubre las notificaciones que se pierdan.
 
-import { syncCancellations } from './_lib/calendar-sync.mjs';
+import { syncDesdeCalendar } from './_lib/calendar-sync.mjs';
 import { secretoCoincide } from './_lib/security.mjs';
 
 const VENTANA_MIN = 120;
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const result = await syncCancellations(VENTANA_MIN, 'webhook');
+    const result = await syncDesdeCalendar(VENTANA_MIN, 'webhook');
     console.log('calendar_webhook_sync', result);
     return send(res, 200, { ok: true, ...result });
   } catch (err) {

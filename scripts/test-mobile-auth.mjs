@@ -29,7 +29,7 @@ const { issueChallenge, verifyChallenge, issueSession, verifySession, bearerToke
   '../api/_lib/mobile-auth.mjs'
 );
 const { verifyAppAttest } = await import('../api/_lib/attest.mjs');
-const { ciudadDeSede } = await import('../api/get-availability.mjs');
+const { ciudadDeSede } = await import('../api/_lib/profesionales.mjs');
 
 let passed = 0;
 function test(name, fn) {
